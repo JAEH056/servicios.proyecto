@@ -124,3 +124,8 @@ nb-configuration.xml
 
 /results/
 /phpunit*.xml
+
+#-------------------------
+# Files to ignore
+#-------------------------
+app/Config/OAuth.php
