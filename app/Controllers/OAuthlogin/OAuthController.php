@@ -14,9 +14,9 @@ class OAuthController extends Controller
         // Carga el proveedor de Microsoft OAuth desde la configuracion
         $credentials = (new OAuth())->credentials;
         $this->microsoftProvider = new GenericProvider([
-            'clientId'                => $credentials['clientId'],
-            'clientSecret'            => $credentials['clientSecret'],
-            'tenantId'                => $credentials['tenantId'],  // Your Redirect URI
+          //  'clientId'                => $credentials['clientId'],
+          //  'clientSecret'            => $credentials['clientSecret'],
+            //'tenantId'                => $credentials['tenantId'],  // Your Redirect URI
             'urlAuthorize'            => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/authorize',
             'urlAccessToken'          => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/token',
             'urlResourceOwnerDetails' => 'https://graph.microsoft.com/v1.0/me', // Microsoft Graph API endpoint to fetch user info
