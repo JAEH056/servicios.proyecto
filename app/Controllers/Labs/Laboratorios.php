@@ -2,10 +2,6 @@
 
 namespace App\Controllers\Labs;
 
-use App\Controllers\My;
-use App\Models\Labs\EmployeeModel;
-use App\Models\Labs\ProjectModel;
-
 class MyController extends MyController
 {
     public function index()
@@ -20,9 +16,5 @@ class MyController extends MyController
        // $projects = $projectModel->findAllWithLimit(10);
 
         // Pasar los datos a la vista
-        return view('dashboard', [
-           // 'employees' => $employees,
-          //  'projects' => $projects,
-        ]);
     }
 }

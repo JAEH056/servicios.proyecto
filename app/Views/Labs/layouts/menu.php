@@ -23,7 +23,7 @@
             <!-- Sidenav Link (Tables)-->
             <a class="nav-link" href="tables.html">
                 <div class="nav-link-icon"><i data-feather="filter"></i></div>
-                Tables
+                Laboratorio
             </a>
          </div>
     </div>
