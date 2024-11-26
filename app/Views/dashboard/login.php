@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var CodeIgniter\View\View $this
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +38,7 @@
                                         <div class="d-flex flex-column align-items-center justify-content-between mt-4 mb-0">
                                             <img class="dropdown-notifications-item-img mb-5" width="200" height="200" src="<?= base_url("resources/assets/img/logo_ITSH.png") ?>" />
                                             <!-- <a class="small" href="auth-password-basic.html">Forgot Password?</a> -->
-                                            <a class="btn btn-primary w-100" href="dashboard.php"><img src="<?= base_url("resources/assets/img/logo_Office.png") ?>" alt="icono" width="25" height="25" class="me-2" />Microsoft365 Institucional</a>
+                                            <a class="btn btn-primary w-100" href="<?= base_url('oauth/login')?>"><img src="<?= base_url("resources/assets/img/logo_Office.png") ?>" alt="icono" width="25" height="25" class="me-2" />Microsoft365 Institucional</a>
                                         </div>
                                     </form>
                                 </div>

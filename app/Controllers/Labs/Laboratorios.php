@@ -2,7 +2,7 @@
 
 namespace App\Controllers\Labs;
 
-class MyController extends MyController
+class Laboratorios extends MyController
 {
     public function index()
     {

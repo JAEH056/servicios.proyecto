@@ -1,6 +1,5 @@
 <?php
 
-//namespace App\Controllers;
 namespace App\Controllers\Reposs;
 
 use App\Controllers\BaseController;

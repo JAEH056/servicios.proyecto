@@ -3,6 +3,7 @@ namespace App\Controllers\OAuthlogin;
 
 use CodeIgniter\Controller;
 use League\OAuth2\Client\Provider\GenericProvider;
+use App\Models\Reposs\PuestoModel;
 use Config\OAuth;
 
 class OAuthController extends Controller
@@ -14,13 +15,13 @@ class OAuthController extends Controller
         // Carga el proveedor de Microsoft OAuth desde la configuracion
         $credentials = (new OAuth())->credentials;
         $this->microsoftProvider = new GenericProvider([
-            'clientId'                => $credentials['clientId'],
-            'clientSecret'            => $credentials['clientSecret'],
-            'tenantId'                => $credentials['tenantId'],  // Your Redirect URI
-            'urlAuthorize'            => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/authorize',
-            'urlAccessToken'          => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/token',
+            'clientId' => $credentials['clientID'],
+            'clientSecret' => $credentials['clientSecret'],
+            'tenantId' => $credentials['tenantId'],  // Your Redirect URI
+            'urlAuthorize' => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/authorize',
+            'urlAccessToken' => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/token',
             'urlResourceOwnerDetails' => 'https://graph.microsoft.com/v1.0/me', // Microsoft Graph API endpoint to fetch user info
-            'scopes'                  => ['openid profile offline_access user.read'],
+            'scopes' => ['openid profile offline_access user.read'],
         ]);
     }
 
@@ -66,6 +67,33 @@ class OAuthController extends Controller
             // Get the user info (profile)
             $userData = $resourceOwner->toArray();  // Array containing user info
 
+            //Extraemos el nombre del usuario y correo
+            $userPrincipalName = $userData['userPrincipalName'];
+            $givenName = $userData['givenName'];
+            $surname = $userData['surname'];
+
+            // Instanciamos el modelo
+            $puestoModel = new PuestoModel();
+
+            // Guardamos los datos en la base de datos
+            $data = [
+                'correo' => $userPrincipalName,
+                'nombre' => $givenName,
+                'apellido1' => $surname
+            ];
+
+            // Verificamos si el correo ya existe en la base de datos
+            $existingRecord = $puestoModel->findByCorreo($data['correo']);
+
+            if ($existingRecord) {
+                // El registro ya existe, manejar la situación (por ejemplo, mostrar un mensaje)
+                echo "El correo ya está registrado.";
+            } else {
+                // Insertamos los datos en la base de datos
+                $puestoModel->insertData($data);
+                // Set flash data message with inserted data
+                session()->setFlashdata('notification', 'User  added: ' . $givenName . ' ' . $surname . ' (' . $userPrincipalName . ')');
+            }
             // Store the access token and user information in session or database
             // Guarda el token de accedso y la informacion de usuario en la sesion o base de datos
             session()->set('access_token', $accessToken);
@@ -89,7 +117,8 @@ class OAuthController extends Controller
         }
 
         $user = session()->get('name');
-        return view('Layouts/principal', ['user' => $user]);
+        $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
+        return view('dashboard/dashboard', ['user' => $user, 'token' => $token]); // Se agregan los datos a la vista
     }
 
     // Step 4: Logout and clear the session
