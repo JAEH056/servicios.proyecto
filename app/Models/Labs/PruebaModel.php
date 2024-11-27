@@ -2,7 +2,7 @@
 namespace App\Models\Labs;
 
 
-class Prueba extends UserModel{
+class PruebaModel extends UserModel{
 
     protected $table      = '';
     protected $primaryKey = '';
