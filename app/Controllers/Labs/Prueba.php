@@ -7,6 +7,6 @@ class Prueba extends MyController
     public function iniciando(): string
     {
         // return view('Labs/layouts/login');
-        return view('Labs/layouts/editar_dias_inhabiles');
+        return view('Labs/layouts/solicitar_uso_proyecto');
     }
 }

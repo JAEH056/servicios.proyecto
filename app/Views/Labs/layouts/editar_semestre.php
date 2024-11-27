@@ -1,4 +1,4 @@
-<?= $this->extend('Labs/layouts/principal') ?>
+<?= $this->extend('Labs/layouts/principal_laboratorista') ?>
 <?= $this->section('content_editar_semestre') ?>
 <!-- Solid Form Controls-->
 <div id="solid" class="container-xl px-4 mt-n10">

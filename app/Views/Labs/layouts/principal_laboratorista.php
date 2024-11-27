@@ -7,7 +7,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title><?= $title??'' ?></title>
-    <link rel="icon" type="image/x-icon" href="<?= base_url("resources/assets/img/favicon.png") ?>"/>
+    <link rel="icon" type="image/x-icon" href="<?= base_url("resources/assets/img/logo_ITSH.png") ?>"/>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="<?= base_url("resources/css/principal.css") ?>" rel="stylesheet" />
 <?= $this->renderSection('include_css') ?>
@@ -21,7 +21,7 @@
     <?= $this->include('dashboard/navbar') ?>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
-            <?= $this->include('Labs/layouts/menu') ?>
+            <?= $this->include('Labs/layouts/menu_laboratorista') ?>
         </div>
         <div id="layoutSidenav_content">
             <main>
@@ -38,6 +38,7 @@
                 <?= $this->renderSection('content_dias_inhabiles') ?>
                 <?= $this->renderSection('content_agregar_dias_inhabiles') ?>
                 <?= $this->renderSection('content_editar_dias_inhabiles') ?>
+                <?= $this->renderSection('content_horario_semanal') ?>
             </main>
             <footer class="footer-admin mt-auto footer-light">
                 <?= $this->include('dashboard/footer') ?>

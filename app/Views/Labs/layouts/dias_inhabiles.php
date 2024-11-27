@@ -1,4 +1,4 @@
-<?= $this->extend('Labs/layouts/principal') ?>
+<?= $this->extend('Labs/layouts/principal_laboratorista') ?>
 <?= $this->section('content_dias_inhabiles') ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n10">
