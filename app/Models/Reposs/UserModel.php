@@ -1,7 +1,7 @@
 <?php
 
 // app/Models/UserModel.php
-namespace App\Models;
+namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
 
@@ -46,17 +46,20 @@ class UserModel extends Model
 
     // Validation
     protected $validationRules = [
-        'nomAlumno' => 'required',
-        'apePAlumno' => 'required',
-        'apeMAlumno' => 'required',
-        'numControl' => 'required',
-        'domicilio' => 'required',
-        'correo' => 'required|valid_email|is_unique[residente.correo]',
-        'ciudad' => 'required',
-        'seguroSocial' => 'required',
-        'numSS' => 'required|is_unique[residente.numSS]',
+        'idprograma_educativo'  => 'required',
+        'idpuesto'              => 'required',
+        'numero_control'        => 'required',
+        'correo_institucional'  => 'required',
+        'nombre',
+        'apellido1',
+        'apellido2',
+        'domicilio',
+        'correo',
+        'ciudad',
+        'seguro_social',
+        'numero_ss',
         'telefono',
-        'celular'
+        'celular',
     ];
     protected $validationMessages = [];
     protected $skipValidation = false;

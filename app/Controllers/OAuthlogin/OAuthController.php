@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers\OAuthlogin;
 
 use CodeIgniter\Controller;
@@ -15,7 +16,7 @@ class OAuthController extends Controller
         // Carga el proveedor de Microsoft OAuth desde la configuracion
         $credentials = (new OAuth())->credentials;
         $this->microsoftProvider = new GenericProvider([
-            'clientId' => $credentials['clientID'],
+            'clientId' => $credentials['clientId'],
             'clientSecret' => $credentials['clientSecret'],
             'tenantId' => $credentials['tenantId'],  // Your Redirect URI
             'urlAuthorize' => 'https://login.microsoftonline.com/' . $credentials['tenantId'] . '/oauth2/v2.0/authorize',
@@ -89,6 +90,23 @@ class OAuthController extends Controller
                 // El registro ya existe, manejar la situación (por ejemplo, mostrar un mensaje)
                 echo "El correo ya está registrado.";
             } else {
+                // Extraemos el dominio del correo
+                $emailParts = explode('@', $data['correo']);
+                $domain = strtolower($emailParts[1]);  // Convert to lowercase for consistency
+
+                // Define your organization's domain (you can also use a list of domains if necessary)
+                $organizationDomain = 'altlos56.onmicrosoft.com';
+
+                // Check if the domain matches your organization's domain
+                if ($domain === $organizationDomain) {
+                    // Assign the organization role
+                    $role = 'employee';  // Example role for organization users
+                } else {
+                    // Assign the external role
+                    $role = 'external';  // Example role for external users
+                }
+                // Add the role to the user data
+                $data['role'] = $role;
                 // Insertamos los datos en la base de datos
                 $puestoModel->insertData($data);
                 // Set flash data message with inserted data

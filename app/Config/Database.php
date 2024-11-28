@@ -17,7 +17,7 @@ class Database extends Config
     /**
      * Lets you choose which connection group to use if no other is specified.
      */
-    public string $defaultGroup = 'default';
+    public string $defaultGroup = 'residentes';
 
     /**
      * The default database connection.
@@ -26,10 +26,10 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
-        'username'     => 'admin',
-        'password'     => '123456',
-        'database'     => 'try_reposs',
+        'hostname'     => '',
+        'username'     => '',
+        'password'     => '',
+        'database'     => '',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,
@@ -52,8 +52,8 @@ class Database extends Config
     public array $residentes = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'admin',
-        'password'     => '123456',
+        'username'     => 'root',
+        'password'     => '1234',
         'database'     => 'residencias',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',

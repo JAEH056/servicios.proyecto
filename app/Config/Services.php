@@ -3,6 +3,7 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseService;
+use PhpRbac\Rbac;
 
 /**
  * Services Configuration file.
@@ -29,4 +30,10 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+    public static function rbac($getShared = true) {
+        if ($getShared) {
+            return static::getSharedInstance('rbac');
+        }
+        return new Rbac();
+    }
 }
