@@ -10,8 +10,13 @@ class TipoDiaInhabilModel extends UserModel{
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
-    protected $useSoftDeletes = true;
+    protected $useSoftDeletes = false;
 
     protected $allowedFields = ['nombre'];
+
+
+    public function obtenerTiposInhabiles(){
+        return $this->findAll();
+    }
 
 }

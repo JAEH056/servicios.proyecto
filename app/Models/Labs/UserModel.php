@@ -6,6 +6,9 @@ use CodeIgniter\Model;
 
 abstract class UserModel extends Model
 {
-    protected $DBGroup = "laboratorio";
+    protected $DBGroup = "laboratorios";
+
+  
+
    
 } 

@@ -1,20 +1,54 @@
 <?php
 
 namespace App\Controllers\Labs;
+use \App\Models\Labs\LaboratorioModel;
 
-class Laboratorios extends MyController
+class  Laboratorios extends MyController
 {
-    public function index()
+    public function mostrarLaboratorios(int $LaboratoriosID)
     {
-      //  $employeeModel = new EmployeeModel();
-      //  $projectModel = new ProjectModel();
+        $laboratoriosModel = new LaboratorioModel();
 
-    
-       // $employees = $employeeModel->findAll();
+        $lista_laboratorio = $laboratoriosModel->obtenerLaboratorios();
+       
+        $lista_laboratorios = [];
+
+       
+        foreach ($lista_laboratorio as $data) {
+            
+            $lista_laboratorios[] =[
+
+                "carrera" => $data['laboratorio'], 
+                "laboratorio" => $data['carrera'] 
+                
+           ];
+            print_r($lista_laboratorios);
+        }
 
         
-       // $projects = $projectModel->findAllWithLimit(10);
-
-        // Pasar los datos a la vista
+        return view('Labs/layouts/laboratorio', ['lista_laboratorios'=>$lista_laboratorios]);
     }
+
+    public function actualizarLaboratorio($labID){
+        $datosLaboratorio=[
+         
+         $titulo = $this->request->getPost('nombre'),
+         $carrera =$this->request->getPost('carrera')
+       
+        ];
+        
+     $insertarlaboratorio =new LaboratorioModel();
+     
+     $laboratorio=  $insertarlaboratorio -> actualizarLaboratorio ($datosLaboratorio);
+     if($laboratorio){
+        return redirect()->to('Labs/layouts/laboratorio')->with('Actualizado','Laboratorioactualizado');
+    } else {
+      
+       echo 'error', 'Hubo un error al crear el evento.';
+    
+     }
+
+    }
+
+   
 }

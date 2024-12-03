@@ -5,9 +5,10 @@
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center">
                 <span>Semestre</span>
-                <button class="btn btn-primary ms-auto" type="button">Agregar</button>
+                <button class="btn btn-primary ms-auto" type="button"><i class="fa-solid fa-plus me-2"></i>Agregar</button>
             </div>
             <div class="card-body">
+                <?php if (!empty($semestre)): ?>
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
@@ -18,85 +19,35 @@
                             <th>Eliminar</th>
                         </tr>
                     </thead>
-                    <!-- <tfoot>
-                        <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </tfoot> -->
                     <tbody>
+                        <!-- MOSTRAR SEMESTRE -->
+                        <?php foreach ($semestre as $datos_semestre): ?>         
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td><?= $datos_semestre['nombre'] ?></td>
+                            <td><?= $datos_semestre['inicio'] ?></td>
+                            <td><?= $datos_semestre['fin'] ?></td>
                             <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-solid fa-pen"></i></button>
+                                <!-- BOTÓN EDITAR -->
+                                 <button class="btn btn-warning" type="button"><i class="fa-solid fa-pencil me-2"></i>Editar</button>
                             </td>
                             <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-regular fa-trash-can"></i></button>
+                                <!-- BOTÓN ELIMINAR -->
+                                <button class="btn btn-danger" type="button"><i class="fa-solid fa-trash-can me-2"></i>Eliminar</button>
                             </td>
                         </tr>
-                        
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-solid fa-pen"></i></button>
-                            </td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-solid fa-pen"></i></button>
-                            </td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-solid fa-pen"></i></button>
-                            </td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-solid fa-pen"></i></button>
-                            </td>
-                            <td>
-                                <button class="btn btn-datatable btn-icon btn-transparent-dark"><i class="fa-regular fa-trash-can"></i></button>
-                            </td>
-                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else: ?> 
+                <p>No hay semestres disponibles.</p>
+                <?php endif; ?> 
             </div>
         </div>
     </div>
 <?= $this->endSection() ?>
 
-
 <?= $this->section('inline_javascript') ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-<script src= "<?=base_url("resources/js/datatables/datatables-simple-demo.js") ?>" ></script>
+<script src="<?= base_url('resources/js/datatables/datatables-simple-demo.js') ?>"></script>
 <?= $this->endSection() ?>
