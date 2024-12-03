@@ -34,16 +34,19 @@ class AdminController extends BaseController
         /*
         *   NOTA: Se cargan los datos como arreglo para una funcion adecuada con AJAX based request
         */
-        return view('admin/index', [ 'roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions'] ]);
-        //return view('admin/index', compact('roles', 'permissions', 'rolePermissions'));
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token');
+        return view('Reposs/adminPage', ['roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions'], 'user' => $user, 'token' => $token, 'userId' => $userId]);
     }
 
     // Crear un rol
     public function createRole()
     {
+        // Se obtienen los datos del post para agregar los datos a rbac
         $roleName = $this->request->getPost('role_name');
         $roleDescription = $this->request->getPost('role_description');
-
+        // Si hay datos en el post se procede, caso contrario se manda mensaje de error
         if ($roleName) {
             $this->rbac->Roles->add($roleName, $roleDescription);
             return redirect()->to('/admin')->with('success', 'Rol creado exitosamente');
@@ -54,27 +57,34 @@ class AdminController extends BaseController
     // Eliminar un rol
     public function deleteRole()
     {
+        // Se determina si la solicitud es AJAX para proceder
         if ($this->request->isAJAX()) {
             $roleId = $this->request->getJSON()->role_id;
 
-            if ($roleId) {
-                $db = \Config\Database::connect();
-                $db->table('users_roles')
-                    ->where('ID', $roleId)
-                    ->delete();
+            if ($roleId) {  /// Si hay datos en el post se procede, caso contrario se manda mensaje de error
+                // Se carga el modelo de roles y se elimina el rol
+                $roleModel = new RolesModel();
+                $roleId = $this->request->getPost('roleId'); // Get role ID from the POST data
+                // Call the model to delete the role
+                $result = $this->$roleModel->deleteRole($roleId);
 
-                return $this->response->setJSON([
-                    'success' => true,
-                    'message' => 'Role deleted successfully.'
+                if ($result) {
+                    return $this->response->setJSON([   /// Si los datos son correctos se elimina el rol
+                        'success' => true,
+                        'message' => 'Role deleted successfully.'
+                    ]);
+                }
+                return $this->response->setJSON([   /// Error en el proceso de eliminacion
+                    'success' => false,
+                    'message' => 'Failed to delete the role.'
                 ]);
             }
-
-            return $this->response->setJSON([
+            return $this->response->setJSON([   /// Se ingresaron datos invalidos
                 'success' => false,
                 'message' => 'Invalid Role ID.'
             ]);
         }
-        
+
         throw new \CodeIgniter\Exceptions\PageNotFoundException();
     }
 
@@ -114,7 +124,7 @@ class AdminController extends BaseController
         $roleId = $this->request->getPost('role_id');
 
         if ($userId && $roleId) {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect(); /// Eliminar conexion
             $db->table('user_roles')->insert([
                 'user_id' => $userId,
                 'role_id' => $roleId,
@@ -134,7 +144,7 @@ class AdminController extends BaseController
             $permissionId = $this->request->getJSON()->permission_id;
 
             if ($roleId && $permissionId) {
-                $db = \Config\Database::connect();
+                $db = \Config\Database::connect(); /// Eliminar conexion
                 $db->table('users_rolepermissions')
                     ->where('RoleID', $roleId)
                     ->where('PermissionID', $permissionId)

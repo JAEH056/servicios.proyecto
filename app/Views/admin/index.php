@@ -7,6 +7,8 @@
     <title>Panel de Administración</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="<?= base_url('/resources/css/styles.css')?>" rel="stylesheet" />
+
     <!-- Bootstrap JavaScript (with Popper.js) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -60,7 +62,7 @@
         <ul class="list-group" id="roles-list">
             <?php foreach ($roles as $role): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <?= $role['Title']?> (<?= $role['Description'] ?>)
+                    <?= $role['Title'] ?> (<?= $role['Description'] ?>)
                     <button
                         class="btn btn-danger btn-sm delete-button"
                         data-id="<?= $role['ID'] ?>"
@@ -141,18 +143,29 @@
             <button type="submit" class="btn btn-primary">Asignar Permiso</button>
         </form>
     </div>
-    <footer>
-        datos editados
-    </footer>
-
+    <div class="container">
+        <footer class="footer-admin mt-auto footer-light">
+            <div class="container-xl px-4">
+                <div class="row">
+                    <div class="col-md-6 small">Copyright &copy; Your Website 2021</div>
+                    <div class="col-md-6 text-md-end small">
+                        <a href="#!">Privacy Policy</a>
+                        &middot;
+                        <a href="#!">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 </body>
 
 <script>
+    // Script AJAX para manejo de eliminacion de Roles y Permisos asignados a roles
     document.addEventListener('DOMContentLoaded', function() {
+        // Se inicializan las variables de Tipo de eliminacion y el ID eliminado(Roles)
         let currentDeleteType = null;
         let currentDeleteId = null;
-
-        // Event listener for delete buttons
+        // Event listener for delete buttons // Funcion de escucha para los botones de eliminar
         document.querySelectorAll('.delete-button').forEach(button => {
             button.addEventListener('click', function() {
                 currentDeleteType = this.getAttribute('data-type');
@@ -164,13 +177,14 @@
             });
         });
 
-        // Handle delete confirmation
+        // Handle delete confirmation  //Ejercisio para realizar la eliminacion
         document.getElementById('confirmDelete').addEventListener('click', function() {
             if (currentDeleteType && currentDeleteId) {
                 let endpoint = '';
                 let payload = {};
 
                 // Determine the endpoint and payload based on the type
+                // Se determina la informacion entregada y el curso a seguir basado en el tipo de accion
                 if (currentDeleteType === 'role') {
                     endpoint = '/admin/deleteRole';
                     payload = {
@@ -186,7 +200,7 @@
                     };
                 }
 
-                // Send the AJAX request
+                // Send the AJAX request // Se envia la solicitud AJAX
                 fetch(endpoint, {
                         method: 'POST',
                         headers: {
@@ -198,7 +212,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Remove the corresponding row or item
+                            // Remove the corresponding row or item // Se elimina la fila eliminada
                             if (currentDeleteType === 'role') {
                                 document.querySelector(`#roles-list [data-id="${currentDeleteId}"]`).closest('li').remove();
                             } else if (currentDeleteType === 'role-permission') {
@@ -215,7 +229,7 @@
                     });
             }
 
-            // Hide the modal
+            // Hide the modal  // Se oculta el MODAL
             const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
             deleteModal.hide();
         });

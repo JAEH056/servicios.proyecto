@@ -3,14 +3,12 @@
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\OAuthlogin\OAuthController;
 use App\Controllers\Reposs\AdminController;
+use App\Controllers\Home;
 
 /**
  * @var RouteCollection $routes
  */
-//$routes->get('/', 'Home::index');
-
-//rutas de acceso codeigniter shield
-//service('auth')->routes($routes);
+$routes->get('/', [Home::class, 'index']);
 
 //Sara y Vianey, coloquen sus rutas en:
 // Mueve esta ruta al archivo correcto.
@@ -26,11 +24,13 @@ $routes->get('/oauth/microsoft/callback',   [OAuthController::class, 'callback']
 $routes->get('/dashboard',                  [OAuthController::class, 'dashboard']);  // Step 3, este debe colocarse en ontro Controller.
 $routes->get('/logout',                     [OAuthController::class, 'logout']);     // Step 4
 
-// Rutas administrador de roles y permisos
-$routes->get('admin',                             [AdminController::class, 'index']);
-$routes->post('admin/createRole',                 [AdminController::class, 'createRole']);
-$routes->post('admin/deleteRole',                 [AdminController::class, 'deleteRole']);
-$routes->post('admin/createPermission',           [AdminController::class, 'createPermission']);
-$routes->post('admin/assignPermissionToRole',     [AdminController::class, 'assignPermissionToRole']);
-$routes->post('admin/assignRoleToUser',           [AdminController::class, 'assignRoleToUser']);
-$routes->post('admin/deleteRolePermission',       [AdminController::class, 'deleteRolePermission']);
+// Rutas administrador de roles y permisos con acceso solo para roles con permisos de root
+$routes->group('admin', ['filter' => 'rbac:root'], function ($routes) {
+    $routes->get('/',                            [AdminController::class, 'index']);
+    $routes->post('/createRole',                 [AdminController::class, 'createRole']);
+    $routes->post('/deleteRole',                 [AdminController::class, 'deleteRole']);
+    $routes->post('/createPermission',           [AdminController::class, 'createPermission']);
+    $routes->post('/assignPermissionToRole',     [AdminController::class, 'assignPermissionToRole']);
+    $routes->post('/assignRoleToUser',           [AdminController::class, 'assignRoleToUser']);
+    $routes->post('/deleteRolePermission',       [AdminController::class, 'deleteRolePermission']);
+});

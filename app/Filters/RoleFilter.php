@@ -6,25 +6,30 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
 
-class RoleFilter implements FilterInterface {
-    public function before(RequestInterface $request, $arguments = null) {
+
+class RoleFilter implements FilterInterface
+{
+    public function before(RequestInterface $request, $arguments = null)
+    {
+        echo '<script>alert("Este es el filtro de roles antes");</script>';
         $rbac = service('rbac');
-        $userId = session()->get('user_id');
+        $userId = session()->get('idusuario'); /// Obtener el id del usuario (provisto por OAuthController)
         $requiredPermission = $arguments[0] ?? null;
 
-        // Obtener el rol del usuario
-        $db = \Config\Database::connect();
-        $role = $db->table('user_roles')
-            ->where('user_id', $userId)
-            ->get()
-            ->getRowArray();
-
-        if (!$role || !$rbac->check($requiredPermission, $role['role_id'])) {
-            return redirect()->to('/acceso-denegado');
+        // Revisa si se esta enviando el permiso requerido
+        if (!$requiredPermission) {
+            // Handle the case where permission is not provided
+            return redirect()->to('/acceso-denegado3',)->with('message', 'No se encontro un permiso');
+        }
+        // Revisa si el usuario tiene el permiso requerido usando su ID (provisto por la sesion)
+        if (!$rbac->check($requiredPermission, $userId)) {
+            echo '<script>alert("Este es el filtro de roles antes"' . $userId . ');</script>';
+            return redirect()->to('/dashboard',)->with('message', 'No tienes permiso para acceder a esta sección con RoleID:"' . $userId . '". Permiso rquerido: "' . $requiredPermission . '" con permiso en BD: "' . '$myPermisions[Title]' . '"');
         }
     }
 
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {
-        // No se necesita implementar nada aquí
+    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
+    {
+        // No se necesita implementar nada aquí...
     }
 }

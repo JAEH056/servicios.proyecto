@@ -5,6 +5,7 @@ namespace App\Controllers\OAuthlogin;
 use CodeIgniter\Controller;
 use League\OAuth2\Client\Provider\GenericProvider;
 use App\Models\Reposs\PuestoModel;
+use App\Models\Roles\UserRolesModel;
 use Config\OAuth;
 
 class OAuthController extends Controller
@@ -48,12 +49,10 @@ class OAuthController extends Controller
             exit('Invalid state');
         }
 
-        // Ensure the code is present
-        // Asegúrese de que el código está presente
+        // Asegúrese de que el código está presente // Ensure the code is present
         if (empty($this->request->getGet('code'))) {
             exit('No code parameter found');
         }
-
         try {
             // Exchange the authorization code for an access token
             // Cambia el código de autorización por un token de acceso
@@ -62,58 +61,44 @@ class OAuthController extends Controller
             ]);
 
             // Use the access token to get the user information
-            // Usa el token de acceso para obtener la informacion del usuaio
+            // Usa el token de acceso para obtener la informacion del usuario
             $resourceOwner = $this->microsoftProvider->getResourceOwner($accessToken);
 
             // Get the user info (profile)
+            // Se guarda la informacion del usuario (Perfil de Microsoft Entra ID)
             $userData = $resourceOwner->toArray();  // Array containing user info
 
-            //Extraemos el nombre del usuario y correo
+            //Se extrae el nombre del usuario y correo
             $userPrincipalName = $userData['userPrincipalName'];
             $givenName = $userData['givenName'];
             $surname = $userData['surname'];
 
-            // Instanciamos el modelo
+            // Se instancia el modelo
             $puestoModel = new PuestoModel();
+            $userRolesModel = new UserRolesModel();
+            $rbac = service('rbac');
 
-            // Guardamos los datos en la base de datos
+            // Se crea un arreglo con la informacion del usuario
             $data = [
                 'correo' => $userPrincipalName,
                 'nombre' => $givenName,
                 'apellido1' => $surname
             ];
 
-            // Verificamos si el correo ya existe en la base de datos
-            $existingRecord = $puestoModel->findByCorreo($data['correo']);
+            // Verificar si el correo ya existe en la base de datos
+            $existingRecord = $puestoModel->findByCorreo($userPrincipalName);
 
             if ($existingRecord) {
                 // El registro ya existe, manejar la situación (por ejemplo, mostrar un mensaje)
                 echo "El correo ya está registrado.";
+                $this->assignExistingUserRole($puestoModel, $userRolesModel, $rbac, $data['correo']);
             } else {
-                // Extraemos el dominio del correo
-                $emailParts = explode('@', $data['correo']);
-                $domain = strtolower($emailParts[1]);  // Convert to lowercase for consistency
-
-                // Define your organization's domain (you can also use a list of domains if necessary)
-                $organizationDomain = 'altlos56.onmicrosoft.com';
-
-                // Check if the domain matches your organization's domain
-                if ($domain === $organizationDomain) {
-                    // Assign the organization role
-                    $role = 'employee';  // Example role for organization users
-                } else {
-                    // Assign the external role
-                    $role = 'external';  // Example role for external users
-                }
-                // Add the role to the user data
-                $data['role'] = $role;
-                // Insertamos los datos en la base de datos
-                $puestoModel->insertData($data);
-                // Set flash data message with inserted data
-                session()->setFlashdata('notification', 'User  added: ' . $givenName . ' ' . $surname . ' (' . $userPrincipalName . ')');
+                // Si no existe el registro, crear un nuevo usuario y se le asigna un rol por defecto
+                $this->assignNewUserRole($puestoModel, $data);
             }
             // Store the access token and user information in session or database
-            // Guarda el token de accedso y la informacion de usuario en la sesion o base de datos
+            // Guarda el token de acceso y la informacion de usuario en la sesion o base de datos
+            session()->set('logged_in', TRUE);
             session()->set('access_token', $accessToken);
             session()->set('name', $userData);
 
@@ -121,7 +106,9 @@ class OAuthController extends Controller
             // Redirige al usuario a una pagina segura (e.g., dashboard)
             return redirect()->to('/dashboard');
         } catch (\Exception $e) {
-            exit('Error fetching the access token: ' . $e->getMessage());
+            //exit('Error fetching the access token: ' . $e->getMessage());
+            log_message('error', 'Error fetching the access token: ' . $e->getMessage());
+            return redirect()->to('/error')->with('message', 'There was an error with the authentication process.');
         }
     }
 
@@ -134,9 +121,10 @@ class OAuthController extends Controller
             return redirect()->to('/oauth/login');
         }
 
+        $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('dashboard/dashboard', ['user' => $user, 'token' => $token]); // Se agregan los datos a la vista
+        return view('dashboard/dashboard', ['user' => $user, 'token' => $token, 'idusuario' => $userId]); // Se agregan los datos a la vista
     }
 
     // Step 4: Logout and clear the session
@@ -146,5 +134,55 @@ class OAuthController extends Controller
         session()->remove('name');
         session()->remove('access_token');
         return redirect()->to(base_url('/'));
+    }
+
+    // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
+    private function assignExistingUserRole(PuestoModel $puestoModel, UserRolesModel $userRolesModel, $rbac, string $correo)
+    {
+        // Obtener el ID del usuario basado en el correo
+        $idUsuario = $puestoModel->select('idusuario')->where('correo', $correo)->first();
+        if ($idUsuario) {
+            // Obtener el rol del usuario
+            $role = $userRolesModel->select('RoleID')->where('UserID', $idUsuario['idusuario'])->first();
+            if (!$role) {
+                // Asignar rol por defecto si no se encuentran roles
+                $userRoleId = $rbac->Roles->titleID('Usuario');
+                $rbac->Users->assign($userRoleId, $idUsuario['idusuario']);
+                session()->set('idusuario', $idUsuario['idusuario']);
+            } else {
+                session()->set('idusuario', $idUsuario['idusuario']);
+                echo "El correo ya está registrado.";
+            }
+        } else {
+            echo "No se encontró el usuario con el correo proporcionado.";
+        }
+    }
+
+    // Metodo para asignar roles a nuevos usuarios
+    private function assignNewUserRole(PuestoModel $puestoModel, array $data)
+    {
+        $rbac = service('rbac');
+        // Extract the domain from the email
+        $emailParts = explode('@', $data['correo']);
+        $domain = strtolower($emailParts[1]);
+        $organizationDomain = [
+            'altlos56.onmicrosoft.com' => 'employee',
+            'external.com' => 'external'
+        ];
+        // Si el correo es un ESTUDIANTE se le asigna el rol de Usuario
+        if ($domain == $organizationDomain['altlos56.onmicrosoft.com']) {
+            $puestoModel->insertData($data); /// 1.- Se insertan los datos de ESTUDIANTE NUEVO en la BD
+            $idUsuario = $puestoModel->insertID(); /// 2.- Se obtiene el ID del ESTUDIANTE insertado
+            $rbac->Users->assign('Usuario', $idUsuario['idusuario']); /// 3.- Se asigna el de usuario a estudiante
+        } else {
+            // Inserta los datos y obtiene el ID del nuevo registro
+            $puestoModel->insertData($data);
+            $idUsuario = $puestoModel->insertID();
+            // Asignar rol por defecto e caso de ser externo
+            $rbac->Users->assign('Candidato', $idUsuario['idusuario']);
+        }
+
+        // Set flash data message with inserted data
+        session()->setFlashdata('notification', 'User  added: ' . $data['nombre'] . ' ' . $data['apellido1'] . ' (' . $data['correo'] . ')');
     }
 }
