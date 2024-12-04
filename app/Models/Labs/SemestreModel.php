@@ -10,18 +10,21 @@ class SemestreModel extends UserModel{
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
-    protected $useSoftDeletes = true;
+    
 
     protected $allowedFields = ['nombre','inicio','fin'];
 
     public function obtenerSemestre(){
         $sql = <<<EOL
         SELECT 
+            semestre.id as id,
             semestre.nombre as nombre,
             semestre.inicio as inicio,
             semestre.fin as fin
         FROM 
             semestre
+         GROUP BY
+            semestre.id    
         ORDER BY
            inicio ASC
         EOL;

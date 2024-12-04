@@ -10,8 +10,9 @@ class DiasInhabiles extends MyController
     public function index()
     {
         $model = model(DiasInhabilesModel::class);
-        $dias = $model->listarDiasInhabiles();
+       
         $data = [
+            $dias = $model->listarDiasInhabiles(),
             'dias' => $dias,
         ];
         return view('Labs/layouts/dias_inhabiles', $data);
@@ -64,7 +65,7 @@ class DiasInhabiles extends MyController
         return view('Labs/layouts/agregar_dias_inhabiles', $data);
     }
 
-    
+
     public function crearDiaInhabil()
     {
         helper('form');
@@ -83,12 +84,12 @@ class DiasInhabiles extends MyController
             'descripcion' => $data['nombre'],
             'inicio' => $data['inicio'],
             'fin' => $data['fin']
-        ])) {
-            return view('Labs/layouts/agregar_dias_inhabiles', [
-                'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
-                'validation' => $model->errors()
-            ]);
-        }
+        ])) //{
+        //     return view('Labs/layouts/agregar_dias_inhabiles', [
+        //         'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
+        //         'validation' => $model->errors()
+        //     ]);
+        // }
 
         return view('Labs/layouts/agregar_dias_inhabiles', [
             'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
@@ -124,31 +125,32 @@ class DiasInhabiles extends MyController
         $model = model(DiasInhabilesModel::class);
         $tipoinhabilModel = model(TipoDiaInhabilModel::class);
 
-        
+
         $rules = $this->getValidationRules();
 
         if (!$this->validate($rules)) {
-           
+
             return view('Labs/layouts/editar_dias_inhabiles', [
                 'dia' => $model->find($id),
-                'tipos' => $tipoinhabilModel->findAll(), 
-                'validation' => \Config\Services::validation() 
+                'tipos' => $tipoinhabilModel->findAll(),
+                'validation' => \Config\Services::validation()
             ]);
         }
 
-        
-        $model=model(DiasInhabilesModel::class);
-        if(!$model->update($id, [
+
+        $model = model(DiasInhabilesModel::class);
+        if (!$model->update($id, [
             'id_tipo_inhabil' => $data['tipo_inhabil'],
             'descripcion' => $data['nombre'],
             'inicio' => $data['inicio'],
             'fin' => $data['fin']
         ]));
-        
 
-        // MODIFICACION VIANEY
-        return redirect()->to('diasinhabiles')->with('success', 'Registro eliminado correctamente.');
-
+        // return redirect()->to('diasinhabiles')->with('success', 'Registro eliminado correctamente.');
+        return view('diasinhabiles', [
+            'validation' => null,
+            'success' => 'Día inhábil agregado correctamente.',
+        ]);
     }
 
     public function eliminar($id)

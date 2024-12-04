@@ -11,46 +11,32 @@ class LaboratorioModel extends UserModel
 
     protected $useAutoIncrement = true;
 
-    protected $returnType     = \App\Entities\Labs\laboratorios::class;
-    protected $useSoftDeletes = true;
+    protected $returnType     = \App\Entities\Labs\Laboratorio::class;
+    protected $useSoftDeletes = false;
 
     protected $allowedFields = ['id_carrera', 'nombre'];
 
-    protected $validationRules =[
-        'nombre' => 'requiered|max_length[255]|min_length[30]'
-    ];
-
-    
     public function obtenerLaboratorios()
     {
 
 
         $sql = <<<EOL
         SELECT 
-            laboratorio.nombre as laboratorio,
-            carrera.nombre as carrera
+            laboratorio.id AS id,
+            carrera.id AS carrera_id,
+            carrera.nombre AS carrera_nombre,
+            laboratorio.nombre AS nombre_laboratorio
         FROM 
             laboratorio
-        JOIN carrera  ON carrera.id= laboratorio.id_carrera
-        GROUP BY
-            laboratorio.id,
-            carrera.id
-        ORDER BY
-            laboratorio.id ASC
-
+        JOIN carrera ON carrera.id = laboratorio.id_carrera
+        GROUP BY laboratorio.id
         EOL;
 
        $query = $this->db->query($sql);
        $laboratorios = $query->getResultArray();
-      // print_r($laboratorios);
        return $laboratorios;
-     
-       
 
     }
 
-    public function actualizarLaboratorios( $datosLaboratorio){
-        return $this->insert($datosLaboratorio);
-    
-    }
+
 }
