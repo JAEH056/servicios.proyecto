@@ -4,9 +4,9 @@
 
     use App\Models\Labs\LaboratorioModel;
     use App\Models\Labs\CarreraModel;
-    use \CodeIgniter\Controller;
+    
 
-    class Laboratorios extends Controller
+    class Laboratorios extends MyController
     {
 
         protected $model_laboratorio;

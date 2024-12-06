@@ -14,4 +14,10 @@
 
         protected $allowedFields = ['id_semestre','id_laboratorios'];
 
+        public function obtenerSemestre(){
+            $sql = <<<EOL
+
+            EOL;
+
+        }
     }

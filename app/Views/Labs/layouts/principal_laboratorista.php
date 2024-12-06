@@ -29,16 +29,26 @@
                     <?= $this->include('dashboard/header') ?>
                 </header>
                 <!-- CONTENIDO DE LA PAGINA -->
+                 <!-- Laboratorio -->
                 <?= $this->renderSection('content_laboratorio') ?>
                 <?= $this->renderSection('content_agregar_laboratorio') ?>
                 <?= $this->renderSection('content_editar_laboratorio') ?>
+
+                <!-- Semestre -->
                 <?= $this->renderSection('content_semestre') ?>
                 <?= $this->renderSection('content_agregar_semestre') ?>
                 <?= $this->renderSection('content_editar_semestre') ?>
+
+                <!-- Dias inhabiles -->
                 <?= $this->renderSection('content_dias_inhabiles') ?>
                 <?= $this->renderSection('content_agregar_dias_inhabiles') ?>
                 <?= $this->renderSection('content_editar_dias_inhabiles') ?>
+
+                <!-- Horario -->
+                <?= $this->renderSection('content_agregar_horario') ?>
                 <?= $this->renderSection('content_horario_semanal') ?>
+
+                <!-- Errores -->
                 <?= $this->renderSection('content_error_404') ?>
             </main>
             <footer class="footer-admin mt-auto footer-light">
