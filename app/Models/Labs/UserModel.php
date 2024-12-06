@@ -1,14 +1,10 @@
 <?php
 
-namespace App\Models\Labs;
+    namespace App\Models\Labs;
 
-use CodeIgniter\Model;
+    use CodeIgniter\Model;
 
-abstract class UserModel extends Model
-{
-    protected $DBGroup = "laboratorios";
-
-  
-
-   
-} 
+    abstract class UserModel extends Model
+    {
+        protected $DBGroup = "laboratorios";
+    } 

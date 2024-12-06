@@ -1,7 +1,7 @@
 <?= $this->extend('Labs/layouts/principal_laboratorista') ?>
 
 <?= $this->section('content_agregar_dias_inhabiles') ?>
-<div id="solid" class="container-xl px-4 mt-n10">
+<div id="solid" class="container-xl px-4 mt-n5">
     <div class="card mb-4">
         <div class="card-header">
             <span>Agregar días inhábiles</span>
@@ -38,7 +38,7 @@
                         <?= form_label('Tipo', 'tipo_inhabil', ['class' => 'form-label']) ?>
                         <?= form_dropdown(
                             'tipo_inhabil',
-                            ['' => 'Seleccionar tipo'] + array_column($dias, 'nombre', 'id'),
+                            ['' => 'Seleccionar tipo'] + array_column($tiposdia, 'nombre', 'id'),
                             set_value('tipo_inhabil'),
                             ['id' => 'tipo_inhabil', 'class' => 'form-control form-control-solid']
                         ) ?>
@@ -74,7 +74,7 @@
                     <!-- Botones Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">
                         <?= form_submit('submit', 'Guardar', ['class' => 'btn btn-primary me-2']) ?>
-                        <?= form_button('cancel', 'Regresar', [
+                        <?= form_button('cancel', 'Cancelar', [
                             'type' => 'button',
                             'class' => 'btn btn-secondary',
                             'onclick' => "window.location.href='" .base_url('diasinhabiles'). "'",

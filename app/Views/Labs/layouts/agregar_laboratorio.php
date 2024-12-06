@@ -1,7 +1,8 @@
 <?= $this->extend('Labs/layouts/principal_laboratorista') ?>
+
 <?= $this->section('content_agregar_laboratorio') ?>
 <!-- Solid Form Controls-->
-<div id="solid" class="container-xl px-4 mt-n10">
+<div id="solid" class="container-xl px-4 mt-n5">
     <div class="card mb-4">
         <div class="card-header">
             <span>Agregar laboratorio</span>
@@ -15,6 +16,7 @@
                     });
                 </script>
                 <?php endif; ?>
+                
             <!-- Component Preview-->
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
@@ -33,17 +35,17 @@
                             'value' => set_value('nombre')
                         ]) ?>
                     </div>
-                    <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre_laboratorio') : '' ?></span>
+                    <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre') : '' ?></span>
                     <!-- Selector carrera -->
                     <div class="mb-3">
                         <?= form_label('Carrera', 'carrera', ['class' => 'form-label']) ?>
                         <?= form_dropdown(
-                            'carrera',
+                            'id_carrera',
                             [''=>'Seleccionar carrera'] + array_column($carrera, 'nombre_carrera', 'id'),
-                            set_value('carrera'),
-                            ['id' => 'carrera', 'class' => 'form-control form-control-solid']
+                            set_value('id_carrera'),
+                            ['id' => 'id_carrera', 'class' => 'form-control form-control-solid']
                         ) ?>
-                    <span class="text-danger"><?= isset($validation) ? $validation->getError('carrera') : '' ?></span>
+                    <span class="text-danger"><?= isset($validation) ? $validation->getError('id_carrera') : '' ?></span>
                     </div>
                     <!-- Botones de Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">

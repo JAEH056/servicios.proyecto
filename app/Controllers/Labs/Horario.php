@@ -2,10 +2,10 @@
 
     namespace App\Controllers\Labs;
 
-    class Prueba extends MyController
+    class Horario extends MyController
     {
         public function iniciando(): string
         {
-            return view('Labs/layouts/semestre');
+            return view('Labs/layouts/horario');
         }
     }

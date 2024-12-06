@@ -1,87 +1,147 @@
 <?php
 
-namespace App\Controllers\Labs;
+    namespace App\Controllers\Labs;
 
-use App\Models\Labs\CarreraModel;
-use \App\Models\Labs\LaboratorioModel;
+    use App\Models\Labs\LaboratorioModel;
+    use App\Models\Labs\CarreraModel;
+    use \CodeIgniter\Controller;
 
-class  Laboratorios extends MyController
-{
-    public function index()
+    class Laboratorios extends Controller
     {
 
-        $model = model(LaboratorioModel::class);
-        $laboratorios = $model->obtenerLaboratorios();
-        $data = [
-            'laboratorios' => $laboratorios,
-        ];
-        return view('Labs/layouts/laboratorio', $data);
-    }
+        protected $model_laboratorio;
+        protected $model_carrera;
 
-    private function reglasValidacion()
-    {
-        return [
-            'nombre_laboratorio' => [
-                'rules' => 'required|max_length[255]|min_length[8]',
-                'errors' => [
-                    'required' => 'El nombre es obligatorio.',
-                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-                    'min_length' => 'El nombre debe tener al menos 8 caracteres.'
-                ],
-            ],
-        ];
-    }
 
-    public function nuevo()
-    {
-        helper('form');
-        $model = model(CarreraModel::class);
-        $carrera=$model->obtenerCarrera();
-        $data = [
-            //'title' => 'Agregar Semestre',
-            'carrera'=>$carrera,
-            'validation' => null,
-            'success' => null, 
-        ];
-        return view('Labs/layouts/agregar_laboratorio', $data);
-    }
-    
-    public function crear(){
-        helper('form');
-        $data = $this->request->getPost(['carrera','laboratorio']);
-        $model = model(CarreraModel::class);
-        $carrera=$model->obtenerCarrera();
+        public function __construct()
+        {
+            $this->model_laboratorio = model(LaboratorioModel::class);
+            $this->model_carrera = model(CarreraModel::class);
+        }
 
-        // Validar las reglas generales
-        if (!$this->validate($this->reglasValidacion())) {
-            return view('Labs/layouts/agregar_laboratorio', [
-               // 'title' => 'Agregar Semestre',
-                'carrera'=>$carrera,
-                'validation' => \Config\Services::validation(),
+
+        public function index()
+        {
+            $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
+
+            $data = [
+                'laboratorios' => $laboratorios,
+            ];
+
+            return view('Labs/layouts/laboratorio', $data);
+        }
+
+
+        public function nuevo()
+        {
+            helper('form');
+            $carrera = $this->model_carrera->obtenerCarrera();
+
+            $data = [
+                'carrera' => $carrera,
+                'validation' => null,
                 'success' => null,
-            ]);
-        }
+            ];
 
-        $model = model(LaboratorioModel::class);
-        $model->save([
-            'id_carrera' => $data['carrera'],
-            'nombre' => $data['laboratorio'],
-            
-        ]);
-
-        
-        return redirect()->to('/laboratorio/nuevo')->with('success', 'Laboratorio agregado con éxito.');
-    }
-
-    public function editar($id){
-        helper('form');
-        $model = model(LaboratorioModel::class);
-        $laboratorio =$model->finf($id);
-        if(!$laboratorio){
-            throw new \CodeIgniter\Exceptions\PageNotFoundException("Laboratorio con ID $id no encontrado."); 
+            return view('Labs/layouts/agregar_laboratorio', $data);
         }
 
 
-        
+        public function crear()
+        {
+            helper('form');
+            $rules = $this->model_laboratorio->reglasValidacion();
+
+            $carrera = $this->model_carrera->obtenerCarrera();
+
+            $data = [
+                'id_carrera' => $this->request->getPost('id_carrera'),
+                'nombre' => $this->request->getPost('nombre'),
+            ];
+
+            if (!$this->validate($rules)) {
+                return view('Labs/layouts/agregar_laboratorio', [
+                    'carrera' => $carrera,
+                    'validation' => $this->validator,
+                    'success' => null,
+                ]);
+            }
+
+            $this->model_laboratorio->insertarLaboratorio($data);
+
+            return redirect()->to('/laboratorio/nuevo')->with('success', 'Laboratorio creado con éxito.');
+        }
+
+        public function editar($id)
+        {
+            helper('form');
+
+            try {
+
+                $laboratorio = $this->model_laboratorio->editarLaboratorio($id);
+                $carreras = $this->model_carrera->obtenerCarrera();
+
+                return view('Labs/layouts/editar_laboratorio', [
+                    'laboratorio' => $laboratorio,
+                    'carrera' => $carreras,
+                    'validation' => null
+                ]);
+            } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+                return redirect()->to('/laboratorio')->with('error', $e->getMessage());
+            }
+        }
+
+
+        public function actualizar($id)
+        {
+            helper('form');
+
+
+            $rules = $this->model_laboratorio->reglasValidacion();
+
+
+            $data = [
+                'id_carrera' => $this->request->getPost('id_carrera'),
+                'nombre' => $this->request->getPost('nombre'),
+            ];
+
+
+            if (!$this->validate($rules)) {
+
+                return view('Labs/layouts/editar_laboratorio', [
+                    'laboratorio' => $this->model_laboratorio->editarLaboratorio($id),
+                    'carrera' => $this->model_carrera->obtenerCarrera(),
+                    'validation' => $this->validator
+                ]);
+            }
+
+            try {
+
+                $this->model_laboratorio->actualizarLaboratorio($id, $data);
+
+                return redirect()->to("/laboratorio/editar/$id")->with('success', 'Laboratorio actualizado con éxito.');
+            } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+                return redirect()->to('/laboratorio')->with('error', $e->getMessage());
+            } catch (\RuntimeException $e) {
+                return redirect()->to("/laboratorio/editar/$id")->with('error', $e->getMessage());
+            } catch (\Exception $e) {
+                return redirect()->to('/laboratorio')->with('error', 'Ocurrió un error inesperado.');
+            }
+        }
+
+
+        public function eliminar($id)
+        {
+            try {
+                $this->model_laboratorio->eliminarLaboratorio($id);
+
+                return redirect()->to('/laboratorio')->with('success', 'Laboratorio eliminado con éxito.');
+            } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+                return redirect()->to('/laboratorio')->with('error', $e->getMessage());
+            } catch (\RuntimeException $e) {
+                return redirect()->to('/laboratorio')->with('error', $e->getMessage());
+            } catch (\Exception $e) {
+                return redirect()->to('/laboratorio')->with('error', 'Ocurrió un error inesperado al intentar eliminar el laboratorio.');
+            }
+        }
     }
-}

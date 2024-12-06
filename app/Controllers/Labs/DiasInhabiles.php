@@ -7,169 +7,127 @@ use App\Models\Labs\TipoDiaInhabilModel;
 
 class DiasInhabiles extends MyController
 {
+    protected $model_diasInhabiles;
+    protected $model_tipoDiaInhabil;
+
+    public function __construct()
+    {
+        $this->model_diasInhabiles = model(DiasInhabilesModel::class);
+        $this->model_tipoDiaInhabil = model(TipoDiaInhabilModel::class);
+    }
+
     public function index()
     {
-        $model = model(DiasInhabilesModel::class);
-       
+        $dias = $this->model_diasInhabiles->obtenerDiasInhabiles();
+
         $data = [
-            $dias = $model->listarDiasInhabiles(),
             'dias' => $dias,
         ];
+
         return view('Labs/layouts/dias_inhabiles', $data);
     }
 
-    private function getValidationRules()
-    {
-        return [
-            'tipo_inhabil' => [
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'El tipo de día inhábil es obligatorio.',
-                    'integer' => 'El tipo de día inhábil debe ser un número válido.'
-                ]
-            ],
-            'nombre' => [
-                'rules' => 'required|max_length[255]|min_length[8]',
-                'errors' => [
-                    'required' => 'El nombre es obligatorio.',
-                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-                    'min_length' => 'El nombre debe tener al menos 8 caracteres.'
-                ]
-            ],
-            'inicio' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'La fecha es obligatoria.',
-                    'valid_date' => 'La fecha no es válida.'
-                ]
-            ],
-            'fin' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'La fecha es obligatoria.',
-                    'valid_date' => 'La fecha no es válida.'
-                ]
-            ]
-        ];
-    }
-
-    public function formularioDias()
+    public function nuevo()
     {
         helper('form');
-        $model = model(TipoDiaInhabilModel::class);
-        $tiposdia = $model->obtenerTiposInhabiles();
+        $tiposdia = $this->model_tipoDiaInhabil->obtenerTiposInhabiles();
+
         $data = [
-            'dias' => $tiposdia,
+            'tiposdia' => $tiposdia,
             'validation' => null,
+            'success' => null,
         ];
+
         return view('Labs/layouts/agregar_dias_inhabiles', $data);
     }
 
-
-    public function crearDiaInhabil()
+    public function crear()
     {
         helper('form');
-        $data = $this->request->getPost(['tipo_inhabil', 'nombre', 'inicio', 'fin']);
-        $rules = $this->getValidationRules();
+        $rules = $this->model_diasInhabiles->reglasValidacion();
+        $tiposdia = $this->model_tipoDiaInhabil->obtenerTiposInhabiles();
+        
+        $data = [
+            'id_tipo_inhabil' => $this->request->getPost('tipo_inhabil'),
+            'descripcion' => $this->request->getPost('nombre'),
+            'inicio' => $this->request->getPost('inicio'),
+            'fin' => $this->request->getPost('fin'),
+        ];
 
         if (!$this->validate($rules)) {
             return view('Labs/layouts/agregar_dias_inhabiles', [
-                'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
-                'validation' => \Config\Services::validation()
+                'tiposdia' => $tiposdia,
+                'validation' => $this->validator,
+                'success' => null,
             ]);
         }
-        $model = model(DiasInhabilesModel::class);
-        if (!$model->save([
-            'id_tipo_inhabil' => $data['tipo_inhabil'],
-            'descripcion' => $data['nombre'],
-            'inicio' => $data['inicio'],
-            'fin' => $data['fin']
-        ])) //{
-        //     return view('Labs/layouts/agregar_dias_inhabiles', [
-        //         'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
-        //         'validation' => $model->errors()
-        //     ]);
-        // }
 
-        return view('Labs/layouts/agregar_dias_inhabiles', [
-            'dias' => model(TipoDiaInhabilModel::class)->obtenerTiposInhabiles(),
-            'validation' => null,
-            'success' => 'Día inhábil agregado correctamente.',
-        ]);
+        $this->model_diasInhabiles->insertarDiaInhabil($data);
+        return redirect()->to('/diasinhabiles/nuevo')->with('success', 'Día inhabil creado con éxito.');
     }
 
     public function editar($id)
     {
         helper('form');
-        $model = model(DiasInhabilesModel::class);
-        $tipoinhabil = model(TipoDiaInhabilModel::class);
-        $tipo_inhabil = $tipoinhabil->findAll();
 
-        $dia = $model->find($id);
-        if (!$dia) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("El registro con ID $id no existe.");
-        }
-        $data = [
-            'dia' => $dia,
-            'tipos' => $tipo_inhabil
-        ];
-
-        print_r($data);
-        return view('Labs/layouts/editar_dias_inhabiles', $data);
-    }
-
-    public function actualizarDiaInhabil($id)
-    {
-        helper('form');
-        $data = $this->request->getPost(['tipo_inhabil', 'nombre', 'inicio', 'fin']);
-        $model = model(DiasInhabilesModel::class);
-        $tipoinhabilModel = model(TipoDiaInhabilModel::class);
-
-
-        $rules = $this->getValidationRules();
-
-        if (!$this->validate($rules)) {
+        try {
+            $diaInhabil = $this->model_diasInhabiles->editarDiaInhabil($id);
+            $tiposdia = $this->model_tipoDiaInhabil->obtenerTiposInhabiles();
 
             return view('Labs/layouts/editar_dias_inhabiles', [
-                'dia' => $model->find($id),
-                'tipos' => $tipoinhabilModel->findAll(),
-                'validation' => \Config\Services::validation()
+                'dia' => $diaInhabil,
+                'tipos' => $tiposdia,
+                'validation' => null
+            ]);
+        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+            return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
+        }
+    }
+
+    public function actualizar($id)
+    {
+        helper('form');
+        
+        $rules = $this->model_diasInhabiles->reglasValidacion();
+        
+        $data = [
+            'id_tipo_inhabil' => $this->request->getPost('tipo_inhabil'),
+            'descripcion' => $this->request->getPost('nombre'),
+            'inicio' => $this->request->getPost('inicio'),
+            'fin' => $this->request->getPost('fin'),
+        ];
+
+        if (!$this->validate($rules)) {
+            return view('Labs/layouts/editar_dias_inhabiles', [
+                'dia' => $this->model_diasInhabiles->editarDiaInhabil($id),
+                'tipos' => $this->model_tipoDiaInhabil->obtenerTiposInhabiles(),
+                'validation' => $this->validator
             ]);
         }
 
-
-        $model = model(DiasInhabilesModel::class);
-        if (!$model->update($id, [
-            'id_tipo_inhabil' => $data['tipo_inhabil'],
-            'descripcion' => $data['nombre'],
-            'inicio' => $data['inicio'],
-            'fin' => $data['fin']
-        ]));
-
-        // return redirect()->to('diasinhabiles')->with('success', 'Registro eliminado correctamente.');
-        return view('diasinhabiles', [
-            'validation' => null,
-            'success' => 'Día inhábil agregado correctamente.',
-        ]);
+        try {
+            $this->model_diasInhabiles->actualizarDiaInhabil($id, $data);
+            return redirect()->to("/diasinhabiles/editar/$id")->with('success', 'Día inhabil actualizado con éxito.');
+        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+            return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
+        } catch (\RuntimeException $e) {
+            return redirect()->to("/diasinhabiles/editar/$id")->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->to('/diasinhabiles')->with('error', 'Ocurrió un error inesperado.');
+        }
     }
 
     public function eliminar($id)
     {
-        $model = model(DiasInhabilesModel::class);
-
-
-        $dia = $model->find($id);
-        if (!$dia) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("El registro con ID $id no existe.");
-        }
-
-
-        if ($model->delete($id)) {
-
-            return redirect()->to('diasinhabiles')->with('success', 'Registro eliminado correctamente.');
-        } else {
-
-            return redirect()->to('diasinhabiles')->with('error', 'No se pudo eliminar el registro.');
+        try {
+            $this->model_diasInhabiles->eliminarDiaInhabil($id);
+            return redirect()->to('/diasinhabiles')->with('success', 'Día inhabil eliminado con éxito.');
+        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
+            return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
+        } catch (\RuntimeException $e) {
+            return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->to('/diasinhabiles')->with('error', 'Ocurrió un error inesperado al intentar eliminar el día inhabil.');
         }
     }
 }

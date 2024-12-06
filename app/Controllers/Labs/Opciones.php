@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controllers\Labs;
+    namespace App\Controllers\Labs;
 
-class Opciones extends MyController
-{
-    public function opciones(): string
+    class Opciones extends MyController
     {
-        return view('Labs/layouts/opciones');
+        public function opciones(): string
+        {
+            return view('Labs/layouts/opciones');
+        }
     }
-}

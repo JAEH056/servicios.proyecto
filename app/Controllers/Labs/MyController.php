@@ -1,8 +1,8 @@
 <?php
-namespace App\Controllers\Labs;
+    namespace App\Controllers\Labs;
 
-use App\Controllers\BaseController;
+    use App\Controllers\BaseController;
 
-class MyController extends BaseController { 
+    class MyController extends BaseController { 
 
-}
+    }

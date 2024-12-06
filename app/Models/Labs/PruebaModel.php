@@ -1,17 +1,17 @@
 <?php
-namespace App\Models\Labs;
+    namespace App\Models\Labs;
 
 
-class PruebaModel extends UserModel{
+    class PruebaModel extends UserModel{
 
-    protected $table      = '';
-    protected $primaryKey = '';
+        protected $table      = '';
+        protected $primaryKey = '';
 
-    protected $useAutoIncrement = true;
+        protected $useAutoIncrement = true;
 
-    protected $returnType     = 'array';
-    protected $useSoftDeletes = true;
+        protected $returnType     = 'array';
+        protected $useSoftDeletes = true;
 
-    protected $allowedFields = [''];
+        protected $allowedFields = [''];
 
-}
+    }
