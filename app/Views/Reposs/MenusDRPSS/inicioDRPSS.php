@@ -5,7 +5,7 @@
  */
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -25,30 +25,29 @@
     <?= $this->include('Reposs/Plantilla/mainTopnav'); ?>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
-            <?= $this->include('Reposs/Plantilla/mainSidenav') ?>
+            <?= $this->include('Reposs/Plantilla/mainSidenavDRPSS') ?>
         </div>
         <!-- Contenido Principal -->
         <div id="layoutSidenav_content">
             <main>
-                <?= $this->include('Reposs/Plantilla/mainHeader'); ?>
                 <!-- Main page content-->
-                <!-- Contenido de alerta
-                     <div class="container-xl px-4 mt-n10">
+                <div class="container-xl px-4 mt-n10">
+                    <!-- Contenido de alerta 
                     <div class="card mb-4">
                         <div class="card-header">Alerta</div>
                         <div class="card-body">
                             Contenido principal
                         </div>
                     </div>
-                    </div>-->
-                <!-- Se incluye seccion principal seccion -->
-                <?= $this->renderSection('contenido'); ?>
+                    -->
+                </div>
             </main>
+            <!-- Se incluye nueva seccion -->
+             <?= $this->renderSection('contenido'); ?>
             <?= $this->include('Reposs/Plantilla/mainFooter'); ?>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="<?= base_url('resources/js/scripts.js') ?>"></script>
 </body>
-
 </html>

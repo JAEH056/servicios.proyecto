@@ -23,14 +23,3 @@ $routes->get('/oauth/login',                [OAuthController::class, 'login']); 
 $routes->get('/oauth/microsoft/callback',   [OAuthController::class, 'callback']);   // Step 2
 $routes->get('/dashboard',                  [OAuthController::class, 'dashboard']);  // Step 3, este debe colocarse en ontro Controller.
 $routes->get('/logout',                     [OAuthController::class, 'logout']);     // Step 4
-
-// Rutas administrador de roles y permisos con acceso solo para roles con permisos de root
-$routes->group('admin', ['filter' => 'rbac:root'], function ($routes) {
-    $routes->get('/',                            [AdminController::class, 'index']);
-    $routes->post('/createRole',                 [AdminController::class, 'createRole']);
-    $routes->post('/deleteRole',                 [AdminController::class, 'deleteRole']);
-    $routes->post('/createPermission',           [AdminController::class, 'createPermission']);
-    $routes->post('/assignPermissionToRole',     [AdminController::class, 'assignPermissionToRole']);
-    $routes->post('/assignRoleToUser',           [AdminController::class, 'assignRoleToUser']);
-    $routes->post('/deleteRolePermission',       [AdminController::class, 'deleteRolePermission']);
-});

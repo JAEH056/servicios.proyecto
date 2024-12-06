@@ -54,7 +54,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'root',
         'password'     => '1234',
-        'database'     => 'residencias',
+        'database'     => 'reposs',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,

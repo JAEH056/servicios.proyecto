@@ -7,7 +7,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class InicioResidente extends BaseController
 {
-    public function index(): string
+    public function index()
     {
         // Ensure the user is logged in
         if (!session()->has('name')) {

@@ -19,30 +19,34 @@
                 <span class="badge bg-success-soft text-success ms-auto">2 New!</span>
             </a>
             <!-- Sidenav Heading (Custom)-->
-            <div class="sidenav-menu-heading">Informacion General</div>
+            <div class="sidenav-menu-heading">Residencias Profesionales</div>
             <!-- Sidenav Accordion (Pages)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDocs" aria-expanded="false" aria-controls="collapsePages">
                 <div class="nav-link-icon"><i data-feather="file"></i></div>
-                Documentacion
+                Residentes
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseDocs" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('usuario/residentes/documentos') ?>">Subir documentos</a>
-                    <a class="nav-link" href="invoice.html">Estado de entrega</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Revision de Documentos</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Lista de Residentes</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePages">
                 <div class="nav-link-icon"><i data-feather="user"></i></div>
-                Informacion Personal
+                Lista de Proyectos
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapsePersonal" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('/usuario/residentes/datos') ?>">Mis Datos</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Proyectos</a>
+                </nav>
+                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+                    <!-- Nested Sidenav Accordion (Pages -> Account)-->
+                    <a class="nav-link" href="<?= base_url('') ?>">Asesores</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->

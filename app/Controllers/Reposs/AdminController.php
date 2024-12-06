@@ -4,8 +4,9 @@ namespace App\Controllers\Reposs;
 
 use App\Controllers\BaseController;
 use App\Models\Roles\RolePermissionsModel;
-use App\Models\Roles\RolesModel;
 use App\Models\Roles\PermissionsModel;
+use App\Models\Roles\UserRolesModel;
+use App\Models\Roles\RolesModel;
 
 class AdminController extends BaseController
 {
@@ -22,11 +23,13 @@ class AdminController extends BaseController
     {
         // Se cargan los modelos de los roles, permisos y asignaciones de permisos
         $roleModel = new RolesModel();
+        $userRoles = new UserRolesModel();
         $permissionModel = new PermissionsModel();
         $rolePermissionModel = new RolePermissionsModel();
 
         // Se obtiene la consulta de cada uno de los modelos con su respectiva funcion
         $roles['roles'] = $roleModel->getRoles();
+        $userRoles = $userRoles->getUserNRoles();
         $permissions['permissions'] = $permissionModel->getPermissions();
         $rolePermissions['rolePermissions'] = $rolePermissionModel->getRolePermissions();
 
@@ -37,7 +40,7 @@ class AdminController extends BaseController
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token');
-        return view('Reposs/adminPage', ['roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions'], 'user' => $user, 'token' => $token, 'userId' => $userId]);
+        return view('Reposs/adminPage', ['roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions'], 'userRoles' => $userRoles, 'user' => $user, 'token' => $token, 'userId' => $userId]);
     }
 
     // Crear un rol

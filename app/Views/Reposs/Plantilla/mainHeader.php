@@ -5,11 +5,11 @@
                 <div class="col-auto mt-4">
                     <h1 class="page-header-title">
                         <!--<div class="page-header-icon"><i data-feather="file"></i></div>-->
-                        Panel de Administración
+                        Residencias Profesionales
                     </h1>
-                    <div class="page-header-subtitle">Panel principal para la creacion y asignacion de roles y permisos.</div>
+                    <div class="page-header-subtitle">Panel principal residentes.</div>
                 </div>
-                <div class="col-12 col-xl-auto mt-4">Optional page header content</div>
+                <div class="col-12 col-xl-auto mt-4">Direccion opcional</div>
             </div>
         </div>
     </div>

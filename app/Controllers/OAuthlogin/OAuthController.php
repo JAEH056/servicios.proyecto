@@ -4,7 +4,7 @@ namespace App\Controllers\OAuthlogin;
 
 use CodeIgniter\Controller;
 use League\OAuth2\Client\Provider\GenericProvider;
-use App\Models\Reposs\PuestoModel;
+use App\Models\Reposs\UserModel;
 use App\Models\Roles\UserRolesModel;
 use Config\OAuth;
 
@@ -74,7 +74,7 @@ class OAuthController extends Controller
             $surname = $userData['surname'];
 
             // Se instancia el modelo
-            $puestoModel = new PuestoModel();
+            $userModel = new UserModel();
             $userRolesModel = new UserRolesModel();
             $rbac = service('rbac');
 
@@ -86,15 +86,15 @@ class OAuthController extends Controller
             ];
 
             // Verificar si el correo ya existe en la base de datos
-            $existingRecord = $puestoModel->findByCorreo($userPrincipalName);
+            $existingRecord = $userModel->findByCorreo($userPrincipalName);
 
-            if ($existingRecord) {
+            if (!$existingRecord) {
+                // Si no existe el registro, crear un nuevo usuario y se le asigna un rol por defecto
+                $this->assignNewUserRole($userModel, $data);
+            } else {
                 // El registro ya existe, manejar la situación (por ejemplo, mostrar un mensaje)
                 echo "El correo ya está registrado.";
-                $this->assignExistingUserRole($puestoModel, $userRolesModel, $rbac, $data['correo']);
-            } else {
-                // Si no existe el registro, crear un nuevo usuario y se le asigna un rol por defecto
-                $this->assignNewUserRole($puestoModel, $data);
+                $this->assignExistingUserRole($userModel, $userRolesModel, $rbac, $data['correo']);
             }
             // Store the access token and user information in session or database
             // Guarda el token de acceso y la informacion de usuario en la sesion o base de datos
@@ -108,7 +108,7 @@ class OAuthController extends Controller
         } catch (\Exception $e) {
             //exit('Error fetching the access token: ' . $e->getMessage());
             log_message('error', 'Error fetching the access token: ' . $e->getMessage());
-            return redirect()->to('/error')->with('message', 'There was an error with the authentication process.');
+            return redirect()->to('/dashboard')->with('auth_message', 'There was an error with the authentication process.');
         }
     }
 
@@ -131,57 +131,74 @@ class OAuthController extends Controller
     // Step 4: Cierra sesion y limpia la sesion
     public function logout()
     {
+        session()->set('logged_in', FALSE);
+        session()->remove('idusuario');
         session()->remove('name');
         session()->remove('access_token');
         return redirect()->to(base_url('/'));
     }
 
     // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
-    private function assignExistingUserRole(PuestoModel $puestoModel, UserRolesModel $userRolesModel, $rbac, string $correo)
+    private function assignExistingUserRole(UserModel $userModel, UserRolesModel $userRolesModel, $rbac, string $correo)
     {
         // Obtener el ID del usuario basado en el correo
-        $idUsuario = $puestoModel->select('idusuario')->where('correo', $correo)->first();
+        $idUsuario = $userModel->select('idusuario')->where('correo', $correo)->first();
         if ($idUsuario) {
-            // Obtener el rol del usuario
-            $role = $userRolesModel->select('RoleID')->where('UserID', $idUsuario['idusuario'])->first();
-            if (!$role) {
-                // Asignar rol por defecto si no se encuentran roles
-                $userRoleId = $rbac->Roles->titleID('Usuario');
-                $rbac->Users->assign($userRoleId, $idUsuario['idusuario']);
-                session()->set('idusuario', $idUsuario['idusuario']);
+            // Verificar si el usuario tiene roles
+            $userRoles = $userRolesModel->getUserRolesById($idUsuario['idusuario']);
+            //$result = $rbac->Users->roleCount($idUsuario);
+
+            if (!$userRoles) {  // Si no tiene roles, se le asigna el rol de usuario
+                try {
+                    // Obtener el ID del rol de 'Usuario'
+                    $roleId = $rbac->Roles->titleID('Usuario');
+                    // Asignar rol por defecto
+                    $rbac->Users->assign($roleId, $idUsuario['idusuario']);
+                    // Establecer el ID de usuario en la sesión
+                    session()->set('idusuario', $idUsuario['idusuario']);
+                    // Mensaje de éxito
+                    session()->setFlashdata('notification', 'Rol asignado con éxito al usuario: ' . $correo);
+                } catch (\Exception $e) {
+                    session()->setFlashdata('error', 'Hubo un error al asignar el rol al usuario.');
+                    log_message('error', 'Error al asignar rol: ' . $e->getMessage());
+                    return redirect()->to('/error')->with('message', 'There was an error with assing role');
+                }
             } else {
+                // Si el usuario ya tiene roles asignados
                 session()->set('idusuario', $idUsuario['idusuario']);
-                echo "El correo ya está registrado.";
+                session()->setFlashdata('info', 'El correo ya está registrado y tiene roles asignados.');
             }
         } else {
-            echo "No se encontró el usuario con el correo proporcionado.";
+            // Si no se encuentra el usuario con el correo proporcionado
+            session()->setFlashdata('error', 'No se encontró el usuario con el correo proporcionado.');
         }
     }
 
     // Metodo para asignar roles a nuevos usuarios
-    private function assignNewUserRole(PuestoModel $puestoModel, array $data)
+    private function assignNewUserRole(UserModel $userModel, array $data)
     {
-        $rbac = service('rbac');
+        $userRoles = new UserRolesModel();
         // Extract the domain from the email
         $emailParts = explode('@', $data['correo']);
         $domain = strtolower($emailParts[1]);
+        // Dominos permitidos
         $organizationDomain = [
-            'altlos56.onmicrosoft.com' => 'employee',
+            'atlos56.onmicrosoft.com' => 'employee',
             'external.com' => 'external'
         ];
-        // Si el correo es un ESTUDIANTE se le asigna el rol de Usuario
-        if ($domain == $organizationDomain['altlos56.onmicrosoft.com']) {
-            $puestoModel->insertData($data); /// 1.- Se insertan los datos de ESTUDIANTE NUEVO en la BD
-            $idUsuario = $puestoModel->insertID(); /// 2.- Se obtiene el ID del ESTUDIANTE insertado
-            $rbac->Users->assign('Usuario', $idUsuario['idusuario']); /// 3.- Se asigna el de usuario a estudiante
-        } else {
-            // Inserta los datos y obtiene el ID del nuevo registro
-            $puestoModel->insertData($data);
-            $idUsuario = $puestoModel->insertID();
-            // Asignar rol por defecto e caso de ser externo
-            $rbac->Users->assign('Candidato', $idUsuario['idusuario']);
+        // Verifica el dominio y asigna el rol correspondiente
+        if (isset($organizationDomain[$domain])) {
+            $userModel->insertData($data); /// 1.- Se insertan los datos de ESTUDIANTE NUEVO en la BD
+            $idUsuario = $userModel->insertID(); /// 2.- Se obtiene el ID del ESTUDIANTE insertado
+            // Si el correo es un ESTUDIANTE se le asigna el rol de Usuario
+            if ($domain == 'atlos56.onmicrosoft.com') {
+                $userRoles->setRoleToUser(2, $idUsuario); /// Rol 2: Estudiante
+            } else {
+                // Asignar rol por defecto en caso de ser externo
+                $userRoles->setRoleToUser(1, $idUsuario); /// Rol 1: Externo
+            }
+            session()->set('idusuario', $idUsuario['idusuario']); /// 3.- Se almacena el ID del usuario en la sesion
         }
-
         // Set flash data message with inserted data
         session()->setFlashdata('notification', 'User  added: ' . $data['nombre'] . ' ' . $data['apellido1'] . ' (' . $data['correo'] . ')');
     }

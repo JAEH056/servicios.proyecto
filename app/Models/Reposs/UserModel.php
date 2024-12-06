@@ -1,6 +1,5 @@
 <?php
 
-// app/Models/UserModel.php
 namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
@@ -8,45 +7,27 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $DBGroup = "residentes"; // database group
-    protected $table = 'residente';  // Nombre de la tabla
+    protected $table = 'usuario';  // Nombre de la tabla
     protected $primaryKey = 'idusuario'; // Clave primaria de la tabla
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = [
-        'idusuario',
-        'correo',
-        'nombre',
-        'apellido1',
-        'apellido2'
-    ];
+    protected $allowedFields = ['idusuario','correo', 'nombre', 'apellido1', 'apellido2']; // Campos que se pueden insertar
 
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Validation
-    protected $validationRules = [];
-    protected $validationMessages = [];
-    protected $skipValidation = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert = [];
-    protected $afterInsert = [];
-    protected $beforeUpdate = [];
-    protected $afterUpdate = [];
-    protected $beforeFind = [];
-    protected $afterFind = [];
-    protected $beforeDelete = [];
-    protected $afterDelete = [];
-
-    // Obtiene un usuario por su nombre de usuario y contraseña
-    public function getUserId($idusuario)
-    {
-        return $this->where('idusuario', $idusuario)->first();
+    // Otros métodos que puedas necesitar, por ejemplo, validaciones.
+    public function insertData($data) {
+        // Your existing insert logic
+        return $this->insert($data);
+    }
+    public function findByCorreo($correo) {
+        // Use the getWhere method to find a record by the 'correo' field
+        return $this->where('correo', $correo)->first();
+    }
+    public function getPuestoCorreo($field,$correo){
+        // Busca el puesto del usuario usando su correo y retorna un arreglo ()
+        $builder = $this->builder();
+        $builder = $this->select('idusuario')->where( $field,$correo['correo']);           
+        return  $builder->getRowArray();
     }
 }

@@ -1,3 +1,9 @@
+<?php
+
+/**
+ * @var CodeIgniter\View\View $this
+ */
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,7 +53,8 @@
                     <div class="card mb-4">
                         <div class="card-header">Gestión de Roles</div>
                         <div class="card-body">
-                            <form method="post" action="/admin/createRole">
+                            <form method="post" action="<?=base_url('admin/createRole')?>">
+                                <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="role_name" class="form-label">Nombre del Rol</label>
                                     <input type="text" class="form-control" id="role_name" name="role_name" required>
@@ -64,7 +71,8 @@
                     <div class="card mb-4">
                         <div class="card-header">Gestión de Permisos</div>
                         <div class="card-body">
-                            <form method="post" action="/admin/createPermission">
+                            <form method="post" action="<?=base_url('/admin/createPermission')?>">
+                                <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="permission_name" class="form-label">Nombre del Permiso</label>
                                     <input type="text" class="form-control" id="permission_name" name="permission_name" required>
@@ -100,7 +108,8 @@
                     <div class="card mb-4">
                         <div class="card-header">Asignar Permisos a Roles</div>
                         <div class="card-body">
-                            <form method="post" action="/admin/assignPermissionToRole">
+                            <form method="post" action="<?=base_url('/admin/assignPermissionToRole')?>">
+                                <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="role_id" class="form-label">Selecciona un Rol</label>
                                     <select class="form-control" id="role_id" name="role_id">
