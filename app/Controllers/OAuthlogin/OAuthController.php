@@ -68,34 +68,6 @@ class OAuthController extends Controller
             // Se guarda la informacion del usuario (Perfil de Microsoft Entra ID)
             $userData = $resourceOwner->toArray();  // Array containing user info
 
-            //Se extrae el nombre del usuario y correo
-            $userPrincipalName = $userData['userPrincipalName'];
-            $givenName = $userData['givenName'];
-            $surname = $userData['surname'];
-
-            // Se instancia el modelo
-            $userModel = new UserModel();
-            $userRolesModel = new UserRolesModel();
-            $rbac = service('rbac');
-
-            // Se crea un arreglo con la informacion del usuario
-            $data = [
-                'correo' => $userPrincipalName,
-                'nombre' => $givenName,
-                'apellido1' => $surname
-            ];
-
-            // Verificar si el correo ya existe en la base de datos
-            $existingRecord = $userModel->findByCorreo($userPrincipalName);
-
-            if (!$existingRecord) {
-                // Si no existe el registro, crear un nuevo usuario y se le asigna un rol por defecto
-                $this->assignNewUserRole($userModel, $data);
-            } else {
-                // El registro ya existe, manejar la situación (por ejemplo, mostrar un mensaje)
-                echo "El correo ya está registrado.";
-                $this->assignExistingUserRole($userModel, $userRolesModel, $rbac, $data['correo']);
-            }
             // Store the access token and user information in session or database
             // Guarda el token de acceso y la informacion de usuario en la sesion o base de datos
             session()->set('logged_in', TRUE);

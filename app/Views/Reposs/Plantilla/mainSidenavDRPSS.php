@@ -30,61 +30,63 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?= base_url('') ?>">Revision de Documentos</a>
-                    <a class="nav-link" href="<?= base_url('') ?>">Lista de Residentes</a>
+                    <a class="nav-link" href="<?= base_url('usuario/drpss/residentes') ?>">Lista de Residentes</a>
+                    <a class="nav-link" href="<?= base_url('usuario/drpss/nuevo') ?>">Nuevo Residente</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Liberaciones</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePages">
-                <div class="nav-link-icon"><i data-feather="user"></i></div>
-                Lista de Proyectos
+                <div class="nav-link-icon"><i data-feather="grid"></i></div>
+                Proyectos
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapsePersonal" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('') ?>">Proyectos</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Lista Proyectos</a>
                 </nav>
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('') ?>">Asesores</a>
+                    <a class="nav-link" href="<?= base_url('') ?>">Banco Proyectos</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseEmpress" aria-expanded="false" aria-controls="collapsePages">
-                <div class="nav-link-icon"><i data-feather="briefcase"></i></div>
-                Empresa
+                <div class="nav-link-icon"><i data-feather="users"></i></div>
+                Asesores
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseEmpress" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?=base_url('usuario/residentes/empresa')?>">Informacion de Empresa</a>
-                    <a class="nav-link" href="invoice.html">Asesor Externo</a>
+                    <a class="nav-link" href="<?=base_url('usuario/drpss/asesor')?>">Lista de Asesores</a>
+                    <a class="nav-link" href="<?=base_url('')?>">Asesor Interno</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Applications)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseProject" aria-expanded="false" aria-controls="collapseApps">
-                <div class="nav-link-icon"><i data-feather="grid"></i></div>
-                Proyecto
+                <div class="nav-link-icon"><i data-feather="briefcase"></i></div>
+                Empresa
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseProject" data-bs-parent="#accordionSidenav">
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?=base_url('usuario/residentes/proyecto')?>">Informacion del Proyecto</a>
-                    <a class="nav-link" href="<?=base_url('usuario/residentes/empresa')?>">Asesor Interno</a>
+                    <a class="nav-link" href="<?=base_url('usuario/drpss/empresa')?>">Lista de Empresas</a>
+                    <a class="nav-link" href="<?=base_url('')?>">Banco Empresas</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Flows)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
                 <div class="nav-link-icon"><i data-feather="file-text"></i></div>
-                Formatos y Requisitos
+                Formatos
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <a class="nav-link" href="multi-tenant-select.html">Formatos Disponibles</a>
-                    <a class="nav-link" href="wizard.html">Requisitos RP</a>
+                    <a class="nav-link" href="multi-tenant-select.html">Lista de Formatos</a>
+                    <a class="nav-link" href="wizard.html">Documentos Disponibles</a>
                 </nav>
             </div>
         </div>

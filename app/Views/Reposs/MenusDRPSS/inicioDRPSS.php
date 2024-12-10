@@ -22,7 +22,7 @@
 
 <body class="nav-fixed">
     <!--Se incluye el Top nav principal-->
-    <?= $this->include('Reposs/Plantilla/mainTopnav'); ?>
+    <?= $this->include('Reposs/Plantilla/mainTopnavDRPSS'); ?>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <?= $this->include('Reposs/Plantilla/mainSidenavDRPSS') ?>

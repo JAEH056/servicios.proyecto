@@ -5,15 +5,17 @@
  */
 ?>
 <!-- obtiene el contenido de la plantilla de la ruta especificada -->
-<?= $this->extend('Reposs/MenusResidente/inicioResidente'); ?>
+<?= $this->extend('Reposs/MenusDRPSS/inicioDRPSS'); ?>
+
+<?= $this->section('contenido') ?>
 <main>
+    <?= $this->include('Reposs/Plantilla/mainHeaderDRPSS'); ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n10">
         <div class="card">
             <div class="card-body">
                 <div class="tab-content" id="cardTabContent">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <?= $this->section('contenido') ?>
                         <!-- Mensajes de error -->
                         <?php if (session()->getFlashdata('message')): ?>
                             <div class="alert alert-success">
@@ -56,7 +58,7 @@
                                 </div>
                             </a>
                             <!-- Knowledge base main category card 3-->
-                            <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/residentes/proyecto') ?>">
+                            <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/') ?>">
                                 <div class="row g-0">
                                     <div class="col-auto card-icon-aside bg-teal"><i class="text-white-50" data-feather="grid"></i></div>
                                     <div class="col">

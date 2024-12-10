@@ -4,35 +4,24 @@ namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
 
-class EmpresaModel extends Model
+class ProyectoModel extends Model
 {
     protected $DBGroup          = "residentes"; // database group
-    protected $table            = 'empresa';
-    protected $primaryKey       = 'idempresa';
+    protected $table            = 'proyecto';
+    protected $primaryKey       = 'idproyecto';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'idproyecto', 
+        'nombre_proyecto', 
+        'banco_proyecto', 
+        'idresidente', 
         'idempresa', 
-        'nombre_empresa', 
-        'mision', 
-        'puesto_titular', 
-        'grado_titular', 
-        'nombre_titular', 
-        'apellido1_titular', 
-        'apellido2_titular', 
-        'colonia', 
-        'ciudad', 
-        'codigo_postal', 
-        'telefono', 
-        'celular', 
-        'correo', 
-        'RFC', 
-        'idramo', 
-        'idsector', 
-        'idasesor_externo', 
-        'fecha_creacion'
+        'idasesor_interno', 
+        'fecha_inicio', 
+        'fecha_fin'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -42,9 +31,11 @@ class EmpresaModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'fecha_creacion';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules      = [];

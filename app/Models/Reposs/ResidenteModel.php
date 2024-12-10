@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class ResidenteModel extends Model
 {
-    protected $DBGroup = "residentes"; // database group
+    protected $DBGroup          = "residentes"; // database group
     protected $table            = 'residente';
     protected $primaryKey       = 'idresidente';
     protected $useAutoIncrement = true;
@@ -15,7 +15,6 @@ class ResidenteModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'idprograma_educativo',
-        'idpuesto',
         'numero_control',
         'nombre', 
         'apellido1', 

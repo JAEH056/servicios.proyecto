@@ -6,14 +6,14 @@ use CodeIgniter\Model;
 
 class LoginUserModel extends Model
 {
-    protected $DBGroup = "residentes"; // database group
-    protected $table = 'usuario';  // Nombre de la tabla
-    protected $primaryKey = 'idusuario'; // Clave primaria de la tabla
+    protected $DBGroup          = "residentes"; // database group
+    protected $table            = 'usuario';  // Nombre de la tabla
+    protected $primaryKey       = 'idusuario'; // Clave primaria de la tabla
     protected $useAutoIncrement = true;
-    protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $protectFields = true;
-    protected $allowedFields = ['correo', 'nombre', 'apellido1', 'apellido2']; // Campos que se pueden insertar
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = ['correo', 'nombre', 'apellido1', 'apellido2']; // Campos que se pueden insertar
 
     // Otros métodos que puedas necesitar, por ejemplo, validaciones.
     public function insertData($data) {

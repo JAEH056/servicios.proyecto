@@ -4,36 +4,16 @@ namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
 
-class EmpresaModel extends Model
+class DocumentoModel extends Model
 {
     protected $DBGroup          = "residentes"; // database group
-    protected $table            = 'empresa';
-    protected $primaryKey       = 'idempresa';
+    protected $table            = 'documento';
+    protected $primaryKey       = 'iddocumento';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [
-        'idempresa', 
-        'nombre_empresa', 
-        'mision', 
-        'puesto_titular', 
-        'grado_titular', 
-        'nombre_titular', 
-        'apellido1_titular', 
-        'apellido2_titular', 
-        'colonia', 
-        'ciudad', 
-        'codigo_postal', 
-        'telefono', 
-        'celular', 
-        'correo', 
-        'RFC', 
-        'idramo', 
-        'idsector', 
-        'idasesor_externo', 
-        'fecha_creacion'
-    ];
+    protected $allowedFields    = ['iddocumento', 'archivo', 'idtipo'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -44,7 +24,7 @@ class EmpresaModel extends Model
     // Dates
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'fecha_creacion';
+    protected $createdField  = 'fecha_entrega';
 
     // Validation
     protected $validationRules      = [];

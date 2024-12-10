@@ -5,7 +5,7 @@
     <!-- * * Tip * * You can use text or an image for your navbar brand.-->
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
-    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="<?=base_url('usuario/residentes/home')?>">Menú Principal</a>
+    <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="<?=base_url('usuario/drpss/home')?>">Menú Principal</a>
     <!-- Navbar Search Input-->
     <!-- * * Note: * * Visible only on and above the lg breakpoint-->
     <form class="form-inline me-auto d-none d-lg-block me-3">
@@ -31,7 +31,7 @@
                     </div>
                 </a>
                 <div class="dropdown-divider m-0"></div>
-                <a class="dropdown-item py-3" href="<?=base_url('/usuario/drpss/nuevo')?>" target="_blank">
+                <a class="dropdown-item py-3" href="<?=base_url('/usuario/drpss/home')?>" target="_blank">
                     <div class="icon-stack bg-primary-soft text-primary me-4"><i data-feather="code"></i></div>
                     <div>
                         <div class="small text-gray-500">Departamento Residencias</div>

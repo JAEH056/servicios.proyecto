@@ -7,14 +7,14 @@ use CodeIgniter\Model;
 
 class OptionModel extends Model
 {
-    protected $DBGroup = "residentes"; // database group
-    protected $table = 'residente';  // Nombre de la tabla
-    protected $primaryKey = 'idusuario'; // Clave primaria de la tabla
+    protected $DBGroup          = "residentes"; // database group
+    protected $table            = 'residente';  // Nombre de la tabla
+    protected $primaryKey       = 'idusuario'; // Clave primaria de la tabla
     protected $useAutoIncrement = true;
-    protected $returnType = 'array';
-    protected $useSoftDeletes = false;
-    protected $protectFields = true;
-    protected $allowedFields = [
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = [
         'idusuario',
         'correo',
         'nombre',

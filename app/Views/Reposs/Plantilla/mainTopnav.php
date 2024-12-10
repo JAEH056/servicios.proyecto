@@ -31,7 +31,7 @@
                     </div>
                 </a>
                 <div class="dropdown-divider m-0"></div>
-                <a class="dropdown-item py-3" href="<?=base_url('/usuario/drpss/nuevo')?>" target="_blank">
+                <a class="dropdown-item py-3" href="<?=base_url('/usuario/drpss/home')?>" target="_blank">
                     <div class="icon-stack bg-primary-soft text-primary me-4"><i data-feather="code"></i></div>
                     <div>
                         <div class="small text-gray-500">Departamento Residencias</div>

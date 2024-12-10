@@ -44,26 +44,25 @@
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (username)-->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="nombre_empresa">Nombre de empresa</label>
-                                            <input class="form-control" id="nombre_empresa" type="text" placeholder="Ingresa el nombre de la empresa" value="" />
+                                            <label class="small mb-1" for="nombre_empresa">Nombre del Proyecto</label>
+                                            <input class="form-control" id="nombre_empresa" type="text" placeholder="Ingresa el nombre del proyecto" value="" />
                                         </div>
-                                        <!-- Form Group (first name)-->
-                                        <div class="mb-3">
-                                            <label class="small mb-1" for="mision">Misión</label>
-                                            <input class="form-control" id="mision" type="text" placeholder="Mision de la empresa" value="" />
+                                        <!-- Menu seleccion opcion (propia o banco) -->
+                                        <div class="col-md-6">
+                                            <label class="small mb-1" name="seguroSocial" for="seguroSocial">Opción elegida</label>
+                                            <select class="form-control" id="seguroSocial" name="seguroSocial">
+                                                <option>Propuesta Propia</option>
+                                                <option>Banco de Proyectos</option>
+                                            </select>
                                         </div>
-                                        <!-- Form Group (first name)-->
-                                        <div class="mb-3">
-                                            <label class="small mb-1" for="RFC">RFC Empresa</label>
-                                            <input class="form-control" id="RFC" type="text" placeholder="RFC de la empresa" value="" />
-                                        </div>
-                                    </div>
-                                    <div class="row gx-3 mb-3">
                                         <!-- Form Group (last name)-->
-                                        <div class="mb-3">
+                                        <div class="col-md-6">
                                             <label class="small mb-1" for="puesto_titular">Puesto Titular</label>
                                             <input class="form-control" id="puesto_titular" type="text" placeholder="Ingresa el puesto de Titular" value="" />
                                         </div>
+                                    </div>
+                                    <div class="row gx-3 mb-3">
+                                        
                                         <!-- Form Group (last name)-->
                                         <div class="col-md-3">
                                             <label class="small mb-1" for="nombre_titular">Grado Académico</label>
@@ -154,7 +153,7 @@
                                 <tbody>
                                     <tr>
                                         <td><i data-feather="file-text"></i>Solicitud de Residencias</td>
-                                        <td>Completar <a href="<?= base_url('usuario/residentes/datos')?>">actualizar informacion personal</a> e información de la <a href="<?= base_url('usuario/residentes/empresa')?>">empresa y asesor externo</a>.</td>
+                                        <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a> e información de la <a href="<?= base_url('usuario/residentes/empresa') ?>">empresa y asesor externo</a>.</td>
                                         <td><button class="btn btn-primary">Descargar</button></td>
                                     </tr>
                                 </tbody>
