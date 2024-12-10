@@ -9,7 +9,9 @@
         protected $table      = 'laboratorio';
         protected $primaryKey = 'id';
         protected $useAutoIncrement = true;
-        protected $returnType     = \App\Entities\Labs\Laboratorio::class;
+        protected $returnType     = 'array';
+        //\App\Entities\Labs\Laboratorio::class;
+
         protected $useSoftDeletes = false;
         protected $allowedFields = ['id_carrera', 'nombre'];
 

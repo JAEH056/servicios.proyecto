@@ -1,12 +1,13 @@
 <?php
 
+use App\Controllers\Home;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\OAuthlogin\OAuthController;
 
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->get('/', [Home::class,'index']);
 
 //rutas de acceso codeigniter shield
 //service('auth')->routes($routes);

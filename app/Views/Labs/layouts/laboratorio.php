@@ -16,7 +16,6 @@
                 </button>
             </div>
             <div class="card-body">
-                <?php if (!empty($laboratorios)): ?> 
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
@@ -28,6 +27,7 @@
                     </thead>
                     <tbody>
                         <!-- Mostrar laboratorios -->
+                        <?php if(!empty($laboratorios)): ?>
                         <?php foreach ($laboratorios as $datos_laboratorios): ?>
                         <tr>
                             <td><?= esc($datos_laboratorios['carrera_nombre']) ?></td>
@@ -46,11 +46,13 @@
                             </td>
                         </tr>
                         <?php endforeach; ?>
+                        <?php else: ?> 
+                        <tr>
+                            <td colspan="6" class="text-center">No hay días inhábiles registrados.</td>
+                        </tr>
+                    <?php endif; ?> 
                     </tbody>
                 </table>
-                <?php else: ?> 
-                    <p>No hay laboratorios disponibles.</p>
-                <?php endif; ?> 
             </div>
         </div>
     </div>

@@ -50,10 +50,6 @@
                             </td>
                         </tr>
                         <?php endforeach; ?>
-                    <?php else: ?> 
-                        <tr>
-                            <td colspan="6" class="text-center">No hay días inhábiles registrados.</td>
-                        </tr>
                     <?php endif; ?> 
                     </tbody>
                 </table>

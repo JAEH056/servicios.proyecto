@@ -28,6 +28,7 @@
                 'laboratorios' => $laboratorios,
             ];
 
+            print_r($data);
             return view('Labs/layouts/laboratorio', $data);
         }
 

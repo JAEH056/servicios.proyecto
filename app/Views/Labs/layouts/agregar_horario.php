@@ -20,37 +20,29 @@
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
                     <!-- Abrir formulario con Form Helper -->
-                    <?= form_open('semestre/crear', ['id' => 'form-semestre']) ?>
+                    <?= form_open('horario/crear', ['id' => 'form-horario']) ?>
                     <?= csrf_field() ?>
                     <!-- Selector semestre -->
                     <div class="mb-3">
                         <?= form_label('Semestre', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_dropdown(
-                            'nombre',
-                            [
-                                        ''=> 'Seleccionar semestre',
-                                        // '1' => 'Activo',
-                                        // '0' => 'Inactivo'
-                                    ],
-                            set_value('semestre' ?? ''),
+                            'id_semestre',
+                            [''=> 'Seleccionar semestre'] + array_column($semestre, 'nombre', 'id'),
+                            set_value('id_semestre'),
                             ['id' => 'semestre', 'class' => 'form-control form-control-solid']
                         ) ?>
-                        <span class="text-danger"><?= isset($validation) ? $validation->getError('semestre') : '' ?></span>
+                        <span class="text-danger"><?= isset($validation) ? $validation->getError('id_semestre') : '' ?></span>
                     </div>
                     <!-- Selector Laboratorio -->
                     <div class="mb-3">
                         <?= form_label('Laboratorio', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_dropdown(
-                            'nombre',
-                            [
-                                        ''=> 'Seleccionar laboratorio',
-                                        // '1' => 'Activo',
-                                        // '0' => 'Inactivo'
-                                    ],
-                            set_value('laboratorio' ?? ''),
-                            ['id' => 'laboratorio', 'class' => 'form-control form-control-solid']
+                            'id_laboratorio',
+                            [''=> 'Seleccionar laboratorio'] + array_column($laboratorio, 'nombre_laboratorio', 'id'),
+                            set_value('id_laboratorio'),
+                            ['id' => 'nombre_laboratorio', 'class' => 'form-control form-control-solid']
                         ) ?>
-                        <span class="text-danger"><?= isset($validation) ? $validation->getError('laboratorio') : '' ?></span>
+                        <span class="text-danger"><?= isset($validation) ? $validation->getError('id_laboratorio') : '' ?></span>
                     </div>
                     <!-- Botones Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">
@@ -58,7 +50,7 @@
                         <?= form_button('cancel', 'Cancelar', [
                             'type' => 'button',
                             'class' => 'btn btn-secondary',
-                            'onclick' => "window.location.href='" .base_url('semestre'). "'",
+                            'onclick' => "window.location.href='" .base_url('horario'). "'",
                         ]) ?>
                     </div>
 

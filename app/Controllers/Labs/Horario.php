@@ -4,7 +4,7 @@
 
     class Horario extends MyController
     {
-        public function iniciando(): string
+        public function index(): string
         {
             return view('Labs/layouts/horario');
         }

@@ -20,18 +20,18 @@
                 <div class="sbp-preview-content">
                     <!-- Abrir formulario con Form Helper -->
                      
-                    <?= form_open("laboratorio/actualizar/{$laboratorio->id}") ?>
+                    <?= form_open('laboratorio/actualizar/' .esc($laboratorio['id']), ['id' => 'fomr-laboratorio']) ?>
                     <?= csrf_field() ?>
                     <!-- Nombre del laboratorio -->
                     <div class="mb-3">
-                        <?= form_label('Nombre del laboratorio', 'nombre') ?>
+                        <?= form_label('Nombre del laboratorio', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_input([
                             'name' => 'nombre',
                             'id' => 'nombre',
                             'type' => 'text',
                             'class' => 'form-control form-control-solid',
                             'placeholder' => 'Nombre del laboratorio',
-                            'value' => set_value('nombre', $laboratorio->nombre)
+                            'value' => set_value('nombre', $laboratorio['nombre'] ?? null),
                         ]) ?>
                     </div>
                     <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre') : '' ?></span>
@@ -41,7 +41,7 @@
                         <?= form_dropdown(
                             'id_carrera',
                             [''=>'Seleccionar carrera'] + array_column($carrera, 'nombre_carrera', 'id'),
-                            set_value('id_carrera',$laboratorio->id_carrera),
+                            set_value('id_carrera',$laboratorio['id_carrera'] ?? null),
                             ['id' => 'id_carrera', 'class' => 'form-control form-control-solid']
                         ) ?>
                     <span class="text-danger"><?= isset($validation) ? $validation->getError('id_carrera') : '' ?></span>
@@ -49,7 +49,11 @@
                     <!-- Botones de Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">
                         <?= form_submit('submit', 'Actualizar', ['class' => 'btn btn-primary me-2']) ?>
-                        <a href="/laboratorio" class="btn btn-secondary">Cancelar</a>
+                        <?= form_button('cancel', 'Cancelar', [
+                                'type' => 'button',
+                                'class' => 'btn btn-secondary',
+                                'onclick' => 'history.back()',
+                            ]) ?>
                     </div>
                     <?= form_close() ?>
                 </div>

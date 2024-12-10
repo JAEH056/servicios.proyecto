@@ -45,7 +45,10 @@
                 <?= $this->renderSection('content_editar_dias_inhabiles') ?>
 
                 <!-- Horario -->
+                <?= $this->renderSection('content_horario') ?>
                 <?= $this->renderSection('content_agregar_horario') ?>
+                <?= $this->renderSection('content_horario_certificacion') ?>
+
                 <?= $this->renderSection('content_horario_semanal') ?>
 
                 <!-- Errores -->

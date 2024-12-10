@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\Labs\CrearHorario;
 use App\Controllers\Labs\DiasInhabiles;
 use App\Controllers\Labs\Horario;
 use App\Controllers\Labs\Laboratorios;
@@ -11,7 +12,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // SEMESTRE
-$routes->get('semestre', [Semestre::class,'index']);
+$routes->get('semestre/mostrar', [Semestre::class,'index']);
 $routes->get('semestre/nuevo', [Semestre::class, 'nuevo']);
 $routes->post('semestre/crear',[Semestre::class, 'crear']);
 $routes->get('semestre/editar/(:num)', [Semestre::class, 'editar/$1']);
@@ -35,4 +36,8 @@ $routes->get('laboratorio/eliminar/(:num)', [Laboratorios::class, 'eliminar/$1']
  $routes->get('diasinhabiles/eliminar/(:num)',[DiasInhabiles::class, 'eliminar/$1']);
 
  //HORARIO
- $routes->get('horario', [Horario::class, 'iniciando']);
+ $routes->get('horario', [CrearHorario::class, 'index']);
+ $routes->get('horario/nuevo', [CrearHorario::class, 'nuevo']);
+ $routes->post('horario/crear',[CrearHorario::class, 'crear']);
+
+ $routes->get('horario/certificacion', [CrearHorario::class, 'mostrarHorario']);

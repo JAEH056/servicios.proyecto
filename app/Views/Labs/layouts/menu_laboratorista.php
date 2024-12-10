@@ -3,19 +3,31 @@
         <div class="nav accordion" id="accordionSidenav">
             <!-- Sidenav Menu Heading (Core)-->
             <div class="sidenav-menu-heading">Menu</div>
-            <!-- Sidenav Accordion (Dashboard)-->
-            <!-- Opciones sistemas -->
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDashboards" aria-expanded="false" aria-controls="collapseDashboards">
+            <!-- Menú Principal sin "Opciones" -->
+            <a class="nav-link" href="/laboratorio">
+                <div class="nav-link-icon"><i data-feather="table"></i></div>
+                Laboratorios
+            </a>
+            <a class="nav-link" href="/semestre/mostrar">
                 <div class="nav-link-icon"><i data-feather="activity"></i></div>
-                Opciones
+                Semestres
+            </a>
+            <a class="nav-link" href="/diasinhabiles">
+                <div class="nav-link-icon"><i data-feather="activity"></i></div>
+                Días inhábiles
+            </a>
+            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAccount" aria-expanded="false" aria-controls="pagesCollapseAccount">
+                <div class="nav-link-icon"><i data-feather="calendar"></i></div>
+                Horarios
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
-                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                    <a class="nav-link" href="/laboratorio">Laboratorios</a>
-                    <a class="nav-link" href="/semestre">Semestres</a>
-                    <a class="nav-link" href="/diasinhabiles">Días inhábiles</a>
-                    <a class="nav-link" href="/horario">Horario</a>
+            <div class="collapse" id="pagesCollapseAccount" data-bs-parent="#accordionSidenav">
+                <nav class="sidenav-menu-nested nav">
+                    <a class="nav-link" href="/horario">Horarios creados</a>
+                    <a class="nav-link" href="account-profile.html">Certificación</a>
+                    <a class="nav-link" href="account-billing.html">Cómputo H</a>
+                    <a class="nav-link" href="account-security.html">TICS</a>
+                    <a class="nav-link" href="account-notifications.html">Cómputo</a>
                 </nav>
             </div>
         </div>
