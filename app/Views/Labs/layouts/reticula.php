@@ -19,8 +19,9 @@
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
-                            <th>Carrera</th>
-                            <th>Nombre del laboratorio</th>
+                            <th>Asignatura</th>
+                            <th>Clave</th>
+                            <th>SATCA</th>
                             <th>Editar</th>
                             <th>Eliminar</th>
                         </tr>

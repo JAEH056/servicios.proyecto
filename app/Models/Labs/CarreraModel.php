@@ -22,6 +22,7 @@ use CodeIgniter\Model;
             $sql = <<<EOL
             SELECT 
                 carrera.id AS id,
+                carrera.clave
                 carrera.nombre AS nombre_carrera,
                 carrera.nombre_corto AS nombre_corto
             FROM carrera

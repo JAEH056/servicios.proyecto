@@ -4,6 +4,10 @@
             <!-- Sidenav Menu Heading (Core) -->
             <div class="sidenav-menu-heading">Menu</div>
             <!-- Menú Principal sin "Opciones" -->
+            <a class="nav-link" href="/puesto">
+                <div class="nav-link-icon"><i class="fa-regular fa-user"></i></div>
+                Puesto empleado
+            </a>
             <a class="nav-link" href="/laboratorio">
                 <div class="nav-link-icon"><i class="fa-regular fa-building fa-lg"></i></div>
                 Laboratorios
@@ -24,6 +28,19 @@
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar"></i></div>
                 Solicitar horarios
             </a>
+            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDashboards" aria-expanded="false" aria-controls="collapseDashboards">
+                <div class="nav-link-icon"><i class="fa-solid fa-table"></i></div>
+                Gestión carreras
+                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
+                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                    <a class="nav-link" href="dashboard-3.html">Carrrera</a>
+                    <a class="nav-link" href="dashboard-4.html">Especialidad</a>
+                    <a class="nav-link" href="dashboard-2.html">Asignatura</a>
+                    <a class="nav-link" href="dashboard-1.html">Retícula</a>
+                </nav>
+            </div>
         </div>
     </div>
     

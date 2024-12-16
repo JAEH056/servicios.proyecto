@@ -38,6 +38,9 @@
                     <!-- Laboratorista -->
                     <?= $this->renderSection('content_laboratorista') ?>
 
+                    <!-- Usuario -->
+                    <?= $this->renderSection('content_puesto_empleado') ?>
+
                     <!-- Semestre -->
                     <?= $this->renderSection('content_semestre') ?>
                     <?= $this->renderSection('content_agregar_semestre') ?>
@@ -54,6 +57,12 @@
                     <?= $this->renderSection('content_horarios') ?>
 
                     <?= $this->renderSection('content_horario_semanal') ?>
+
+                    <!-- Gestión carreras -->
+                    <?= $this->renderSection('content_carrera') ?>
+                    <?= $this->renderSection('content_especialidad') ?>
+                    <?= $this->renderSection('content_asignatura') ?>
+                    <?= $this->renderSection('content_reticula') ?>
 
                     <!-- Errores -->
                     <?= $this->renderSection('content_error_404') ?>
