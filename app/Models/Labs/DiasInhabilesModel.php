@@ -2,10 +2,12 @@
 
 namespace App\Models\Labs;
 
+use CodeIgniter\Model;
 
-class DiasInhabilesModel extends UserModel
+class DiasInhabilesModel extends Model
 {
 
+    protected $DBGroup = 'laboratorios';
     protected $table      = 'dias_inhabiles';
     protected $primaryKey = 'id';
 
@@ -16,34 +18,53 @@ class DiasInhabilesModel extends UserModel
 
     protected $allowedFields = ['id_tipo_inhabil', 'descripcion', 'inicio', 'fin'];
 
-    public function obtenerDiasInhabiles()
+    public function obtenerDiasInhabiles(): array
     {
-        $sql = <<<EOL
-    SELECT  
-        dias_inhabiles.id as id,
-        dias_inhabiles.descripcion as nombre,
-        tipo_dia_inhabil.nombre as tipo_inhabil,
-        dias_inhabiles.inicio as inicio,
-        dias_inhabiles.fin as fin
+        $builder = $this->db->table($this->table)
+            ->select('dias_inhabiles.id as id, 
+                 dias_inhabiles.descripcion as nombre, 
+                 tipo_dia_inhabil.nombre as tipo_inhabil,
+                 dias_inhabiles.inicio as inicio, 
+                 dias_inhabiles.fin as fin')
+            ->join(
+                'tipo_dia_inhabil',
+                'tipo_dia_inhabil.id = dias_inhabiles.id_tipo_inhabil'
+            )
+            ->groupBy([
+                'dias_inhabiles.id',
+                'dias_inhabiles.inicio',
+                'dias_inhabiles.fin'
+            ])
+            ->orderBy('dias_inhabiles.inicio', 'ASC');
+        $query = $builder->get();
+        $diasInhabiles = $query->getResultArray();
+        return $diasInhabiles;
+    }
 
-    FROM 
-        dias_inhabiles
-    JOIN   
-        tipo_dia_inhabil ON  tipo_dia_inhabil.id= dias_inhabiles.id_tipo_inhabil
-    GROUP BY
-        id,
-        inicio, 
-        fin
-
-    ORDER BY 
-        inicio ASC
-    EOL;
-
-        $query = $this->db->query($sql);
+    public function obtenerDiasInhabilesPorPeriodo($inicioPeriodo,$finPeriodo): array
+    {
+        $builder = $this->db->table($this->table)
+            ->select('dias_inhabiles.id as id, 
+                 dias_inhabiles.descripcion as nombre, 
+                 tipo_dia_inhabil.nombre as tipo_inhabil,
+                 dias_inhabiles.inicio as inicio, 
+                 dias_inhabiles.fin as fin')
+            ->join(
+                'tipo_dia_inhabil',
+                'tipo_dia_inhabil.id = dias_inhabiles.id_tipo_inhabil'
+            )
+            ->where('dias_inhabiles.inicio >=', $inicioPeriodo)
+            ->where('dias_inhabiles.fin <= ', $finPeriodo)
+            ->groupBy([
+                'dias_inhabiles.id',
+                'dias_inhabiles.inicio',
+                'dias_inhabiles.fin'
+            ])
+            ->orderBy('dias_inhabiles.inicio', 'ASC');
+        $query = $builder->get();
         $dias_inhabiles = $query->getResultArray();
         return $dias_inhabiles;
     }
-
     public function reglasValidacion()
     {
         return [
@@ -93,32 +114,30 @@ class DiasInhabilesModel extends UserModel
     }
 
     public function actualizarDiaInhabil($id, $data)
-        {
-            $diaInhabil = $this->find($id);
+    {
+        $diaInhabil = $this->find($id);
 
-            if (!$diaInhabil) {
-                throw new \CodeIgniter\Exceptions\PageNotFoundException("El laboratorio con ID $id no existe.");
-            }
-
-            if (!$this->update($id, $data)) {
-                throw new \RuntimeException("Error al actualizar el laboratorio con ID $id.");
-            }
-            return true;
+        if (!$diaInhabil) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("El laboratorio con ID $id no existe.");
         }
 
-
-        public function eliminarDiaInhabill($id)
-        {
-            $diaInhabil= $this->find($id);
-            if (!$diaInhabil) {
-                throw new \CodeIgniter\Exceptions\PageNotFoundException("El laboratorio con ID $id no existe.");
-            }
-            $result = $this->delete($id);
-            if (!$result) {
-                throw new \RuntimeException("No se pudo eliminar el laboratorio con ID $id.");
-            }
-            return true;
+        if (!$this->update($id, $data)) {
+            throw new \RuntimeException("Error al actualizar el laboratorio con ID $id.");
         }
+        return true;
+    }
 
 
+    public function eliminarDiaInhabill($id)
+    {
+        $diaInhabil = $this->find($id);
+        if (!$diaInhabil) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException("El laboratorio con ID $id no existe.");
+        }
+        $result = $this->delete($id);
+        if (!$result) {
+            throw new \RuntimeException("No se pudo eliminar el laboratorio con ID $id.");
+        }
+        return true;
+    }
 }

@@ -24,7 +24,7 @@
                     <?= csrf_field() ?>
                     <!-- Nombre del semestre -->
                     <div class="mb-3">
-                        <?= form_label('Nombre', 'nombre', ['class' => 'form-label']) ?>
+                        <?= form_label('Nombre del semestre', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_input([
                             'name' => 'nombre',
                             'id' => 'nombre',
@@ -81,7 +81,7 @@
                         <?= form_button('cancel', 'Cancelar', [
                             'type' => 'button',
                             'class' => 'btn btn-secondary',
-                            'onclick' => "window.location.href='" .base_url('semestre'). "'",
+                            'onclick' => "window.location.href='" .base_url('semestre/mostrar'). "'",
                         ]) ?>
                     </div>
 

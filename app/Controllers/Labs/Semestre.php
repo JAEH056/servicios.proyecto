@@ -2,9 +2,11 @@
 
     namespace App\Controllers\Labs;
 
-    use \App\Models\Labs\SemestreModel;
+use App\Controllers\BaseController;
+use \App\Models\Labs\SemestreModel;
 
-    class Semestre extends MyController
+
+    class Semestre extends BaseController
     {
         protected $model_semestre;
 

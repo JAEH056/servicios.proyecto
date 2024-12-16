@@ -2,7 +2,9 @@
 
     namespace App\Controllers\Labs;
 
-    class Prueba extends MyController
+use App\Controllers\BaseController;
+
+    class Prueba extends BaseController
     {
         public function iniciando(): string
         {

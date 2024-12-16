@@ -4,16 +4,15 @@ namespace App\Models\Labs;
 
 use CodeIgniter\Model;
 
-class OrganigramaModel extends Model
+class SolicitudModel extends Model
 {
     protected $DBGroup = 'laboratorios';
-    protected $table      = 'organigrama';
+    protected $table      = 'solicitud';
     protected $primaryKey = 'id';
-
     protected $useAutoIncrement = true;
-
     protected $returnType     = 'array';
-    protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['nombreM', 'nombreF', 'cargo', 'izquierda', 'derecha'];
+
+    protected $useSoftDeletes = false;
+    protected $allowedFields = ['hora_fecha_entrada', 'hora_fecha_salida','id'];
 }

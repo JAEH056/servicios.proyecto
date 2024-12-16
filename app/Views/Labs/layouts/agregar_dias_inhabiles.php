@@ -21,12 +21,13 @@
 
                     <!-- Campo Nombre -->
                     <div class="mb-3">
-                        <?= form_label('Nombre', 'nombre', ['class' => 'form-label']) ?>
+                        <?= form_label('Nombre del día inhábil', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_input([
                             'name' => 'nombre',
                             'id' => 'nombre',
                             'type' => 'text',
                             'value' => set_value('nombre'),
+                            'placeholder' => 'Nombre del día inhábil',
                             'class' => 'form-control form-control-solid',
                             'maxlength' => '255',
                         ]) ?>

@@ -2,11 +2,12 @@
 
     namespace App\Controllers\Labs;
 
-    use App\Models\Labs\LaboratorioModel;
+use App\Controllers\BaseController;
+use App\Models\Labs\LaboratorioModel;
     use App\Models\Labs\CarreraModel;
     
 
-    class Laboratorios extends MyController
+    class Laboratorios extends BaseController
     {
 
         protected $model_laboratorio;

@@ -2,28 +2,35 @@
 
 namespace App\Controllers\Labs;
 
+use App\Controllers\BaseController;
+use App\Models\Labs\AsignarLaboratorioModel;
 use App\Models\Labs\DiasInhabilesModel;
 use App\Models\Labs\TipoDiaInhabilModel;
 
-class DiasInhabiles extends MyController
+class DiasInhabiles extends BaseController
 {
     protected $model_diasInhabiles;
     protected $model_tipoDiaInhabil;
+    protected $model_asignar_laboratorio;
 
     public function __construct()
     {
         $this->model_diasInhabiles = model(DiasInhabilesModel::class);
         $this->model_tipoDiaInhabil = model(TipoDiaInhabilModel::class);
+        $this->model_asignar_laboratorio=model(AsignarLaboratorioModel::class);
     }
 
     public function index()
     {
         $dias = $this->model_diasInhabiles->obtenerDiasInhabiles();
+      
 
         $data = [
             'dias' => $dias,
+           
         ];
 
+        print_r($data);
         return view('Labs/layouts/dias_inhabiles', $data);
     }
 
@@ -83,6 +90,7 @@ class DiasInhabiles extends MyController
             return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
         }
     }
+    
 
     public function actualizar($id)
     {

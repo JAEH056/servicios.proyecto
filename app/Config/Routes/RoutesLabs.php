@@ -2,8 +2,8 @@
 
 use App\Controllers\Labs\CrearHorario;
 use App\Controllers\Labs\DiasInhabiles;
-use App\Controllers\Labs\Horario;
 use App\Controllers\Labs\Laboratorios;
+use App\Controllers\Labs\Laboratorista;
 use App\Controllers\Labs\Semestre;
 use CodeIgniter\Router\RouteCollection;
 
@@ -35,9 +35,16 @@ $routes->get('laboratorio/eliminar/(:num)', [Laboratorios::class, 'eliminar/$1']
  $routes->post('diasinhabiles/actualizar/(:num)', [DiasInhabiles::class, 'actualizar/$1']);
  $routes->get('diasinhabiles/eliminar/(:num)',[DiasInhabiles::class, 'eliminar/$1']);
 
- //HORARIO
- $routes->get('horario', [CrearHorario::class, 'index']);
- $routes->get('horario/nuevo', [CrearHorario::class, 'nuevo']);
- $routes->post('horario/crear',[CrearHorario::class, 'crear']);
+ $routes->get('laboratorista', [Laboratorista::class, 'index']);
+ // HORARIO 
+ $routes->get('horario/(:num)', [CrearHorario::class, 'verHorario/$1']); // Con ID, muestra el horario
+ $routes->get('horario', [CrearHorario::class, 'verHorario']); // Con ID, muestra el horario
+  
+//  $routes->get('horario/nuevo', [CrearHorario::class, 'nuevo']);
+//  $routes->post('horario/crear',[CrearHorario::class, 'crear']);
+//  $routes->get('horario/laboratorio/(:num)',[CrearHorario::class, 'mostrarHorario/$1']);
 
- $routes->get('horario/certificacion', [CrearHorario::class, 'mostrarHorario']);
+
+ 
+
+

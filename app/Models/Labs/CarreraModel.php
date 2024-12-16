@@ -2,10 +2,11 @@
 
     namespace App\Models\Labs;
 
+use CodeIgniter\Model;
 
-    class CarreraModel extends UserModel
+    class CarreraModel extends Model
     {
-
+        protected $DBGroup = 'laboratorios';
         protected $table      = 'carrera';
         protected $primaryKey = 'id';
 

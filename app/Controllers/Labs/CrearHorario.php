@@ -2,106 +2,122 @@
 
 namespace App\Controllers\Labs;
 
+use App\Controllers\BaseController;
+use App\Models\Labs\DiasInhabilesModel;
 use App\Models\Labs\HorarioModel;
 use App\Models\Labs\LaboratorioModel;
-use App\Models\Labs\SemestreModel;
 
-class CrearHorario extends MyController {
-
-    protected $model_semestre;
+class CrearHorario extends BaseController
+{
     protected $model_horario;
     protected $model_laboratorio;
-   
-   
+    protected $model_dias_inhabiles;
 
     public function __construct()
     {
-        
-        $this->model_semestre = model(SemestreModel::class);
         $this->model_horario = model(HorarioModel::class);
         $this->model_laboratorio = model(LaboratorioModel::class);
+        $this->model_dias_inhabiles = model(DiasInhabilesModel::class);
     }
 
-    public function index()
-        {
-            
-
-            $horarios = $this->model_horario->obtenerHorarios();
-
-            $data = [
-                'horarios' => $horarios
-            ];
-
-            
-            return view('Labs/layouts/horario', $data);
-        }
-
-        public function nuevo()
-        {
-            helper('form');
-            $semestre =$this->model_semestre->obtenerSemestre();
-            $laboratorio=$this->model_laboratorio->obtenerLaboratorios();
-          
-
-            $data = [
-                'semestre' => $semestre,
-                'laboratorio'=>$laboratorio,
-                'validation' => null,
-                'success' => null,
-            ];
-
-            return view('Labs/layouts/agregar_horario', $data);
-        }
-
-
-    public function crear(){
-        helper('form');
-        $semestre =$this->model_semestre->obtenerSemestre();
-        $laboratorio=$this->model_laboratorio->obtenerLaboratorios();
-        $rules = $this->model_horario->reglasValidacion();
-        $data =[
-            'id_semestre'=> $this->request->getPost('id_semestre'),
-            'id_laboratorio'=>$this->request->getPost('id_laboratorio'),
-
-            
-        ];
-      
-        if (!$this->validate($rules)) {
-            return view('Labs/layouts/agregar_horario', [
-                 'semestre' =>$semestre,
-            'laboratorio' =>$laboratorio,
-                'validation' => $this->validator,
-                'success' => null,
-            ]);
-        }
-
-        $this->model_horario->insertarHorario($data);
-
-        return redirect()->to('/horario/nuevo')->with('success', 'Horario creado con éxito.');
-    }
-
-
-    public function mostrarHorario()
+    public function verHorario($idLaboratorio = null)
     {
-      $periodo= $this->model_horario->obtenerHorarios();
-      foreach ($periodo as $datosperiodo) {
-        
+        $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
+        $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
 
-        $data =[  
-            'periodoJson' => json_encode([
-           
-            'inicio'=>$datosperiodo['inicio'],
-            'fin'=>$datosperiodo['fin'],
-        ]),
-       
+        if (!$idLaboratorio && !empty($laboratorios)) {
+            return redirect()->to(base_url("horario/" . $laboratorios[0]['id']));
+        }
+
+        if (empty($periodos)) {
+            return view('Labs/layouts/error_404', ['mensaje' => 'No se encontraron periodos para el laboratorio.']);
+        } else {
+            foreach ($periodos as $datosperiodo) {
+                if (isset($datosperiodo['inicio']) && isset($datosperiodo['fin'])) {
+                    $inicioPeriodo = $datosperiodo['inicio'];
+                    $finPeriodo = $datosperiodo['fin'];
+                }
+            }
+        }
+
+            // Obtener días inhábiles para el periodo seleccionado
+            $diasInhabilesPeriodo = $this->model_dias_inhabiles->obtenerDiasInhabilesPorPeriodo($inicioPeriodo, $finPeriodo);
+
+            // Procesar días inhábiles
+            $eventos = [];
+            if (!empty($diasInhabilesPeriodo)) {
+                foreach ($diasInhabilesPeriodo as $datosevento) {
+                    $raw = [
+                        'tipo_inhabil' => $datosevento['tipo_inhabil'],
+                    ];
+                    $eventos[] = [
+                        'id'    => $datosevento['id'],
+                        'title' => $datosevento['nombre'],
+                        'start' => (new \DateTimeImmutable($datosevento['inicio']))->format('Y-m-d 00:00:00'),
+                        'end'   => (new \DateTimeImmutable($datosevento['fin']))->format('Y-m-d 23:59:59'),
+                        'raw'   => $raw,
+                    ];
+                }
+            }
+
+            //prueba datos para un evento 
+            $eventos1[] = [
+               
+                    'id'    => '70',
+                    'title' => 'practica',
+                    'start' => '2025-02-03 08:00',
+                    'end'   => '2025-02-03 09:30',
+                
+            ];
+            $eventos2[] = [
+               
+                'id'    => '70',
+                'title' => 'clase',
+                'start' => '2025-02-03 09:30',
+                'end'   => '2025-02-03 10:30',
+            
         ];
-        print_r($periodo);
+        $eventos3[] = [
+               
+            'id'    => '70',
+            'title' => 'practica',
+            'start' => '2025-02-03 08:00',
+            'end'   => '2025-02-03 11:30',
+        
+    ];
+    $eventos4[] = [
+       
+        'id'    => '70',
+        'title' => 'clase',
+        'start' => '2025-02-03 10:30',
+        'end'   => '2025-02-03 11:30',
     
+];
+            $todosLosEventos = array_merge($eventos,$eventos1,$eventos2,$eventos2,$eventos4);
+
+            $data = [];
+            if (!empty($periodos)) {
+                foreach ($periodos as $datosperiodo) {
+                    $data = [
+                        'periodoJson' => json_encode([
+
+
+                            'inicio' => $datosperiodo['inicio'],
+                            'fin' => $datosperiodo['fin'],
+
+
+                        ]),
+                        'laboratorios' => $laboratorios,
+                        'laboratorioSeleccionado' => $idLaboratorio,
+                        'events' => json_encode($todosLosEventos),
+                       
+                       
+                    ];
+                }
+              
+                print_r($data);
+            }
+            return view('Labs/layouts/horarios', $data);
+        
     }
-    
-    
-        return view('Labs/layouts/horario_certificacion', $data); 
-    }
-    
-    
 }

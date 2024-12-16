@@ -12,7 +12,7 @@
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         alert('<?= esc(session()->get('success')) ?>');
-                        window.location.href = '/semestre';
+                        window.location.href = '/semestre/mostrar';
                     });
                 </script>
             <?php endif; ?>
@@ -23,7 +23,7 @@
                     <?= csrf_field() ?>
 
                     <div class="mb-3">
-                        <?= form_label('Nombre', 'nombre', ['class' => 'form-label']) ?>
+                        <?= form_label('Nombre del semestre', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_input([
                             'name' => 'nombre',
                             'id' => 'nombre',

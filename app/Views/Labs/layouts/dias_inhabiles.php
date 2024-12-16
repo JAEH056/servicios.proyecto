@@ -19,7 +19,7 @@
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Nombre del día</th>
                             <th>Tipo</th>
                             <th>Fecha de inicio</th>
                             <th>Fecha de fin</th>

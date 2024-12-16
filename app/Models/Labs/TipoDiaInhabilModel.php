@@ -1,9 +1,13 @@
 <?php
+
 namespace App\Models\Labs;
 
+use CodeIgniter\Model;
 
-class TipoDiaInhabilModel extends UserModel{
+class TipoDiaInhabilModel extends Model
+{
 
+    protected $DBGroup = 'laboratorios';
     protected $table      = 'tipo_dia_inhabil';
     protected $primaryKey = 'id';
 
@@ -15,8 +19,8 @@ class TipoDiaInhabilModel extends UserModel{
     protected $allowedFields = ['nombre'];
 
 
-    public function obtenerTiposInhabiles(){
+    public function obtenerTiposInhabiles()
+    {
         return $this->findAll();
     }
-
 }
