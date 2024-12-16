@@ -33,6 +33,7 @@
                 <?= $this->include('Reposs/Plantilla/mainHeader'); ?>
                 <!-- Main page content-->
                 <!-- Contenido de alerta
+                 <main  style="background-color : #272f3b;">
                      <div class="container-xl px-4 mt-n10">
                     <div class="card mb-4">
                         <div class="card-header">Alerta</div>

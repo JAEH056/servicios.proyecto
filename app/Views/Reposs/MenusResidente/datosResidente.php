@@ -37,15 +37,16 @@
                             <div class="col-xxl-6 col-xl-8">
                             <h5 class="card-title mb-4">Verifica y actualiza tu informacion.</h5>
                             <p>Ingresa los datos solicitados, esta informacion sera usada posteriormente para los formatos necesarios en el proceso de residencias profesionales.</p>
-                                <form action="<?= base_url('residentes'); ?>" method="post">
+                                <form action="<?= base_url('usuario/residentes/datos'); ?>" method="post">
+                                    <?= csrf_field(); ?>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (username)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="numControl">Numero de control</label>
                                             <input class="form-control" id="numControl" type="text"
-                                                placeholder="numero de control" name="numControl"
-                                                value="<?= set_value('numControl'); ?>" />
+                                                placeholder="numero de control" name="numero_control"
+                                                value="<?= set_value('numero_control'); ?>" />
                                         </div>
                                         <!-- Form Group (nombre)-->
                                         <div class="mb-3">
@@ -56,17 +57,17 @@
                                         </div>
                                         <!-- Form Group (first name)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="apellidoP">Primer Apellido</label>
-                                            <input class="form-control" id="apellidoP" type="text"
-                                                placeholder="Ingresa tu primer apellido" name="apellidoP"
-                                                value="<?= set_value('apellidoP'); ?>" />
+                                            <label class="small mb-1" for="apellido1">Primer Apellido</label>
+                                            <input class="form-control" id="apellido1" type="text"
+                                                placeholder="Ingresa tu primer apellido" name="apellido1"
+                                                value="<?= set_value('apellido1'); ?>" />
                                         </div>
                                         <!-- Form Group (last name)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="apellidoM">Segundo Apellido</label>
-                                            <input class="form-control" id="apellidoM" type="text"
-                                                placeholder="Ingresa tu segundo apellido" name="apellidoM"
-                                                value="<?= set_value('apellidoM'); ?>" />
+                                            <label class="small mb-1" for="apellido2">Segundo Apellido</label>
+                                            <input class="form-control" id="apellido2" type="text"
+                                                placeholder="Ingresa tu segundo apellido" name="apellido2"
+                                                value="<?= set_value('apellido2'); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -102,13 +103,6 @@
                                                 placeholder="Ingresa tu domicilio" name="domicilio"
                                                 value="<?= set_value('domicilio'); ?>" />
                                         </div>
-                                        <!-- Form Group (email address)-->
-                                        <div class="mb-3">
-                                            <label class="small mb-1" for="correo">Correo electronico</label>
-                                            <input class="form-control" id="correo" type="email"
-                                                placeholder="Ingresa tu correo" name="correo"
-                                                value="<?= set_value('correo'); ?>" />
-                                        </div>
                                     </div>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
@@ -116,7 +110,8 @@
                                         <div class="col-md-6">
                                             <label class="small mb-1" name="seguroSocial" for="seguroSocial">Seguro
                                                 Social</label>
-                                            <select class="form-control" id="seguroSocial" name="seguroSocial">
+                                            <select class="form-control" id="seguroSocial" name="seguro_social">
+                                                <option value="<?= set_value('seguro_social'); ?>" selected></option>
                                                 <option>IMSS</option>
                                                 <option>ISSSTE</option>
                                                 <option>Otros</option>
@@ -125,19 +120,21 @@
                                         <!-- Form Group (phone number)-->
                                         <div class="col-md-6">
                                             <label class="small mb-1" for="numeroSS">Numero Seguro social</label>
-                                            <input class="form-control" id="numeroSS" type="text" name="numeroSS"
+                                            <input class="form-control" id="numeroSS" type="text" name="numero_ss"
                                                 placeholder="Ingresa numero de seguro social"
-                                                value="<?= set_value('numeroSS'); ?>" />
+                                                value="<?= set_value('numero_ss'); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
                                     <div class="row gx-3 mb-3">
-                                        <!-- Form Group (Programa Educativo)-->
+                                        <!-- Menu seleccion programa educatvo -->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="programa">Programa Educativo</label>
-                                            <input class="form-control" id="programa" type="text"
-                                                placeholder="id programa" name="idprogramaEducativo"
-                                                value="<?= set_value('idprogramaEducativo'); ?>" />
+                                            <label class="small mb-1" name="idprograma_educativo" for="idprograma_educativo">Programa Educativo</label>
+                                            <select class="form-control" id="idprograma_educativo" name="idprograma_educativo">
+                                                <?php foreach ($programa as $pe): ?>
+                                                    <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <hr class="my-4" />

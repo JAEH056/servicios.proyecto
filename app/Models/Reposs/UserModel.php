@@ -20,6 +20,10 @@ class UserModel extends Model
         // Your existing insert logic
         return $this->insert($data);
     }
+    public function esPrimerIngreso(string $correo): bool
+    {
+        return empty($this->where('correo',$correo)->first());
+    }
     public function findByCorreo($correo) {
         // Use the getWhere method to find a record by the 'correo' field
         return $this->where('correo', $correo)->first();

@@ -11,28 +11,29 @@ use App\Models\Roles\RolesModel;
 class AdminController extends BaseController
 {
     protected $rbac;
+    protected $userRoles;
+    protected $roleModel;
+    protected $permissionModel;
+    protected $rolePermissionModel;
 
     public function __construct()
     {
         // Cargar el servicio PHP-RBAC
         $this->rbac = service('rbac');
+        $this->roleModel = new RolesModel();
+        $this->userRoles = new UserRolesModel();
+        $this->permissionModel = new PermissionsModel();
+        $this->rolePermissionModel = new RolePermissionsModel();
     }
 
     // Vista principal del panel de administración
     public function index()
     {
-        // Se cargan los modelos de los roles, permisos y asignaciones de permisos
-        $roleModel = new RolesModel();
-        $userRoles = new UserRolesModel();
-        $permissionModel = new PermissionsModel();
-        $rolePermissionModel = new RolePermissionsModel();
-
         // Se obtiene la consulta de cada uno de los modelos con su respectiva funcion
-        $roles['roles'] = $roleModel->getRoles();
-        $userRoles = $userRoles->getUserNRoles();
-        $permissions['permissions'] = $permissionModel->getPermissions();
-        $rolePermissions['rolePermissions'] = $rolePermissionModel->getRolePermissions();
-
+        $roles['roles'] = $this->roleModel->getRoles();
+        $userRoles = $this->userRoles->getUserNRoles();
+        $permissions['permissions'] = $this->permissionModel->getPermissions();
+        $rolePermissions['rolePermissions'] = $this->rolePermissionModel->getRolePermissions();
         // Se carga la vista del panel con los datos de las consultas
         /*
         *   NOTA: Se cargan los datos como arreglo para una funcion adecuada con AJAX based request
@@ -66,10 +67,10 @@ class AdminController extends BaseController
 
             if ($roleId) {  /// Si hay datos en el post se procede, caso contrario se manda mensaje de error
                 // Se carga el modelo de roles y se elimina el rol
-                $roleModel = new RolesModel();
+                //$roleModel = new RolesModel();
                 $roleId = $this->request->getPost('roleId'); // Get role ID from the POST data
                 // Call the model to delete the role
-                $result = $this->$roleModel->deleteRole($roleId);
+                $result = $this->roleModel->deleteRole($roleId);
 
                 if ($result) {
                     return $this->response->setJSON([   /// Si los datos son correctos se elimina el rol
@@ -127,8 +128,9 @@ class AdminController extends BaseController
         $roleId = $this->request->getPost('role_id');
 
         if ($userId && $roleId) {
-            $db = \Config\Database::connect(); /// Eliminar conexion
-            $db->table('user_roles')->insert([
+            //$db = \Config\Database::connect(); /// Eliminar conexion
+            //$db->table('user_roles')
+            $this->userRoles->insert([
                 'user_id' => $userId,
                 'role_id' => $roleId,
             ]);
@@ -147,9 +149,9 @@ class AdminController extends BaseController
             $permissionId = $this->request->getJSON()->permission_id;
 
             if ($roleId && $permissionId) {
-                $db = \Config\Database::connect(); /// Eliminar conexion
-                $db->table('users_rolepermissions')
-                    ->where('RoleID', $roleId)
+                //$db = \Config\Database::connect(); /// Eliminar conexion
+                //$db->table('users_rolepermissions')
+                $this->rolePermissionModel->where('RoleID', $roleId)
                     ->where('PermissionID', $permissionId)
                     ->delete();
 

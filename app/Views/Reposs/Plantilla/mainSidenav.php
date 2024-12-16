@@ -1,4 +1,4 @@
-<nav class="sidenav shadow-right sidenav-light">
+<nav class="sidenav shadow-right sidenav-dark">
     <div class="sidenav-menu">
         <div class="nav accordion" id="accordionSidenav">
             <!-- Sidenav Menu Heading (Account)-->
@@ -55,7 +55,7 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?=base_url('usuario/residentes/empresa')?>">Informacion de Empresa</a>
-                    <a class="nav-link" href="invoice.html">Asesor Externo</a>
+                    <a class="nav-link" href="<?=base_url('')?>">Asesor Externo</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Applications)-->
@@ -79,8 +79,8 @@
             </a>
             <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <a class="nav-link" href="multi-tenant-select.html">Formatos Disponibles</a>
-                    <a class="nav-link" href="wizard.html">Requisitos RP</a>
+                    <a class="nav-link" href="<?=base_url('')?>">Formatos Disponibles</a>
+                    <a class="nav-link" href="<?=base_url('')?>">Requisitos RP</a>
                 </nav>
             </div>
         </div>

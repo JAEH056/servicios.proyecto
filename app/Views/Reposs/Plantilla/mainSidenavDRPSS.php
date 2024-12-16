@@ -22,7 +22,7 @@
             <div class="sidenav-menu-heading">Residencias Profesionales</div>
             <!-- Sidenav Accordion (Pages)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseDocs" aria-expanded="false" aria-controls="collapsePages">
-                <div class="nav-link-icon"><i data-feather="file"></i></div>
+                <div class="nav-link-icon"><i data-feather="users"></i></div>
                 Residentes
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>

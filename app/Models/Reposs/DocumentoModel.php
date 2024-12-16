@@ -25,6 +25,7 @@ class DocumentoModel extends Model
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'fecha_entrega';
+    protected $updatedField  = 'fecha_actualizacion';
 
     // Validation
     protected $validationRules      = [];
@@ -32,14 +33,18 @@ class DocumentoModel extends Model
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    // Obtener el archivo actual
+    public function getCurrentDocument()
+    {
+        return $this->first();  // Devuelve el primer (y único) documento
+    }
+
+    public function getDocumentByTipo(string $nombre)
+    {
+        $this->table('documento');
+        return $this->select('documento.iddocumento, documento.archivo')
+            ->join('tipo_archivo', 'tipo_archivo.idtipo = documento.idtipo')
+            ->where('tipo_archivo.nombre', $nombre)
+            ->first();
+    }
 }

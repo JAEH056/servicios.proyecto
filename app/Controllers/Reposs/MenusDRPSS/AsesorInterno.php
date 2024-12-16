@@ -5,7 +5,7 @@ namespace App\Controllers\Reposs\MenusDRPSS;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
 
-class NuevoAsesor extends ResourceController
+class AsesorInterno extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format.

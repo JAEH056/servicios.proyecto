@@ -33,7 +33,7 @@
                         <?php endif; ?>
                         <!-- Mensaje de insert en el primer login -->
                         <?php if (session()->has('notification')): ?>
-                            <div class="alert alert-danger"> <?= session('notification') ?> </div>
+                            <div class="alert alert-success"> <?= session('notification') ?> </div>
                         <?php endif; ?>
                          <!-- Mensaje de insert en el primer login -->
                          <?php if (session()->has('auth_message')): ?>

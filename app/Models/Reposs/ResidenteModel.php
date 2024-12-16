@@ -15,21 +15,18 @@ class ResidenteModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'idprograma_educativo',
+        'principal_name',
         'numero_control',
         'nombre', 
         'apellido1', 
         'apellido2', 
-        'domicilio', 
-        'correo', 
+        'domicilio',  
         'ciudad', 
         'seguro_social', 
         'numero_ss', 
         'telefono', 
         'celular'
     ];
-
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
 
     protected array $casts = [];
     protected array $castHandlers = [];
@@ -50,4 +47,13 @@ class ResidenteModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+    
+    public function esPrimerIngreso(string $correo): bool
+    {
+        return empty($this->where('principal_name',$correo)->first());
+    }
+    public function findByCorreo($correo) {
+        // Use the getWhere method to find a record by the 'correo' field
+        return $this->where('principal_name', $correo)->first();
+    }
 }

@@ -6,7 +6,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
 use App\Models\Reposs\ResidenteModel;
 
-class ListaResidentes extends ResourceController
+class Residentes extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format.

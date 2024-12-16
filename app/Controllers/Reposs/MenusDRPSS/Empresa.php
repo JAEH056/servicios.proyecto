@@ -7,7 +7,7 @@ use App\Controllers\ResponseInterface;
 use App\Models\Reposs\ResidenteModel;
 //use CodeIgniter\HTTP\ResponseInterface;
 
-class NuevaEmpresa extends BaseController
+class Empresa extends BaseController
 {
     //Retorna los datos devuelta 'withInput()' al formulario
     protected $helpers = ['form'];
