@@ -13,6 +13,30 @@ class AsignarLaboratorioModel extends Model
 
     protected $allowedFields = ['id_usuario', 'id_laboratorio', 'inicio', 'fin'];
 
+    // public function obtenerLaboratoriosAsigando(){
+
+    //      $sql = <<<EOL
+
+    //      SELECT 
+    //      GROUP_CONCAT(
+    //      CONCAT(usuario.nombre, ' ', usuario.apellido1, ' ', usuario.apellido2) 
+    //      ORDER BY usuario.id ASC
+    //      ) AS encargado,
+	//         laboratorio.nombre AS nombre_laboratorio,
+    //         asignar_laboratorio.inicio AS fecha_inicio,
+    //         asignar_laboratorio.fin AS fecha_fin
+    
+    //     FROM asignar_laboratorio
+    //     JOIN laboratorio ON asignar_laboratorio.id_laboratorio = laboratorio.id
+    //     JOIN usuario ON asignar_laboratorio.id_usuario = usuario.id
+ 
+ 
+    //     GROUP BY laboratorio.id,
+    //       asignar_laboratorio.inicio,
+    //       asignar_laboratorio.fin
+    //      EOL;
+    // }
+
     public function obtenerLaboratorioPorEncargado($id_usuario, \DateTimeImmutable $fecha_actual = null)
 {
     // Si no se pasa una fecha, usar la fecha actual
@@ -43,6 +67,8 @@ class AsignarLaboratorioModel extends Model
    
     return $laboratoriosAsignados;
 }
+
+
 
 //         $sql = <<<EOL
 // SELECT 

@@ -13,7 +13,7 @@ class Horario extends BaseController
     {
         $this->model_laboratorio = model(LaboratorioModel::class);
     }
-    public function index(): string
+    public function index()
     { $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
 
         $data = [
