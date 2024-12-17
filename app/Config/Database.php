@@ -19,6 +19,7 @@ class Database extends Config
      */
     public string $defaultGroup = 'residentes';
     public string $db_compartida = 'compartida';
+    
 
     /**
      * The default database connection.

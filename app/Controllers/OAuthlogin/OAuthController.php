@@ -94,7 +94,7 @@ class OAuthController extends Controller
         $apellidos = $this->splitSurname($surname); // Separar apellidos
         // Se crea un arreglo con la informacion del usuario
         $data = [
-            'correo' => $userPrincipalName,
+            'principal_name' => $userPrincipalName,
             'nombre' => $givenName,
             'apellido1' => $apellidos['apellido1'],  // Primer apellido
             'apellido2' => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : '', // Segundo apellido
@@ -105,7 +105,7 @@ class OAuthController extends Controller
                 $this->assignNewUserRole($data);
             }
         } else {
-            $this->assignExistingUserRole($rbac, $data['correo']);
+            $this->assignExistingUserRole($rbac, $data['principal_name']);
         } // El registro ya existe verificar roles y permisos
         /// FIN DE BLOQUE DE DATOS DE USUARIO
         return redirect()->to('/dashboard');
@@ -147,7 +147,7 @@ class OAuthController extends Controller
     private function assignExistingUserRole($rbac, string $correo)
     {
         // Obtener el ID del usuario basado en el correo
-        $idUsuario = $this->userModel->select('idusuario')->where('correo', $correo)->first();
+        $idUsuario = $this->userModel->select('idusuario')->where('principal_name', $correo)->first();
         // Si no se encuentra el usuario con el correo proporcionado
         if (!$idUsuario) {
             session()->setFlashdata('error', 'No se encontró el usuario con el correo proporcionado.');
@@ -180,7 +180,7 @@ class OAuthController extends Controller
     private function assignNewUserRole(array $data)
     {
         // Extrae el dominio del correo
-        $emailParts = explode('@', $data['correo']);
+        $emailParts = explode('@', $data['principal_name']);
         $domain = strtolower($emailParts[1]);
         // Dominos permitidos
         $organizationDomain = [
@@ -199,7 +199,7 @@ class OAuthController extends Controller
         $this->userRolesModel->setRoleToUser($roleInfo['roleId'], $idUsuario); // Asignar rol
         session()->set('idusuario', $idUsuario);
         // Set flash data message with inserted data
-        session()->setFlashdata('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . '? (' . $data['correo'] . ')');
+        session()->setFlashdata('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . '? (' . $data['principal_name'] . ')');
     }
 
     public function splitSurname($fullSurname)

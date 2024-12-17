@@ -56,4 +56,8 @@ class ResidenteModel extends Model
         // Use the getWhere method to find a record by the 'correo' field
         return $this->where('principal_name', $correo)->first();
     }
+    public function insertData($data) {
+        // Your existing insert logic
+        return $this->insert($data);
+    }
 }
