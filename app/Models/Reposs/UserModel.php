@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $DBGroup          = "residentes"; // database group
+    protected $DBGroup          = 'compartida'; // database group
     protected $table            = 'usuario';  // Nombre de la tabla
     protected $primaryKey       = 'idusuario'; // Clave primaria de la tabla
     protected $useAutoIncrement = true;

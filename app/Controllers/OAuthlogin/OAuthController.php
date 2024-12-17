@@ -104,7 +104,9 @@ class OAuthController extends Controller
             if ($existingResident == true) {
                 $this->assignNewUserRole($data);
             }
-        } else {$this->assignExistingUserRole($rbac, $data['correo']);}// El registro ya existe verificar roles y permisos
+        } else {
+            $this->assignExistingUserRole($rbac, $data['correo']);
+        } // El registro ya existe verificar roles y permisos
         /// FIN DE BLOQUE DE DATOS DE USUARIO
         return redirect()->to('/dashboard');
     }
@@ -128,15 +130,21 @@ class OAuthController extends Controller
     // Step 4: Cierra sesion y limpia la sesion
     public function logout()
     {
-        session()->set('logged_in', FALSE);
+        // Se obtiene el cliente (inquilino)
+        $credentials = (new OAuth())->credentials['tenantId'];
+        // Se limpia la sesion
         session()->remove('idusuario');
         session()->remove('name');
         session()->remove('access_token');
-        return redirect()->to(base_url('/'));
+        session()->destroy();
+        // URL de logout de Microsoft
+        $logoutUrl = "https://login.microsoftonline.com/". $credentials ."/oauth2/v2.0/logout?post_logout_redirect_uri=" . urlencode(base_url('/'));
+        // Redirigir al usuario a la URL de logout de Microsoft
+        return redirect()->to($logoutUrl);
     }
 
     // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
-    private function assignExistingUserRole( $rbac, string $correo)
+    private function assignExistingUserRole($rbac, string $correo)
     {
         // Obtener el ID del usuario basado en el correo
         $idUsuario = $this->userModel->select('idusuario')->where('correo', $correo)->first();

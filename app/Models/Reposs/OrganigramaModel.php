@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class OrganigramaModel extends Model
 {
-    protected $DBGroup          = "residentes"; // database group
+    protected $DBGroup          = 'compartida'; // database group
     protected $table            = 'organigrama';
     protected $primaryKey       = 'idorganigrama';
     protected $useAutoIncrement = true;

@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 
 class PermissionsModel extends Model
 {
+    protected $DBGroup = 'compartida'; // database group
     protected $table = 'users_permissions'; // Table name
     protected $primaryKey = 'ID'; // Primary key, though it might not be required here
     protected $allowedFields = ['ID', 'Lft', 'Rght', 'Title', 'Description']; // Fields we are working with
