@@ -4,7 +4,7 @@ namespace App\Models\Labs;
 
 use CodeIgniter\Model;
 
-class LaboratorioModel extends Model
+class SolicitudesVariasModel extends Model
 {
     protected $DBGroup = 'laboratorios';
     protected $table      = 'solicitude_varias';

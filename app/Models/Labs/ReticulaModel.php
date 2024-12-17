@@ -4,7 +4,7 @@ namespace App\Models\Labs;
 
 use CodeIgniter\Model;
 
-class ReticuladModel extends Model
+class ReticulaModel extends Model
 {
     protected $DBGroup = 'laboratorios';
     protected $table      = 'reticula';

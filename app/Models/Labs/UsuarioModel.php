@@ -4,7 +4,7 @@ namespace App\Models\Labs;
 
 use CodeIgniter\Model;
 
-class OrganigramaModel extends Model
+class UsuarioModel extends Model
 {
     protected $DBGroup = 'laboratorios';
     protected $table      = 'usuario';
