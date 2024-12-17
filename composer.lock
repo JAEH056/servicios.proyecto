@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ff53f7c63380200002b760277b6ad95",
+    "content-hash": "2d2b7abf73896cc48f6fc2ca11941fe3",
     "packages": [
         {
             "name": "codeigniter4/framework",
@@ -79,135 +79,6 @@
                 "source": "https://github.com/codeigniter4/CodeIgniter4"
             },
             "time": "2024-09-07T08:49:38+00:00"
-        },
-        {
-            "name": "codeigniter4/settings",
-            "version": "v2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/codeigniter4/settings.git",
-                "reference": "2748f2b4572d44a940f98c31847d65272cac5666"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codeigniter4/settings/zipball/2748f2b4572d44a940f98c31847d65272cac5666",
-                "reference": "2748f2b4572d44a940f98c31847d65272cac5666",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.4 || ^8.0"
-            },
-            "require-dev": {
-                "codeigniter4/devkit": "^1.1.2",
-                "codeigniter4/framework": "^4.2.3",
-                "rector/rector": "0.18.13"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "CodeIgniter\\Settings\\": "src"
-                },
-                "exclude-from-classmap": [
-                    "**/Database/Migrations/**"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lonnie Ezell",
-                    "email": "lonnieje@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Settings library for CodeIgniter 4",
-            "homepage": "https://github.com/codeigniter4/settings",
-            "keywords": [
-                "Settings",
-                "codeigniter",
-                "codeigniter4"
-            ],
-            "support": {
-                "issues": "https://github.com/codeigniter4/settings/issues",
-                "source": "https://github.com/codeigniter4/settings/tree/v2.2.0"
-            },
-            "time": "2024-01-06T07:10:58+00:00"
-        },
-        {
-            "name": "codeigniter4/shield",
-            "version": "v1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/codeigniter4/shield.git",
-                "reference": "22a8b3b58dafa7a5c080bc61446653aeb9fffc06"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/codeigniter4/shield/zipball/22a8b3b58dafa7a5c080bc61446653aeb9fffc06",
-                "reference": "22a8b3b58dafa7a5c080bc61446653aeb9fffc06",
-                "shasum": ""
-            },
-            "require": {
-                "codeigniter4/settings": "^2.1",
-                "php": "^7.4.3 || ^8.0"
-            },
-            "provide": {
-                "codeigniter4/authentication-implementation": "1.0"
-            },
-            "require-dev": {
-                "codeigniter/phpstan-codeigniter": "^1.3",
-                "codeigniter4/devkit": "^1.0",
-                "codeigniter4/framework": ">=4.3.5 <4.5.0 || ^4.5.1",
-                "firebase/php-jwt": "^6.4",
-                "mikey179/vfsstream": "^1.6.7",
-                "mockery/mockery": "^1.0",
-                "phpstan/extension-installer": "^1.3",
-                "phpstan/phpstan-strict-rules": "^1.5",
-                "phpunit/phpunit": "^9.6",
-                "rector/rector": "1.1.0"
-            },
-            "suggest": {
-                "ext-curl": "Required to use the password validation rule via PwnedValidator class.",
-                "ext-openssl": "Required to use the JWT Authenticator."
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "CodeIgniter\\Shield\\": "src"
-                },
-                "exclude-from-classmap": [
-                    "**/Database/Migrations/**"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lonnie Ezell",
-                    "email": "lonnieje@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Authentication and Authorization for CodeIgniter 4",
-            "homepage": "https://github.com/codeigniter4/shield",
-            "keywords": [
-                "Authentication",
-                "authorization",
-                "codeigniter",
-                "codeigniter4"
-            ],
-            "support": {
-                "docs": "https://codeigniter4.github.io/shield/",
-                "forum": "https://github.com/codeigniter4/shield/discussions",
-                "issues": "https://github.com/codeigniter4/shield/issues",
-                "slack": "https://codeigniterchat.slack.com",
-                "source": "https://github.com/codeigniter4/shield"
-            },
-            "time": "2024-06-13T08:54:48+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -598,35 +469,30 @@
         },
         {
             "name": "league/oauth2-client",
-            "version": "2.7.0",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "160d6274b03562ebeb55ed18399281d8118b76c8"
+                "reference": "3d5cf8d0543731dfb725ab30e4d7289891991e13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/160d6274b03562ebeb55ed18399281d8118b76c8",
-                "reference": "160d6274b03562ebeb55ed18399281d8118b76c8",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/3d5cf8d0543731dfb725ab30e4d7289891991e13",
+                "reference": "3d5cf8d0543731dfb725ab30e4d7289891991e13",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.0 || ^7.0",
-                "paragonie/random_compat": "^1 || ^2 || ^9.99",
-                "php": "^5.6 || ^7.0 || ^8.0"
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5",
+                "php": "^7.1 || >=8.0.0 <8.5.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.3.5",
-                "php-parallel-lint/php-parallel-lint": "^1.3.1",
-                "phpunit/phpunit": "^5.7 || ^6.0 || ^9.5",
-                "squizlabs/php_codesniffer": "^2.3 || ^3.0"
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpunit/phpunit": "^7 || ^8 || ^9 || ^10 || ^11",
+                "squizlabs/php_codesniffer": "^3.11"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-2.x": "2.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "League\\OAuth2\\Client\\": "src/"
@@ -662,59 +528,60 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-client/issues",
-                "source": "https://github.com/thephpleague/oauth2-client/tree/2.7.0"
+                "source": "https://github.com/thephpleague/oauth2-client/tree/2.8.0"
             },
-            "time": "2023-04-16T18:19:15+00:00"
+            "time": "2024-12-11T05:05:52+00:00"
         },
         {
-            "name": "paragonie/random_compat",
-            "version": "v9.99.100",
+            "name": "owasp/phprbac",
+            "version": "2.0.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a"
+                "url": "https://github.com/OWASP/rbac.git",
+                "reference": "82ba74cf823a8c5a9225a56d51f58f9f60b20c54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/996434e5492cb4c3edcb9168db6fbb1359ef965a",
-                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "url": "https://api.github.com/repos/OWASP/rbac/zipball/82ba74cf823a8c5a9225a56d51f58f9f60b20c54",
+                "reference": "82ba74cf823a8c5a9225a56d51f58f9f60b20c54",
                 "shasum": ""
             },
-            "require": {
-                "php": ">= 7"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*|5.*",
-                "vimeo/psalm": "^1"
-            },
-            "suggest": {
-                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-            },
             "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PhpRbac": "PhpRbac/src"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "CC-BY-SA-3.0"
             ],
             "authors": [
                 {
-                    "name": "Paragon Initiative Enterprises",
-                    "email": "security@paragonie.com",
-                    "homepage": "https://paragonie.com"
+                    "name": "AbiusX",
+                    "email": "me@abiusx.com",
+                    "homepage": "http://abiusx.com/",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Jesse Burns",
+                    "email": "jesse.burns@alliancecms.com",
+                    "homepage": "http://www.jbwebware.com",
+                    "role": "Developer"
                 }
             ],
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "description": "PHP-RBAC is the de-facto authorization library for PHP. It provides developers with NIST Level 2 Standard Role Based Access Control and more, in the fastest implementation yet.",
+            "homepage": "http://phprbac.net/",
             "keywords": [
-                "csprng",
-                "polyfill",
-                "pseudorandom",
-                "random"
+                "owasp",
+                "rbac",
+                "security"
             ],
             "support": {
-                "email": "info@paragonie.com",
-                "issues": "https://github.com/paragonie/random_compat/issues",
-                "source": "https://github.com/paragonie/random_compat"
+                "issues": "https://github.com/OWASP/rbac/issues",
+                "source": "https://github.com/OWASP/rbac/tree/2.0.1"
             },
-            "time": "2020-10-15T08:29:30+00:00"
+            "time": "2014-03-14T13:16:56+00:00"
         },
         {
             "name": "psr/http-client",
@@ -972,16 +839,16 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.5.0",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1"
+                "reference": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
-                "reference": "0e0d29ce1f20deffb4ab1b016a7257c4f1e789a1",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6",
+                "reference": "74c71c939a79f7d5bf3c1ce9f5ea37ba0114c6f6",
                 "shasum": ""
             },
             "require": {
@@ -1019,7 +886,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.5.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.5.1"
             },
             "funding": [
                 {
@@ -1035,7 +902,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T09:32:20+00:00"
+            "time": "2024-09-25T14:20:29+00:00"
         }
     ],
     "packages-dev": [
@@ -1713,16 +1580,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.5.38",
+            "version": "10.5.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a86773b9e887a67bc53efa9da9ad6e3f2498c132"
+                "reference": "4e89eff200b801db58f3d580ad7426431949eaa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a86773b9e887a67bc53efa9da9ad6e3f2498c132",
-                "reference": "a86773b9e887a67bc53efa9da9ad6e3f2498c132",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4e89eff200b801db58f3d580ad7426431949eaa9",
+                "reference": "4e89eff200b801db58f3d580ad7426431949eaa9",
                 "shasum": ""
             },
             "require": {
@@ -1732,7 +1599,7 @@
                 "ext-mbstring": "*",
                 "ext-xml": "*",
                 "ext-xmlwriter": "*",
-                "myclabs/deep-copy": "^1.12.0",
+                "myclabs/deep-copy": "^1.12.1",
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.1",
@@ -1794,7 +1661,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.38"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.5.39"
             },
             "funding": [
                 {
@@ -1810,7 +1677,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-28T13:06:21+00:00"
+            "time": "2024-12-11T10:51:07+00:00"
         },
         {
             "name": "psr/container",
@@ -2834,12 +2701,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "owasp/phprbac": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
