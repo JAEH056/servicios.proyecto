@@ -4,7 +4,6 @@ use App\Controllers\Home;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\OAuthlogin\OAuthController;
 use App\Controllers\Reposs\AdminController;
-use App\Controllers\Home;
 
 /**
  * @var RouteCollection $routes
