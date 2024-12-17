@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Controllers\Labs;
+    namespace App\Controllers\Labs;
 
-class Prueba extends MyController
-{
-    public function iniciando(): string
+use App\Controllers\BaseController;
+
+    class Prueba extends BaseController
     {
-        // return view('Labs/layouts/login');
-        return view('Labs/layouts/editar_dias_inhabiles');
+        public function iniciando(): string
+        {
+            return view('Labs/layouts/semestre');
+        }
     }
-}
