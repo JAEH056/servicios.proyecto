@@ -5,13 +5,13 @@
     <script src="<?= base_url('resources/js/datatables/datatables-simple-demo.js') ?>"></script>
 <?= $this->endSection() ?>
 
-<?= $this->section('content_horario') ?>
+<?= $this->section('content_reticula') ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n5">
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center">
-                <span>Horarios</span>
-                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('horario/nuevo') ?>'">
+                <span>Reticula de Ingeniería en Sistemas Computacionales</span>
+                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('laboratorio/nuevo') ?>'">
                     <i class="fa-solid fa-plus me-2"></i>Agregar
                 </button>
             </div>
@@ -19,35 +19,29 @@
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
-                            <th>Semestre</th>
-                            <th>Laboratorio</th>
-                            <th>Ver</th>
+                            <th>Asignatura</th>
+                            <th>Clave</th>
+                            <th>SATCA</th>
                             <th>Editar</th>
                             <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Mostrar horarios -->
-                        <?php if(!empty($horarios)): ?>
-                        <?php foreach ($horarios as $datos_horarios): ?>
+                        <!-- Mostrar laboratorios -->
+                        <?php if(!empty($laboratorios)): ?>
+                        <?php foreach ($laboratorios as $datos_laboratorios): ?>
                         <tr>
-                            <td><?= esc($datos_horarios['nombre_semestre']) ?></td>
-                            <td><?= esc($datos_horarios['nombre_laboratorio']) ?></td>
+                            <td><?= esc($datos_laboratorios['carrera_nombre']) ?></td>
+                            <td><?= esc($datos_laboratorios['nombre_laboratorio']) ?></td>
                             <td>
                                 <!-- Botón Editar -->
-                                <button class="btn btn-teal" type="button" onclick="window.location = '<?= site_url('laboratorio/editar/'.  $datos_horarios['id']) ?>'">
-                                    <i class="fa-solid fa-eye me-2"></i>Ver
-                                </button>
-                            </td>
-                            <td>
-                                <!-- Botón Editar -->
-                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('laboratorio/editar/'.  $datos_horarios['id']) ?>'">
+                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('laboratorio/editar/'.  $datos_laboratorios['id']) ?>'">
                                     <i class="fa-solid fa-pencil me-2"></i>Editar
                                 </button>
                             </td>
                             <td>
                                 <!-- Botón Eliminar -->
-                                <button class="btn btn-danger" type="button" onclick="confirmDelete(<?= esc($datos_horarios['id']) ?>)">
+                                <button class="btn btn-danger" type="button" onclick="confirmDelete(<?= esc($datos_laboratorios['id']) ?>)">
                                     <i class="fa-solid fa-trash-can me-2"></i>Eliminar
                                 </button>
                             </td>
@@ -55,7 +49,7 @@
                         <?php endforeach; ?>
                         <?php else: ?> 
                         <tr>
-                            <td colspan="6" class="text-center">No hay horarios registrados.</td>
+                            <td colspan="6" class="text-center">No hay días inhábiles registrados.</td>
                         </tr>
                     <?php endif; ?> 
                     </tbody>
@@ -71,7 +65,7 @@
             //Mostrar la alerta de confirmación
             if(confirm("¿Estás seguro de que deseas eliminar este registro?")){
                 //Si el usuario confirma, redirigir a la URL  de elimación
-                window.location.href = '<?= site_url('horario/eliminar/') ?>' + id;
+                window.location.href = '<?= site_url('laboratorio/eliminar/') ?>' + id;
             }
         }
     </script>

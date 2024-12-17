@@ -1,14 +1,17 @@
 <?php
 
+use App\Controllers\Home;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\OAuthlogin\OAuthController;
 use App\Controllers\Reposs\AdminController;
-use App\Controllers\Home;
 
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', [Home::class, 'index']);
+$routes->get('/', [Home::class,'index']);
+
+//rutas de acceso codeigniter shield
+//service('auth')->routes($routes);
 
 //Sara y Vianey, coloquen sus rutas en:
 // Mueve esta ruta al archivo correcto.
