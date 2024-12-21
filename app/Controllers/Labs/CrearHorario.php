@@ -22,15 +22,25 @@ class CrearHorario extends BaseController
 
     public function verHorario($idLaboratorio = null)
     {
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+        //se anadio el inicio de sesion del usuario 
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token');
+
         $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
         $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
+        //los datos de sesion se pasan a la vista
 
         if (!$idLaboratorio && !empty($laboratorios)) {
-            return redirect()->to(base_url("horario/" . $laboratorios[0]['id']));
+            return redirect()->to(base_url("/usuario/horario/" . $laboratorios[0]['id']));
         }
 
         if (empty($periodos)) {
-            return view('Labs/layouts/error_404', ['mensaje' => 'No se encontraron periodos para el laboratorio.']);
+            return view('Labs/layouts/error_404', ['mensaje' => 'No se encontraron periodos para el laboratorio.',
+        'user' => $user, 'token' => $token, 'idusuario' => $userId]);
         } else {
             foreach ($periodos as $datosperiodo) {
                 if (isset($datosperiodo['inicio']) && isset($datosperiodo['fin'])) {
@@ -110,6 +120,7 @@ class CrearHorario extends BaseController
                         'laboratorios' => $laboratorios,
                         'laboratorioSeleccionado' => $idLaboratorio,
                         'events' => json_encode($todosLosEventos),
+                        'user' => $user, 'token' => $token, 'idusuario' => $userId,
                        
                        
                     ];

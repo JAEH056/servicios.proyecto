@@ -74,7 +74,7 @@ class Filters extends BaseFilters
             // 'honeypot',
              'csrf',
             // 'invalidchars',
-            'rbac' => ['except' => ['/', '/oauth/login','/oauth/microsoft/callback' , '/dashboard', '/logout']],
+            'rbac' => ['except' => ['/', '/oauth/login','/oauth/microsoft/callback' , '/dashboard', '/logout','/puesto']],
         ],
         'after' => [
             // 'honeypot',

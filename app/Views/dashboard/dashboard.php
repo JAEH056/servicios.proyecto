@@ -67,14 +67,15 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Segunda tarjeta LABSS -->
+                        <!-- Primera tarjeta LABSS -->
                         <div class="col-lg-3 mb-4">
                             <div class="card mb-4">
                                 <div class="card-body text-center p-5">
-                                    <img class="img-fluid mb-5" width="200px" height="200px" src="<?= base_url("resources/assets/img/flores.jpg") ?>" />
+                                    <img class="img-fluid mb-5" width="200px" height="200px" src="<?= base_url("resources/assets/img/logo_ITSH.png") ?>" />
                                     <h4>Gestión de laboratorios (LABS)</h4>
-                                    <p class="mb-4">Sistema de Sara y Vianey</p>
-                                    <a class="btn btn-primary p-3" href="#!">Ingresar</a>
+                                    <p class="d-inline-flex gap-1">
+                                        <a href="<?= base_url('usuario/horario') ?>" class="btn btn-primary">Ingresar</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

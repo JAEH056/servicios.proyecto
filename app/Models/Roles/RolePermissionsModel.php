@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RolePermissionsModel extends Model
 {
-    protected $DBGroup = 'compartida'; // database group
+    protected $DBGroup = 'compartida';
     protected $table = 'phpRbca_rolepermissions'; // Nombre de la tabla
     protected $primaryKey = 'RoleID'; // Llave primaria, quiza no sea necesaria aqui...
     protected $allowedFields = ['RoleID', 'PermissionID', 'AssignmentDate']; // Campoos con los que se pueden trabajar.
@@ -21,9 +21,9 @@ class RolePermissionsModel extends Model
         */
         $builder = $this->builder();
         $builder = $this->db->table('phpRbca_rolepermissions rp');
-        $builder->select('rp.RoleID, r.Title AS RoleName, rp.PermissionID,p.Title AS PermissionName, p.Description, rp.AssignmentDate')
-            ->join('phpRbca_roles r', 'rp.RoleID = r.ID')
-            ->join('phpRbca_permissions p', 'rp.PermissionID = p.ID');
+        $builder->select('rp.RoleID, r.Title AS RoleName, rp.PermissionID, p.Description AS PermissionName, rp.AssignmentDate')
+            ->join('users_roles r', 'rp.RoleID = r.ID')
+            ->join('users_permissions p', 'rp.PermissionID = p.ID');
         // Ejecuta la consulta y devuelve los resultados
         return $builder->get()->getResultArray(); /// o getRowArray() si solo se usa un registro
     }

@@ -5,8 +5,8 @@ namespace App\Models\Roles;
 use CodeIgniter\Model;
 
 class RolesModel extends Model
-{
-    protected $DBGroup = 'compartida'; // database group
+{   
+    protected $DBGroup = 'compartida';
     protected $table = 'phpRbca_roles'; // Table name
     protected $primaryKey = 'ID'; // Primary key, though it might not be required here
     protected $allowedFields = ['ID', 'Lft', 'Rght', 'Title', 'Description']; // Fields we are working with

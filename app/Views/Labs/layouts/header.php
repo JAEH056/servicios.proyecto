@@ -4,9 +4,10 @@
             <div class="col-auto mt-4">
                 <h1 class="page-header-title">
                     <div class="page-header-icon"><i data-feather="file"></i></div>
-                    Simplified Header
+                    Administración de laboratorios
                 </h1>
-            <div class="page-header-subtitle">A simplified page header for use with the dashboard layout</div>
+            <div class="page-header-subtitle">Administración de laboratorios de servicios en una IES
+            </div>
         </div>
     </div>
 </div>

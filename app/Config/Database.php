@@ -18,6 +18,8 @@ class Database extends Config
      * Lets you choose which connection group to use if no other is specified.
      */
     public string $defaultGroup = 'residentes';
+    public string $db_compartida = 'compartida';
+    public string $db_laboratorios ='laboratorios';
     
 
     /**
@@ -107,7 +109,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         'username'     => 'root',
         'password'     => '1234',
-        'database'     => 'laboratorios',
+        'database'     => 'laboratorio',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
         'pConnect'     => false,

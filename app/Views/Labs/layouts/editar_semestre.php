@@ -12,14 +12,14 @@
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         alert('<?= esc(session()->get('success')) ?>');
-                        window.location.href = '/semestre/mostrar';
+                        window.location.href = '/usuario/semestre/mostrar';
                     });
                 </script>
             <?php endif; ?>
             <!-- Component Preview-->
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
-                    <?= form_open('semestre/actualizar/' .esc($semestre['id']), ['id' => 'fomr-semestre']) ?>
+                    <?= form_open('/usuario/semestre/actualizar/' .esc($semestre['id']), ['id' => 'fomr-semestre']) ?>
                     <?= csrf_field() ?>
 
                     <div class="mb-3">

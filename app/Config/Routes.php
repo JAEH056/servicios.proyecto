@@ -3,6 +3,7 @@
 use App\Controllers\Home;
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\OAuthlogin\OAuthController;
+use App\Controllers\Puestos\Puesto;
 use App\Controllers\Reposs\AdminController;
 
 /**
@@ -26,3 +27,7 @@ $routes->get('/oauth/login',                [OAuthController::class, 'login']); 
 $routes->get('/oauth/microsoft/callback',   [OAuthController::class, 'callback']);   // Step 2
 $routes->get('/dashboard',                  [OAuthController::class, 'dashboard']);  // Step 3, este debe colocarse en ontro Controller.
 $routes->get('/logout',                     [OAuthController::class, 'logout']);     // Step 4
+
+
+
+$routes->get('/puesto',                     [Puesto::class, 'plantillaVista']);     // Step 4

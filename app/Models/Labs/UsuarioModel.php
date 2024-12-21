@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class UsuarioModel extends Model
 {
-    protected $DBGroup = 'laboratorios';
+    protected $DBGroup = 'compartida';
     protected $table      = 'usuario';
     protected $primaryKey = 'id';
 
@@ -15,5 +15,5 @@ class UsuarioModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
 
-    protected $allowedFields = ['correo', 'nombre', 'apellido1', 'apellido2'];
+    protected $allowedFields = ['principal_name', 'nombre', 'apellido1', 'apellido2'];
 }
