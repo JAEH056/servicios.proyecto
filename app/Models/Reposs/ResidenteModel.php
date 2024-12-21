@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class ResidenteModel extends Model
 {
-    protected $DBGroup          = "residentes"; // database group
+    protected $DBGroup          = 'residentes'; // database group
     protected $table            = 'residente';
     protected $primaryKey       = 'idresidente';
     protected $useAutoIncrement = true;
@@ -14,6 +14,7 @@ class ResidenteModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'idresidente',
         'idprograma_educativo',
         'principal_name',
         'numero_control',
@@ -48,16 +49,16 @@ class ResidenteModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
     
+    /*
+    *   IMPORTANTE: esta funcion es utilizada en el modelo Usuarios
+    *   con el mismo nombre (parte IMPORTANTE del proceso OAUTH).
+    *   Eliminar o modificar esta funcion puede afectar la autenticacion.
+    */
     public function esPrimerIngreso(string $correo): bool
     {
         return empty($this->where('principal_name',$correo)->first());
     }
     public function findByCorreo($correo) {
-        // Use the getWhere method to find a record by the 'correo' field
         return $this->where('principal_name', $correo)->first();
-    }
-    public function insertData($data) {
-        // Your existing insert logic
-        return $this->insert($data);
     }
 }

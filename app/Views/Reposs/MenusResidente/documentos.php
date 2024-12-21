@@ -28,7 +28,7 @@
                         <div class="row justify-content-center">
                             <h5 class="card-title">Cargar Documentos</h5>
 
-                            <!-- FORMA PARA SUBIR DOCUMENTOS (CONSTANCIA SERVICIO SOCIAL) -->
+                            <!-- FORMA PARA SUBIR DOCUMENTOS (CONSTANCIA KARDEX) -->
                             <!-- Bloque Mensajes: Mostrar mensajes de éxito o error -->
                             <?php if (session()->get('errorkardex')): ?>
                                 <div class="alert alert-danger"><?= session()->get('errorkardex') ?></div>
@@ -77,7 +77,7 @@
                             <!-- Verificar si ya hay un documento cargado -->
                             <?php if ($constanciaSS): ?>
                                 <div class="col-md-6">
-                                    Ya has subido un documento(Cons. Servicio Social.): <strong><?= htmlspecialchars($constanciaSS['iddocumento']) , htmlspecialchars($constanciaSS['archivo']) ?></strong>
+                                    Ya has subido un documento(Cons. Servicio Social.): <strong><?= esc($constanciaSS['iddocumento']), esc($constanciaSS['archivo']) ?></strong>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="<?= base_url('usuario/residentes/delete/2') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
@@ -192,7 +192,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <a href="<?= base_url('usuario/residentes/delete/5') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
-                                    ta                     </div>
+                                </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/5') ?>" method="POST" enctype="multipart/form-data">
                                     <!-- Form Row-->
@@ -221,59 +221,49 @@
                         <div class="container-fluid px-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <table id="datatablesSimple">
-                                        <thead>
-                                            <tr>
-                                                <th>Nombre del Documento</th>
-                                                <th>Fecha de entrega</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Nombre del Documento</th>
-                                                <th>Fecha de entrega</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <tr>
-                                                <td>Boots on the Ground, Inclusive Thought Provoking Ideas</td>
-                                                <td>20 Jun 2021</td>
-                                                <td>
-                                                    <div class="badge bg-gray-200 text-dark">Entregado</div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="blog-management-edit-post.html"><i data-feather="edit"></i></a>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark" href="#!"><i data-feather="trash-2"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Invest In Social Impact</td>
-                                                <td>19 Jun 2021</td>
-                                                <td>
-                                                    <div class="badge bg-yellow-soft text-yellow">Rechazado</div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="blog-management-edit-post.html"><i data-feather="edit"></i></a>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark" href="#!"><i data-feather="trash-2"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Save the World, Social Entrepreneur</td>
-                                                <td>18 Jun 2021</td>
-                                                <td>
-                                                    <div class="badge bg-green-soft text-green">Aprovado</div>
-                                                </td>
-                                                <td>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="blog-management-edit-post.html"><i data-feather="edit"></i></a>
-                                                    <a class="btn btn-datatable btn-icon btn-transparent-dark" href="#!"><i data-feather="trash-2"></i></a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <?php if (!empty($estadoDocumentos)): ?>
+                                        <table id="datatablesSimple">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID Documento</th>
+                                                    <th>Archivo</th>
+                                                    <th>Nombre</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha de entrega</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>ID Documento</th>
+                                                    <th>Archivo</th>
+                                                    <th>Nombre</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha de entrega</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                <?php foreach ($estadoDocumentos as $row): ?>
+                                                    <tr>
+                                                        <td><?= esc($row['iddocumento']) ?></td>
+                                                        <td><?= esc($row['archivo']) ?></td>
+                                                        <td><?= esc($row['nombre']) ?></td>
+                                                        <td>
+                                                            <div class="badge bg-primary text-white rounded-pill"><?= esc($row['estado']) ?></div>
+                                                        </td>
+                                                        <td><?= esc($row['fecha_entrega']) ?></td>
+                                                        <td>
+                                                            <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="blog-management-edit-post.html"><i data-feather="edit"></i></a>
+                                                            <a class="btn btn-datatable btn-icon btn-transparent-dark" href="#!"><i data-feather="trash-2"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    <?php else: ?>
+                                        <p>No se encontraron documentos.</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

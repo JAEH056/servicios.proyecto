@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class PreRequisitoModel extends Model
 {
     protected $DBGroup          = "residentes"; // database group
-    protected $table            = 'prerequisito';
+    protected $table            = 'pre_requisito';
     protected $primaryKey       = 'idpre_requisito';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -49,4 +49,15 @@ class PreRequisitoModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getRequestById(int $idresidente, int $idtipo)
+    {
+        $this->table('reposs.pre_requisito');
+        return $this->select('documento.iddocumento, documento.archivo')
+                    ->join('reposs.documento', 'pre_requisito.iddocumento = documento.iddocumento')
+                    ->where('pre_requisito.idresidente', $idresidente)
+                    ->where('documento.idtipo', $idtipo)
+                    ->get()
+                    ->getResultArray();
+    }
 }

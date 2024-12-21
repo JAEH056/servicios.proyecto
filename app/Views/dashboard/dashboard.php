@@ -35,9 +35,13 @@
                         <?php if (session()->has('notification')): ?>
                             <div class="alert alert-success"> <?= session('notification') ?> </div>
                         <?php endif; ?>
-                         <!-- Mensaje de insert en el primer login -->
-                         <?php if (session()->has('auth_message')): ?>
+                        <!-- Mensaje de insert en el primer login -->
+                        <?php if (session()->has('auth_message')): ?>
                             <div class="alert alert-danger"> <?= session('auth_message') ?> </div>
+                        <?php endif; ?>
+                        <!-- Mensaje de insert en el primer login -->
+                        <?php if (session()->has('info')): ?>
+                            <div class="alert alert-danger"> <?= session('info') ?> </div>
                         <?php endif; ?>
                         <!-- Primera tarjeta REPOSS -->
                         <div class="col-lg-3 mb-4">

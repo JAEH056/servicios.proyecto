@@ -53,7 +53,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Gestión de Roles</div>
                         <div class="card-body">
-                            <form method="post" action="<?=base_url('admin/createRole')?>">
+                            <form method="post" action="<?= base_url('admin/createRole') ?>">
                                 <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="role_name" class="form-label">Nombre del Rol</label>
@@ -71,7 +71,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Gestión de Permisos</div>
                         <div class="card-body">
-                            <form method="post" action="<?=base_url('/admin/createPermission')?>">
+                            <form method="post" action="<?= base_url('/admin/createPermission') ?>">
                                 <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="permission_name" class="form-label">Nombre del Permiso</label>
@@ -108,7 +108,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Asignar Permisos a Roles</div>
                         <div class="card-body">
-                            <form method="post" action="<?=base_url('/admin/assignPermissionToRole')?>">
+                            <form method="post" action="<?= base_url('/admin/assignPermissionToRole') ?>">
                                 <?= csrf_field() ?>
                                 <div class="mb-3">
                                     <label for="role_id" class="form-label">Selecciona un Rol</label>
@@ -130,7 +130,7 @@
                             </form>
                         </div>
                     </div>
-                    <!-- Listar roles asignados-->
+                    <!-- Listar permisos asignados a roles-->
                     <div class="card mb-4">
                         <div class="card-header">Permisos Asignados a Roles</div>
                         <div class="card-body">
@@ -139,7 +139,7 @@
                                     <tr>
                                         <th>Rol ID</th>
                                         <th>Nombre Rol</th>
-                                        <th>Permiso ID</th>
+                                        <th>Nombre del Permiso</th>
                                         <th>Descripción del Permiso</th>
                                         <th>Fecha de asignación</th>
                                         <th>Acciones</th>
@@ -149,8 +149,8 @@
                                     <tr>
                                         <th>Role ID</th>
                                         <th>Role Name</th>
-                                        <th>Permission ID</th>
                                         <th>Permission Name</th>
+                                        <th>Permission Description</th>
                                         <th>Assignment Date</th>
                                         <th>Actions</th>
                                     </tr>
@@ -160,8 +160,55 @@
                                         <tr>
                                             <td><?= $rp['RoleID'] ?></td>
                                             <td><?= $rp['RoleName'] ?></td>
-                                            <td><?= $rp['PermissionID'] ?></td>
                                             <td><?= $rp['PermissionName'] ?></td>
+                                            <td><?= $rp['Description'] ?></td>
+                                            <td><?= date('Y-m-d', $rp['AssignmentDate']) ?></td>
+                                            <td>
+                                                <button
+                                                    class="btn btn-danger btn-sm delete-button"
+                                                    data-id="<?= $rp['RoleID'] . '-' . $rp['PermissionID'] ?>"
+                                                    data-type="role-permission">
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Listar roles asignados a usuarios-->
+                    <div class="card mb-4">
+                        <div class="card-header">Roles Asignados a Usuarios</div>
+                        <div class="card-body">
+                            <table id="datatablesSimple" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>ID Usuario</th>
+                                        <th>Nombre Usuario</th>
+                                        <th>Nombre del Rol</th>
+                                        <th>Descripción del Rol</th>
+                                        <th>Fecha de asignación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>ID Usuario</th>
+                                        <th>Nombre Usuario</th>
+                                        <th>Nombre del Rol</th>
+                                        <th>Descripción del Rol</th>
+                                        <th>Fecha de asignación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <?php foreach ($rolePermissions as $rp): ?>
+                                        <tr>
+                                            <td><?= $rp['RoleID'] ?></td>
+                                            <td><?= $rp['RoleName'] ?></td>
+                                            <td><?= $rp['PermissionName'] ?></td>
+                                            <td><?= $rp['Description'] ?></td>
                                             <td><?= date('Y-m-d', $rp['AssignmentDate']) ?></td>
                                             <td>
                                                 <button
@@ -190,4 +237,5 @@
 <script src="<?= base_url('resources/js/adminpage/rolepermissionscripts.js') ?>"></script>
 <script src="<?= base_url('resources/js/adminpage/rolescripts.js') ?>"></script>
 <script src="<?= base_url('resources/js/adminpage/modalscripts.js') ?>"></script>
+
 </html>

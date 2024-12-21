@@ -28,6 +28,6 @@ class OpenUseController extends BaseController
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('Reposs/adminPage', ['user' => $user, 'token' => $token, 'idusuario' => $userId, 'roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions']]);
+        return view('admin/index', ['user' => $user, 'token' => $token, 'idusuario' => $userId, 'roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions']]);
     }
 }

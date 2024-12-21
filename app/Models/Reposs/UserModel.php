@@ -20,16 +20,21 @@ class UserModel extends Model
         // Your existing insert logic
         return $this->insert($data);
     }
+    /*
+    *   IMPORTANTE: esta funcion es utilizada en el modelo Residentes
+    *   con el mismo nombre (parte importante del proceso OAUTH).
+    *   Eliminar o modificar esta funcion puede afectar la autenticacion.
+    */
     public function esPrimerIngreso(string $correo): bool
     {
         return empty($this->where('principal_name',$correo)->first());
     }
+    // Retorna los datos del usuario usando el correo como metodo de busqueda.
     public function findByCorreo($correo) {
-        // Use the getWhere method to find a record by the 'correo' field
         return $this->where('principal_name', $correo)->first();
     }
+    // Busca el puesto del usuario usando su correo y retorna un arreglo.
     public function getPuestoCorreo($field,$correo){
-        // Busca el puesto del usuario usando su correo y retorna un arreglo ()
         $builder = $this->builder();
         $builder = $this->select('idusuario')->where( $field,$correo['principal_name']);           
         return  $builder->getRowArray();
