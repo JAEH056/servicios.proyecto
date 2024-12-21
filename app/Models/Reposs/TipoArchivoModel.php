@@ -4,21 +4,15 @@ namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
 
-class ValidacionModel extends Model
+class TipoArchivoModel extends Model
 {
-    protected $DBGroup          = "residentes"; // database group
-    protected $table            = 'validacion';
-    protected $primaryKey       = 'idvalidacion';
+    protected $table            = 'tipo_archivo';
+    protected $primaryKey       = 'idtipo';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [
-        'estado',
-        'observaciones',
-        'idpuesto',
-        'iddocumento'
-    ];
+    protected $allowedFields    = ['idtipo', 'nombre', 'tipo_archivo'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -29,8 +23,8 @@ class ValidacionModel extends Model
     // Dates
     protected $useTimestamps = false;
     protected $dateFormat    = 'datetime';
-    protected $createdField  = 'fecha_entrega';
-    protected $updatedField  = 'fecha_actualizacion';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
     protected $deletedField  = 'deleted_at';
 
     // Validation
@@ -49,10 +43,4 @@ class ValidacionModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    public function getDocumentByTipo(int $iddocumento)
-    {
-        $this->table('validacion');
-        return $this->delete('iddocumento', $iddocumento);
-    }
 }

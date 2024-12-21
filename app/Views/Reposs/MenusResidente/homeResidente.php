@@ -6,6 +6,7 @@
 ?>
 <!-- obtiene el contenido de la plantilla de la ruta especificada -->
 <?= $this->extend('Reposs/MenusResidente/inicioResidente'); ?>
+<?= $this->section('contenido') ?>
 <main>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n10">
@@ -13,7 +14,6 @@
             <div class="card-body">
                 <div class="tab-content" id="cardTabContent">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                        <?= $this->section('contenido') ?>
                         <!-- Mensajes de error -->
                         <?php if (session()->getFlashdata('message')): ?>
                             <div class="alert alert-success">
@@ -58,7 +58,7 @@
                             <!-- Knowledge base main category card 3-->
                             <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/residentes/empresa') ?>">
                                 <div class="row g-0">
-                                    <div class="col-auto card-icon-aside bg-teal"><i class="text-white-50" data-feather="grid"></i></div>
+                                    <div class="col-auto card-icon-aside bg-teal"><i class="text-white-50" data-feather="briefcase"></i></div>
                                     <div class="col">
                                         <div class="card-body py-4">
                                             <h5 class="card-title text-teal mb-2">Datos de la Empresa</h5>
@@ -71,7 +71,7 @@
                             <!-- Knowledge base main category card 3-->
                             <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/residentes/proyecto') ?>">
                                 <div class="row g-0">
-                                    <div class="col-auto card-icon-aside " style="background-color: rgba(254, 152, 0, 0.88);"><i class="text-white-50" data-feather="briefcase"></i></div>
+                                    <div class="col-auto card-icon-aside " style="background-color: rgba(254, 152, 0, 0.88);"><i class="text-white-50" data-feather="grid"></i></div>
                                     <div class="col">
                                         <div class="card-body py-4">
                                             <h5 class="card-title mb-2" style="color:rgba(254, 152, 0, 0.88);">Datos del Proyecto</h5>

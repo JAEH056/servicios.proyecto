@@ -12,6 +12,7 @@ use Config\OAuth;
 class OAuthController extends Controller
 {
     protected $microsoftProvider;
+    protected $rbac;
     protected $userModel;
     protected $userRolesModel;
     protected $residenteModel;
@@ -30,6 +31,7 @@ class OAuthController extends Controller
             'scopes'                     => ['openid profile offline_access user.read'],
         ]);
         // Se instancia el modelo
+        $this->rbac = service('rbac');
         $this->userModel = new UserModel();
         $this->userRolesModel = new UserRolesModel();
         $this->residenteModel = new ResidenteModel();
@@ -89,6 +91,7 @@ class OAuthController extends Controller
         $givenName = $userData['givenName'];
         $surname = $userData['surname'];
         $apellidos = $this->splitSurname($surname); // Separar apellidos
+        $nombreDeUsuario = $this->separarPrincipalname($userPrincipalName);
 
         // Se crea un arreglo con la informacion del usuario
         $data = [
@@ -107,12 +110,12 @@ class OAuthController extends Controller
         $domain = strtolower($emailParts[1]);
         // Arreglo con los Dominos permitidos
         $organizationDomain = [
-            'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel],
-            'huatusco.tecnm.mx' => ['model' => $this->userModel]
+            'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel, 'roleId' => 2, 'actualizarDatos' => '/usuario/residentes/datos'],
+            'huatusco.tecnm.mx' => ['model' => $this->userModel, 'roleId' => 3, 'actualizarDatos' => '/dashboard']
         ];
         // Verificar si el dominio es permitido
         if (!array_key_exists($domain, $organizationDomain)) {
-            exit('Dominio no permitido.');
+            return redirect()->to('/error')->with('message', 'Dominio no valido');
         }
 
         // Se define en una sola variable el modelo que se utilizara dependiendo del dominio (estudiante o Usuario).
@@ -120,7 +123,7 @@ class OAuthController extends Controller
 
         // Si no existe el registro en la tabla correspondiente (definido por el dominio), se crea un nuevo registro.
         if ($tipoUsuario['model']->esPrimerIngreso($userData['userPrincipalName']) == true) {
-            $this->assignNewUserRole($data);
+            $this->assignNewUserRole($data, $tipoUsuario);
         } else {
             $this->assignExistingUserRole($rbac, $data['principal_name']);
         } // El registro ya existe verificar roles y permisos
@@ -185,7 +188,7 @@ class OAuthController extends Controller
             } catch (\Exception $e) {
                 session()->setFlashdata('error', 'Hubo un error al asignar el rol al usuario.');
                 log_message('error', 'Error al asignar rol: ' . $e->getMessage());
-                return redirect()->to('/error')->with('message', 'There was an error with assing role');
+                return redirect()->to('/error')->with('message', 'Hubo un error al asignar el rol.');
             }
         }
         // Si el usuario ya tiene roles asignados
@@ -195,29 +198,16 @@ class OAuthController extends Controller
     }
 
     // Metodo para asignar roles a nuevos usuarios
-    private function assignNewUserRole(array $data)
+    private function assignNewUserRole(array $data, $usuario)
     {
-        // Extrae el dominio del correo
-        $emailParts = explode('@', $data['principal_name']);
-        $domain = strtolower($emailParts[1]);
-        // Dominos permitidos
-        $organizationDomain = [
-            'alum.huatusco.tecnm.mx' => ['role' => 'estudiante', 'model' => $this->residenteModel, 'roleId' => 2],
-            'huatusco.tecnm.mx' => ['role' => 'docente', 'model' => $this->userModel, 'roleId' => 3]
-        ];
-        // Verifica el dominio y asigna el rol correspondiente
-        if (!isset($organizationDomain[$domain])) {
-            return redirect()->to('/error')->with('message', 'Dominio no valido');
-        }
-        // Insertar datos y asignar rol
-        $roleInfo = $organizationDomain[$domain];
-        if (!$idUsuario = $roleInfo['model']->insertData($data)) {
+        if (!$idUsuario = $usuario['model']->insert($data)) {
             return redirect()->to('/error')->with('message', 'Error al insertar los datos del usuario.');
         }
-        $this->userRolesModel->setRoleToUser($roleInfo['roleId'], $idUsuario); // Asignar rol
+        $this->rbac->Users->assign($usuario['roleId'], $idUsuario);
         session()->set('idusuario', $idUsuario);
         // Set flash data message with inserted data
-        session()->setFlashdata('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . '? (' . $data['principal_name'] . ')');
+        $redirect = $usuario['actualizarDatos'];
+        return redirect()->to(base_url($redirect))->with('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . ' ? (' . $data['principal_name'] . ')');
     }
 
     // Funcion para separar apellidos con varias palabras
@@ -241,6 +231,35 @@ class OAuthController extends Controller
             return [
                 'apellido1' => $fullSurname,
                 'apellido2' => ''
+            ];
+        }
+    }
+    // Funcion para separar numero de control(estudiante) o nombre de usuario('docente')
+    public function separarPrincipalname($userName)
+    {
+        // Usa explode() para romper la cadena en piezas separadas por espacios.
+        $parts = explode("@", $userName);
+        // Se revisa si tiene mas de una palabra (to ensure it's a full name).
+        if (count($parts) > 1 && $parts[1] == 'alum.huatusco.tecnm.mx') {
+            // Se separa la ultima palabra como segundo dominio.
+            $dominio = array_pop($parts);
+            // Se unen las palabras restantes como el primer apellido.
+            $nombreUsuario = implode("", $parts);
+            // Se regresan las dos partes en un arreglo.
+            return [
+                'nombreUsuario' => $nombreUsuario,
+                'dominio' => $dominio
+            ];
+        }
+        if ($parts[1] == 'huatusco.tecnm.mx') {
+            // Se separa la ultima palabra como segundo dominio.
+            $dominio = array_pop($parts);
+            // Se unen las palabras restantes como el primer apellido.
+            $nombreUsuario = implode("", $parts);
+            // Se regresan las dos partes en un arreglo.
+            return [
+                'nombreUsuario' => $nombreUsuario,
+                'dominio' => $dominio
             ];
         }
     }
