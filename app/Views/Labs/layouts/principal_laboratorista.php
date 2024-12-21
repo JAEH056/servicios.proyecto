@@ -26,7 +26,7 @@
             <div id="layoutSidenav_content">
                 <main>
                     <header class="page-header page-header-dark bg-gradient-primary-to-secondary mb-4">
-                        <?= $this->include('dashboard/header') ?>
+                        <?= $this->include('Labs/layouts/header') ?>
                     </header>
                     <!-- CONTENIDO DE LA PAGINA -->
                     <!-- Laboratorio -->
@@ -38,8 +38,8 @@
                     <!-- Laboratorista -->
                     <?= $this->renderSection('content_laboratorista') ?>
 
-                    <!-- Usuario -->
-                    <?= $this->renderSection('content_puesto_empleado') ?>
+                    <!-- Cuenta -->
+                    <?= $this->renderSection('content_empleado') ?>
 
                     <!-- Semestre -->
                     <?= $this->renderSection('content_semestre') ?>
@@ -66,6 +66,8 @@
 
                     <!-- Errores -->
                     <?= $this->renderSection('content_error_404') ?>
+
+                    <?= $this->renderSection('content_prueba') ?>
                 </main>
                 <footer class="footer-admin mt-auto footer-light">
                     <?= $this->include('dashboard/footer') ?>

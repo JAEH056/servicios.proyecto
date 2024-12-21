@@ -84,14 +84,12 @@ class OAuthController extends Controller
             return redirect()->to(base_url('/error'))->with('message', 'There was an error with the authentication process.');
         }
         /// INICIO DE BLOQUE DE DATOS DE USUARIO
-        // Verificar si el correo ya existe en la base de datos
-        $existingUser = $this->userModel->esPrimerIngreso($userData['userPrincipalName']);
-        $existingResident = $this->residenteModel->esPrimerIngreso($userData['userPrincipalName']);
         // Se extrae el nombre del usuario y correo
         $userPrincipalName = $userData['userPrincipalName'];
         $givenName = $userData['givenName'];
         $surname = $userData['surname'];
         $apellidos = $this->splitSurname($surname); // Separar apellidos
+
         // Se crea un arreglo con la informacion del usuario
         $data = [
             'principal_name' => $userPrincipalName,
@@ -99,16 +97,35 @@ class OAuthController extends Controller
             'apellido1' => $apellidos['apellido1'],  // Primer apellido
             'apellido2' => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : '', // Segundo apellido
         ];
-        // Si no existe el registro en ambos modelos, crear un nuevo usuario
-        if ($existingUser == true) {
-            if ($existingResident == true) {
-                $this->assignNewUserRole($data);
-            }
+
+        // Extrae el dominio del correo
+        $emailParts = explode('@', $data['principal_name']);
+        if (count($emailParts) < 2) {
+            exit('Formato de correo invalido.');
+        }
+        // Se modifica el correo a minusculas (para evitar problemas con mayusculas)
+        $domain = strtolower($emailParts[1]);
+        // Arreglo con los Dominos permitidos
+        $organizationDomain = [
+            'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel],
+            'huatusco.tecnm.mx' => ['model' => $this->userModel]
+        ];
+        // Verificar si el dominio es permitido
+        if (!array_key_exists($domain, $organizationDomain)) {
+            exit('Dominio no permitido.');
+        }
+
+        // Se define en una sola variable el modelo que se utilizara dependiendo del dominio (estudiante o Usuario).
+        $tipoUsuario = $organizationDomain[$domain];
+
+        // Si no existe el registro en la tabla correspondiente (definido por el dominio), se crea un nuevo registro.
+        if ($tipoUsuario['model']->esPrimerIngreso($userData['userPrincipalName']) == true) {
+            $this->assignNewUserRole($data);
         } else {
             $this->assignExistingUserRole($rbac, $data['principal_name']);
         } // El registro ya existe verificar roles y permisos
         /// FIN DE BLOQUE DE DATOS DE USUARIO
-        return redirect()->to('/dashboard');
+        return redirect()->to(base_url('/dashboard'));
     }
 
     // Step 3: Display user data on the dashboard
@@ -138,7 +155,7 @@ class OAuthController extends Controller
         session()->remove('access_token');
         session()->destroy();
         // URL de logout de Microsoft
-        $logoutUrl = "https://login.microsoftonline.com/". $credentials ."/oauth2/v2.0/logout?post_logout_redirect_uri=" . urlencode(base_url('/'));
+        $logoutUrl = "https://login.microsoftonline.com/" . $credentials . "/oauth2/v2.0/logout?post_logout_redirect_uri=" . urlencode(base_url('/'));
         // Redirigir al usuario a la URL de logout de Microsoft
         return redirect()->to($logoutUrl);
     }
@@ -147,22 +164,22 @@ class OAuthController extends Controller
     private function assignExistingUserRole($rbac, string $correo)
     {
         // Obtener el ID del usuario basado en el correo
-        $idUsuario = $this->userModel->select('idusuario')->where('principal_name', $correo)->first();
-        // Si no se encuentra el usuario con el correo proporcionado
+        $idUsuario = $this->getUserIdByEmail($correo);
         if (!$idUsuario) {
             session()->setFlashdata('error', 'No se encontró el usuario con el correo proporcionado.');
             return redirect()->to('/error');
         }
-        // Verificar si el usuario tiene roles
-        $userRoles = $this->userRolesModel->getUserRolesById($idUsuario['idusuario']);
-        if (!$userRoles) {  // Si no tiene roles, se le asigna el rol de usuario
+        // Verificar si el usuario tiene roles (en la tabla de roles)
+        $userRoles = $this->userRolesModel->getUserRolesById($idUsuario);
+        // Si no tiene roles, se le asigna un rol de usuario por defecto.
+        if (!$userRoles) {
             try {
                 // Obtener el ID del rol de 'Usuario'
                 $roleId = $rbac->Roles->titleID('Usuario');
                 // Asignar rol por defecto
-                $rbac->Users->assign($roleId, $idUsuario['idusuario']);
+                $rbac->Users->assign($roleId, $idUsuario);
                 // Establecer el ID de usuario en la sesión
-                session()->set('idusuario', $idUsuario['idusuario']);
+                session()->set('idusuario', $idUsuario);
                 // Mensaje de éxito
                 session()->setFlashdata('notification', 'Rol asignado con éxito al usuario: ' . $correo);
             } catch (\Exception $e) {
@@ -172,8 +189,9 @@ class OAuthController extends Controller
             }
         }
         // Si el usuario ya tiene roles asignados
-        session()->set('idusuario', $idUsuario['idusuario']);
+        session()->set('idusuario', $idUsuario);
         session()->setFlashdata('info', 'El correo ya está registrado y tiene roles asignados.');
+        return redirect()->to('/error');
     }
 
     // Metodo para asignar roles a nuevos usuarios
@@ -202,6 +220,7 @@ class OAuthController extends Controller
         session()->setFlashdata('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . '? (' . $data['principal_name'] . ')');
     }
 
+    // Funcion para separar apellidos con varias palabras
     public function splitSurname($fullSurname)
     {
         // Usa explode() para romper la cadena en piezas separadas por espacios.
@@ -224,5 +243,20 @@ class OAuthController extends Controller
                 'apellido2' => ''
             ];
         }
+    }
+    // Funcion para obtener el ID de usuario en caso de ser residente o usuario(puesto)
+    private function getUserIdByEmail(string $correo): ?int
+    {
+        // Intentar obtener el ID del usuario de userModel
+        $user = $this->userModel->select('idusuario')->where('principal_name', $correo)->first();
+        if (isset($user)) {
+            return (int) $user['idusuario'];
+        }
+        // Intentar obtener el ID del usuario de residenteModel
+        $residente = $this->residenteModel->select('idresidente as idusuario')->where('principal_name', $correo)->first();
+        if (isset($residente)) {
+            return (int) $residente['idusuario'];
+        }
+        return null;
     }
 }

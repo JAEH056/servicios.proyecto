@@ -20,16 +20,28 @@ use App\Models\Labs\LaboratorioModel;
             $this->model_carrera = model(CarreraModel::class);
         }
 
+        //se anadio  la sesion
 
         public function index()
         {
+            if (!session()->has('name')) {
+                return redirect()->to('/oauth/login');
+            }
+    
+            $userId = session()->get('idusuario');
+            $user = session()->get('name');
+            $token = session()->get('access_token');
+
             $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
+            
 
             $data = [
+              //para que se pasen los datos de sesion en la vista
+                'user' => $user, 'token' => $token, 'idusuario' => $userId,
                 'laboratorios' => $laboratorios,
             ];
 
-            print_r($data);
+          //  print_r($data);
             return view('Labs/layouts/laboratorio', $data);
         }
 
@@ -76,6 +88,13 @@ use App\Models\Labs\LaboratorioModel;
 
         public function editar($id)
         {
+            if (!session()->has('name')) {
+                return redirect()->to('/oauth/login');
+            }
+    
+            $userId = session()->get('idusuario');
+            $user = session()->get('name');
+            $token = session()->get('access_token');
             helper('form');
 
             try {
@@ -84,6 +103,7 @@ use App\Models\Labs\LaboratorioModel;
                 $carreras = $this->model_carrera->obtenerCarrera();
 
                 return view('Labs/layouts/editar_laboratorio', [
+                    'user' => $user, 'token' => $token, 'idusuario' => $userId,
                     'laboratorio' => $laboratorio,
                     'carrera' => $carreras,
                     'validation' => null

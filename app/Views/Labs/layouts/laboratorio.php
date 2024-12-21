@@ -34,7 +34,7 @@
                             <td><?= esc($datos_laboratorios['nombre_laboratorio']) ?></td>
                             <td>
                                 <!-- Botón Editar -->
-                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('laboratorio/editar/'.  $datos_laboratorios['id']) ?>'">
+                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('/usuario/laboratorio/editar/'.  $datos_laboratorios['id']) ?>'">
                                     <i class="fa-solid fa-pencil me-2"></i>Editar
                                 </button>
                             </td>

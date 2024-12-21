@@ -38,7 +38,7 @@
                             <td><?= esc($datos_semestre['estado'])?></td>
                             <td>
                                 <!-- BOTÓN EDITAR -->
-                                 <button class="btn btn-sm btn-warning" type="button" onclick="window.location = '<?= site_url('semestre/editar/'. $datos_semestre['id']) ?>'">
+                                 <button class="btn btn-sm btn-warning" type="button" onclick="window.location = '<?= site_url('usuario/semestre/editar/'. $datos_semestre['id']) ?>'">
                                     <i class="fa-solid fa-pencil me-2"></i>Editar
                                 </button>
                             </td>

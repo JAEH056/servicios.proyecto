@@ -5,6 +5,7 @@ namespace App\Controllers\Labs;
 use App\Controllers\BaseController;
 use App\Models\Labs\CarreraModel;
 use App\Models\Labs\ReticuladModel;
+use App\Models\Labs\ReticulaModel;
 
 class Reticula extends BaseController {
     
@@ -12,7 +13,7 @@ class Reticula extends BaseController {
     protected $model_carrera;
 
     public  function __construct() {
-        $this->model_reticula= model(ReticuladModel::class);
+        $this->model_reticula= model(ReticulaModel::class);
         $this->model_carrera=model(CarreraModel::class);
     }
 
