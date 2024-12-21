@@ -46,28 +46,28 @@
                                             <label class="small mb-1" for="numControl">Numero de control</label>
                                             <input class="form-control" id="numControl" type="text"
                                                 placeholder="numero de control" name="numero_control"
-                                                value="<?= set_value('numero_control'); ?>" />
+                                                value="<?= esc($datosResidente['numero_control']); ?>" />
                                         </div>
                                         <!-- Form Group (nombre)-->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="nombre">Nombre</label>
+                                            <label class="small mb-1" for="nombre">Nombre(s)</label>
                                             <input class="form-control" id="nombre" type="text"
                                                 placeholder="Ingresa tu nombre" name="nombre"
-                                                value="<?= set_value('nombre'); ?>" />
+                                                value="<?= esc($datosResidente['nombre']); ?>" />
                                         </div>
                                         <!-- Form Group (first name)-->
                                         <div class="col-md-6">
                                             <label class="small mb-1" for="apellido1">Primer Apellido</label>
                                             <input class="form-control" id="apellido1" type="text"
                                                 placeholder="Ingresa tu primer apellido" name="apellido1"
-                                                value="<?= set_value('apellido1'); ?>" />
+                                                value="<?= esc($datosResidente['apellido1']); ?>" />
                                         </div>
                                         <!-- Form Group (last name)-->
                                         <div class="col-md-6">
                                             <label class="small mb-1" for="apellido2">Segundo Apellido</label>
                                             <input class="form-control" id="apellido2" type="text"
                                                 placeholder="Ingresa tu segundo apellido" name="apellido2"
-                                                value="<?= set_value('apellido2'); ?>" />
+                                                value="<?= esc($datosResidente['apellido2']); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -77,14 +77,14 @@
                                             <label class="small mb-1" for="celular">Celular</label>
                                             <input class="form-control" id="celular" type="text"
                                                 placeholder="Ingresa tu celular" name="celular"
-                                                value="<?= set_value('celular'); ?>" />
+                                                value="<?= esc($datosResidente['celular']); ?>" />
                                         </div>
                                         <!-- Form Group (telefono)-->
                                         <div class="col-md-6">
                                             <label class="small mb-1" for="telefono">Telefono (opcional)</label>
                                             <input class="form-control" id="telefono" type="text"
                                                 placeholder="Ingresa tu telefono" name="telefono"
-                                                value="<?= set_value('telefono'); ?>" />
+                                                value="<?= esc($datosResidente['telefono']); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -94,14 +94,14 @@
                                             <label class="small mb-1" for="ciudad">Ciudad</label>
                                             <input class="form-control" id="ciudad" type="text"
                                                 placeholder="Ingresa tu ciudad" name="ciudad"
-                                                value="<?= set_value('ciudad'); ?>" />
+                                                value="<?= esc($datosResidente['ciudad']); ?>" />
                                         </div>
                                         <!-- Form Group (Domicilio)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="domicilio">Domicilio</label>
                                             <input class="form-control" id="domicilio" type="text"
                                                 placeholder="Ingresa tu domicilio" name="domicilio"
-                                                value="<?= set_value('domicilio'); ?>" />
+                                                value="<?= esc($datosResidente['domicilio']); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row-->
@@ -111,7 +111,7 @@
                                             <label class="small mb-1" name="seguroSocial" for="seguroSocial">Seguro
                                                 Social</label>
                                             <select class="form-control" id="seguroSocial" name="seguro_social">
-                                                <option value="<?= set_value('seguro_social'); ?>" selected></option>
+                                                <option value="<?= esc($datosResidente['seguro_social']); ?>" selected></option>
                                                 <option>IMSS</option>
                                                 <option>ISSSTE</option>
                                                 <option>Otros</option>
@@ -122,7 +122,7 @@
                                             <label class="small mb-1" for="numeroSS">Numero Seguro social</label>
                                             <input class="form-control" id="numeroSS" type="text" name="numero_ss"
                                                 placeholder="Ingresa numero de seguro social"
-                                                value="<?= set_value('numero_ss'); ?>" />
+                                                value="<?= esc($datosResidente['numero_ss']); ?>" />
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -131,6 +131,9 @@
                                         <div class="mb-3">
                                             <label class="small mb-1" name="idprograma_educativo" for="idprograma_educativo">Programa Educativo</label>
                                             <select class="form-control" id="idprograma_educativo" name="idprograma_educativo">
+                                                <?php if(isset($datosResidente['idprograma_educativo'])):?>
+                                                <option value="<?= esc($datosResidente['idprograma_educativo']); ?>" selected ><?= esc($datosResidente['nombre_programa']); ?></option>
+                                                <?php endif;?>
                                                 <?php foreach ($programa as $pe): ?>
                                                     <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
                                                 <?php endforeach; ?>

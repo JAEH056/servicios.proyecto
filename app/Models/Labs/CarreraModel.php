@@ -12,7 +12,7 @@ use CodeIgniter\Model;
 
         protected $useAutoIncrement = true;
 
-        protected $returnType     =  \App\Entities\Labs\Carrera::class;
+        protected $returnType   = 'array';
         protected $useSoftDeletes = false;
 
         protected $allowedFields = ['clave', 'nombre','nombre_corto'];
@@ -22,10 +22,11 @@ use CodeIgniter\Model;
             $sql = <<<EOL
             SELECT 
                 carrera.id AS id,
-                carrera.clave
+                carrera.clave AS clave_carrera,
                 carrera.nombre AS nombre_carrera,
                 carrera.nombre_corto AS nombre_corto
-            FROM carrera
+                From carrera
+           
             EOL;
 
             $query = $this->db->query($sql);

@@ -6,8 +6,9 @@ use CodeIgniter\Database\ResultInterface;
 use CodeIgniter\Model;
 
 class UserRolesModel extends Model
-{
-    protected $table = 'users_userroles'; // Table name
+{   
+    protected $DBGroup = 'compartida';
+    protected $table = 'phpRbca_userroles'; // Table name
     protected $primaryKey = 'UserID'; // Primary key, though it might not be required here
     protected $allowedFields = ['UserID', 'RoleID', 'AssignmentDate']; // Fields we are working with
 

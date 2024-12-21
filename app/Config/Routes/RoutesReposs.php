@@ -31,15 +31,15 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
     $routes->get('residentes/home',         [HomeResidente::class, 'index']);
     $routes->get('residentes/empresa',      [DatosEmpresa::class, 'index']);
     $routes->post('residentes/datos',       [DatosResidente::class, 'guardar']);
-    $routes->post('residentes/documentos',  [Documentos::class, 'upload']);
+    //$routes->post('residentes/documentos',  [Documentos::class, 'upload']);
 
-    $routes->post('residentes/upload/(:num)',  [DocumentosRes::class, 'upload2']);
-    $routes->get('residentes/delete/(:num)',   [DocumentosRes::class, 'delete']);
+    $routes->post('residentes/upload/(:num)',  [Documentos::class, 'upload']);
+    $routes->get('residentes/delete/(:num)',   [Documentos::class, 'delete']);
 });
 
 // Rutas de departamento de residencias profecionales: Usuario con permisos de root
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('drpss/residentes',   [Residentes::class, 'index']);
+    $routes->get('drpss/residentes',   [Residente::class, 'listaResidentes']);
     $routes->get('drpss/nuevo',        [Residente::class, 'index']);
     $routes->get('drpss/empresa',      [Empresa::class, 'index']);
     $routes->get('drpss/asesor',       [AsesorInterno::class, 'index']);
@@ -56,4 +56,6 @@ $routes->group('admin', ['filter' => 'rbac:root'], function ($routes) {
     $routes->post('assignPermissionToRole',      [AdminController::class, 'assignPermissionToRole']);
     $routes->post('assignRoleToUser',            [AdminController::class, 'assignRoleToUser']);
     $routes->post('deleteRolePermission',        [AdminController::class, 'deleteRolePermission']);
+    $routes->get('openuse/index',                [OpenUseController::class, 'index']);
 });
+

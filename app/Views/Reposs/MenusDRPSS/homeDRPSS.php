@@ -6,7 +6,6 @@
 ?>
 <!-- obtiene el contenido de la plantilla de la ruta especificada -->
 <?= $this->extend('Reposs/MenusDRPSS/inicioDRPSS'); ?>
-
 <?= $this->section('contenido') ?>
 <main>
     <?= $this->include('Reposs/Plantilla/mainHeaderDRPSS'); ?>

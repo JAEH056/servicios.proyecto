@@ -14,19 +14,19 @@
             <div class="card-header border-bottom">
                 <ul class="nav nav-tabs card-header-tabs" id="cardTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="overview-tab" href="#overview" data-bs-toggle="tab" role="tab" aria-controls="overview" aria-selected="true">Datos de Proyecto</a>
+                        <a class="nav-link active" id="overview-tab" href="#datosProyecto" data-bs-toggle="tab" role="tab" aria-controls="overview" aria-selected="true">Datos de Proyecto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="example-tab" href="#example" data-bs-toggle="tab" role="tab" aria-controls="example" aria-selected="false">Asesor Interno</a>
+                        <a class="nav-link" id="example-tab" href="#asesorInterno" data-bs-toggle="tab" role="tab" aria-controls="example" aria-selected="false">Asesor Interno</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="resume-tab" href="#download" data-bs-toggle="tab" role="tab" aria-controls="download" aria-selected="false">Solicitud de Residencias</a>
+                        <a class="nav-link" id="resume-tab" href="#solicitudResidencias" data-bs-toggle="tab" role="tab" aria-controls="download" aria-selected="false">Solicitud de Residencias</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="tab-content" id="cardTabContent">
-                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                    <div class="tab-pane fade show active" id="datosProyecto" role="tabpanel" aria-labelledby="overview-tab">
                         <!-- Envia la lista de errores al formulario -->
                         <?php if (session()->getFlashdata('error') !== null || session()->getFlashdata('mensaje') !== null) { ?>
                             <div class="alert alert-danger">
@@ -57,34 +57,21 @@
                                         </div>
                                         <!-- Form Group (last name)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="puesto_titular">Puesto Titular</label>
+                                            <label class="small mb-1" for="puesto_titular">Periodo del Proyecto</label>
                                             <input class="form-control" id="puesto_titular" type="text" placeholder="Ingresa el puesto de Titular" value="" />
-                                        </div>
-                                    </div>
-                                    <div class="row gx-3 mb-3">
-                                        
-                                        <!-- Form Group (last name)-->
-                                        <div class="col-md-3">
-                                            <label class="small mb-1" for="nombre_titular">Grado Académico</label>
-                                            <input class="form-control" id="nombre_titular" type="text" placeholder="Lic.,Ma., Dr., etc." value="" />
-                                        </div>
-                                        <!-- Form Group (last name)-->
-                                        <div class="col md-6">
-                                            <label class="small mb-1" for="nombre_titular">Nombre(s) de Titular</label>
-                                            <input class="form-control" id="nombre_titular" type="text" placeholder="Ingresa el nombre de Titular" value="" />
                                         </div>
                                     </div>
                                     <hr class="my-4" />
                                     <!-- Save changes button-->
-                                    <button class="btn btn-primary" type="button">Agregar Empresa</button>
+                                    <button class="btn btn-primary" type="button">Crear Proyecto</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="example" role="tabpanel" aria-labelledby="example-tab">
+                    <div class="tab-pane fade" id="asesorInterno" role="tabpanel" aria-labelledby="example-tab">
                         <div class="row justify-content-center">
                             <div class="col-xxl-6 col-xl-8">
-                                <h5 class="card-title">Datos de Asesor Externo</h5>
+                                <h5 class="card-title">Datos de Asesor Interno</h5>
                                 <p>Ingresa los datos solicitados. Esta información se utilizará posteriormente para completar los formatos necesarios en el proceso de residencias profesionales.</p>
                                 <form>
                                     <!-- Form Row        -->
@@ -136,7 +123,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="download" role="tabpanel" aria-labelledby="download-tab">
+                    <div class="tab-pane fade" id="solicitudResidencias" role="tabpanel" aria-labelledby="download-tab">
                         <h5 class="card-title">Resumen de Información.</h5>
                         <!-- Form Row-->
                         <div class="row gx-3 mb-3">

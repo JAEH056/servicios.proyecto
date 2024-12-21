@@ -36,9 +36,20 @@ class Residente extends BaseController
             ]
         ); // Se agregan los datos a la vista
     }
-    public function actualiza()
+    public function listaResidentes()
     {
-        return view('residentes/actualiza');
+        // Ensure the user is logged in
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+
+        $listaResidentes = new ResidenteModel();
+        $restLs = $listaResidentes->findAll();
+
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
+        return view('Reposs/MenusDRPSS/listaResidentes', ['user' => $user, 'token' => $token, 'idusuario' => $userId, '' => $restLs]); // Se agregan los datos a la vista
     }
     public function new()
     {

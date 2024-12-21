@@ -4,27 +4,23 @@
             <!-- Sidenav Menu Heading (Core) -->
             <div class="sidenav-menu-heading">Menu</div>
             <!-- Menú Principal sin "Opciones" -->
-            <a class="nav-link" href="/puesto">
-                <div class="nav-link-icon"><i class="fa-regular fa-user"></i></div>
-                Puesto empleado
-            </a>
-            <a class="nav-link" href="/laboratorio">
+            <a class="nav-link" href="/usuario/laboratorio">
                 <div class="nav-link-icon"><i class="fa-regular fa-building fa-lg"></i></div>
                 Laboratorios
             </a>
-            <a class="nav-link" href="/semestre/mostrar">
+            <a class="nav-link" href="/usuario/semestre/mostrar">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar-days"></i></div>
                 Semestres
             </a>
-            <a class="nav-link" href="/diasinhabiles">
+            <a class="nav-link" href="/usuario/diasinhabiles">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
                 Días inhábiles
             </a>
-            <a class="nav-link" href="/laboratorista">
+            <a class="nav-link" href="/usuario/laboratorista">
                 <div class="nav-link-icon"><i class="fa-regular fa-clipboard fa-lg"></i></div>
                 Gestión de horarios
             </a>
-            <a class="nav-link" href="<?= base_url('horario') ?>">
+            <a class="nav-link" href="<?= base_url('/usuario/horario') ?>">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar"></i></div>
                 Solicitar horarios
             </a>

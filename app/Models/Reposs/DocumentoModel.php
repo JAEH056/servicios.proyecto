@@ -47,4 +47,28 @@ class DocumentoModel extends Model
             ->where('tipo_archivo.nombre', $nombre)
             ->first();
     }
+
+    public function obtenerEstadoDocumento2(){
+        $this->table('documento');
+        return $this->select('doc.iddocumento, doc.archivo, ta.nombre, val.estado, val.fecha_entrega')
+                    ->from('reposs.documento doc')
+                    ->join('reposs.tipo_archivo ta', 'ta.idtipo = doc.idtipo')
+                    ->join('reposs.validacion val', 'val.iddocumento = doc.iddocumento')
+                    //->orderBy('doc.iddocumento', 'DESC')
+                    ->get()
+                    //->first()
+                    ->getResultArray();
+    }
+
+    public function obtenerEstadoDocumento(int $userId){
+        $this->table('documento' );
+        return $this->select( 'documento.iddocumento, documento.archivo, ta.nombre, pr.idresidente, val.estado, val.fecha_entrega')
+            ->join('reposs.pre_requisito pr', 'documento.iddocumento = pr.iddocumento')
+            ->join('reposs.tipo_archivo ta', 'ta.idtipo = documento.idtipo')
+            ->join('reposs.validacion val', 'val.iddocumento = documento.iddocumento')
+            ->where('pr.idresidente', $userId)
+            ->orderBy('val.fecha_entrega', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
 }

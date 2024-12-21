@@ -16,9 +16,19 @@ use \App\Models\Labs\SemestreModel;
         }
 
         public function index()
+
         {
+            if (!session()->has('name')) {
+                return redirect()->to('/oauth/login');
+            }
+    
+            $userId = session()->get('idusuario');
+            $user = session()->get('name');
+            $token = session()->get('access_token'); 
+
             $semestre = $this->model_semestre->obtenerSemestre();
             $data = [
+                 'user' => $user, 'token' => $token, 'idusuario' => $userId,
                 'semestre' => $semestre,
             ];
 
@@ -91,7 +101,7 @@ use \App\Models\Labs\SemestreModel;
                 ]);
             } catch (\Exception) {
 
-                return redirect()->to('/semestre')->with('error', 'Ocurrió un error inesperado.');
+                return redirect()->to('usuario/semestre/mostrar')->with('error', 'Ocurrió un error inesperado.');
             }
         }
         public function actualizar($id)
