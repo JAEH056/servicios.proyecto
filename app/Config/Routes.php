@@ -28,6 +28,8 @@ $routes->get('/oauth/microsoft/callback',   [OAuthController::class, 'callback']
 $routes->get('/dashboard',                  [OAuthController::class, 'dashboard']);  // Step 3, este debe colocarse en ontro Controller.
 $routes->get('/logout',                     [OAuthController::class, 'logout']);     // Step 4
 
-
-
-$routes->get('/puesto',                     [Puesto::class, 'plantillaVista']);     // Step 4
+$routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
+    $routes->get('puesto', [Puesto::class, 'plantillaVista']);
+    
+    $routes->post('actualizar/perfil', [Puesto::class, 'agregarInfoPersonal']);
+});

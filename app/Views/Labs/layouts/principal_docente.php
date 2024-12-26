@@ -21,7 +21,7 @@
         <?= $this->include('dashboard/navbar')?>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
-                <?= $this->include('Labs/layouts/menu_laboratorista') ?>
+                <?= $this->include('Labs/layouts/menu_docente') ?>
             </div>
             <div id="layoutSidenav_content">
                 <main>
@@ -29,28 +29,10 @@
                         <?= $this->include('Labs/layouts/header') ?>
                     </header>
                     <!-- CONTENIDO DE LA PAGINA -->
-                    <!-- Laboratorio -->
-                    <?= $this->renderSection('content_laboratorio') ?>
-                    <?= $this->renderSection('content_agregar_laboratorio') ?>
-                    <?= $this->renderSection('content_editar_laboratorio') ?>
-                    <?= $this->renderSection('content_asignar_laboratorio') ?>
-
-                    <!-- Laboratorista -->
-                    <?= $this->renderSection('content_laboratorista') ?>
 
                     <!-- Cuenta -->
                     <?= $this->renderSection('content_empleado') ?>
                     <?= $this->renderSection('content_editar_empleado') ?>
-
-                    <!-- Semestre -->
-                    <?= $this->renderSection('content_semestre') ?>
-                    <?= $this->renderSection('content_agregar_semestre') ?>
-                    <?= $this->renderSection('content_editar_semestre') ?>
-
-                    <!-- Dias inhabiles -->
-                    <?= $this->renderSection('content_dias_inhabiles') ?>
-                    <?= $this->renderSection('content_agregar_dias_inhabiles') ?>
-                    <?= $this->renderSection('content_editar_dias_inhabiles') ?>
 
                     <!-- Horario -->
                     <?= $this->renderSection('content_horario') ?>
@@ -58,12 +40,6 @@
                     <?= $this->renderSection('content_horarios') ?>
 
                     <?= $this->renderSection('content_horario_semanal') ?>
-
-                    <!-- Gestión carreras -->
-                    <?= $this->renderSection('content_carrera') ?>
-                    <?= $this->renderSection('content_especialidad') ?>
-                    <?= $this->renderSection('content_asignatura') ?>
-                    <?= $this->renderSection('content_reticula') ?>
 
                     <!-- Errores -->
                     <?= $this->renderSection('content_error_404') ?>
