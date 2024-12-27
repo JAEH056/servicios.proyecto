@@ -58,7 +58,14 @@ class ResidenteModel extends Model
     {
         return empty($this->where('principal_name',$correo)->first());
     }
-    public function findByCorreo($correo) {
+    public function findByCorreo2($correo) {
         return $this->where('principal_name', $correo)->first();
+    }
+    public function findByCorreo($userId) {
+        return $this->select('residente.*, pe.idprograma_educativo, pe.nombre_programa_educativo, mo.nombre_modalidad')
+                    ->join('reposs.programa_educativo pe', 'residente.idprograma_educativo = pe.idprograma_educativo')
+                    ->join('reposs.modalidad mo', 'pe.idmodalidad = mo.idmodalidad')
+                    ->where('residente.idresidente', $userId)
+                    ->first();
     }
 }

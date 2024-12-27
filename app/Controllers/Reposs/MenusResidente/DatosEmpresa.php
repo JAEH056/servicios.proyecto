@@ -2,11 +2,35 @@
 
 namespace App\Controllers\Reposs\MenusResidente;
 
+use App\Models\Reposs\AsesorExternoModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use App\Models\Reposs\ResidenteModel;
+use App\Models\Reposs\EmpresaModel;
+use App\Models\Reposs\ProyectoModel;
+use App\Models\Reposs\SectorModel;
+use App\Models\Reposs\RamoModel;
 
 class DatosEmpresa extends ResourceController
 {
+    protected $asesorExterno;
+    protected $residente;
+    protected $proyecto;
+    protected $empresa;
+    protected $userId;
+    protected $sector;
+    protected $ramo;
+
+    public function __construct()
+    {
+        $this->asesorExterno = new AsesorExternoModel();
+        $this->residente = new ResidenteModel();
+        $this->proyecto = new ProyectoModel();
+        $this->empresa = new EmpresaModel();
+        $this->sector = new SectorModel();
+        $this->ramo = new RamoModel();
+        $this->userId = session()->get('idusuario');
+    }
     /**
      * Return an array of resource objects, themselves in array format.
      *
@@ -18,11 +42,21 @@ class DatosEmpresa extends ResourceController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
-
-        $userId = session()->get('idusuario');
+        $datosEmpresa = $this->empresa->getEmpresaByUserId($this->userId);
+        $asesorExterno = $this->empresa->getAsesorFromEmpresa($this->userId);
+        $opcionSector = $this->sector->findAll();
+        $opcionRamo = $this->ramo->findAll();
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('Reposs/MenusResidente/datosEmpresa', ['user' => $user, 'token' => $token, 'idusuario' => $userId]); // Se agregan los datos a la vista
+        return view('Reposs/MenusResidente/datosEmpresa', [
+            'user' => $user,
+            'token' => $token,
+            'idusuario' => $this->userId,
+            'datosEmpresa' => $datosEmpresa,
+            'opcionSector' => $opcionSector,
+            'opcionRamo' => $opcionRamo,
+            'asesorExterno' => $asesorExterno,
+        ]); // Se agregan los datos a la vista
     }
 
     /**
@@ -52,9 +86,93 @@ class DatosEmpresa extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function create(): void
+    public function create()
     {
-        //
+        $post = $this->request->getPost([
+            'nombre_empresa',
+            'mision',
+            'puesto_titular',
+            'grado_titular',
+            'nombre_titular',
+            'apellido1_titular',
+            'apellido2_titular',
+            'colonia',
+            'ciudad',
+            'codigo_postal',
+            'telefono',
+            'celular',
+            'correo',
+            'RFC',
+            'idramo',
+            'idsector',
+            'idasesor_externo',
+        ]);
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->empresa->getValidationRules($post)) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
+        }
+        if (!$idempresa = $this->empresa->insert([
+            'nombre_empresa'        => $post['nombre_empresa'],
+            'mision'                => $post['mision'],
+            'puesto_titular'        => $post['puesto_titular'],
+            'grado_titular'         => $post['grado_titular'],
+            'nombre_titular'        => $post['nombre_titular'],
+            'apellido1_titular'     => $post['apellido1_titular'],
+            'apellido2_titular'     => $post['apellido2_titular'],
+            'colonia'               => $post['colonia'],
+            'ciudad'                => $post['ciudad'],
+            'codigo_postal'         => $post['codigo_postal'],
+            'telefono'              => $post['telefono'],
+            'celular'               => $post['celular'],
+            'correo'                => $post['correo'],
+            'RFC'                   => $post['RFC'],
+            'idramo'                => $post['idramo'],
+            'idsector'              => $post['idsector'],
+            'idasesor_externo'      => $post['idasesor_externo'] ?? null,
+        ])) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar la empresa.');
+        }
+        $datosProyecto = [
+            'nombre_proyecto'   => null,
+            'banco_proyecto'    => null,
+            'idresidente'       => $this->userId,
+            'idempresa'         => $idempresa,
+            'idasesor_interno'  => $post['idasesor_externo'],
+            'fecha_inicio'      => null,
+            'fecha_fin'         => null,
+        ];
+        if ($this->proyecto->save($datosProyecto) == false) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar la empresa (proyecto).');
+        }
+        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', 'Empresa creada con exito.');
+    }
+
+    public function createAsesor()
+    {
+        $post = $this->request->getPost([
+            'puesto',
+            'grado',
+            'nombre',
+            'apellido1',
+            'apellido2',
+            'correo',
+            'telefono'
+        ]);
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->asesorExterno->getValidationRules($post)) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
+        }
+
+        $response = $this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId);
+
+        if (!$response['success']) {
+            // Handle the error
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $response['message']);
+        } else {
+            // Success
+            echo $response['message'];
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', $response['message']);
+        }
     }
 
     /**

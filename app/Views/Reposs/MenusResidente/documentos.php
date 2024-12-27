@@ -9,6 +9,22 @@
 
 <?= $this->section('contenido') ?>
 <main>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Confirmar Eliminación</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">...</div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-danger mt-2" href="midireccion" type="button" id="confirmDeleteButton">Eliminar Documento</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n10">
         <div class="card">
@@ -43,7 +59,9 @@
                                     Ya has subido un documento(Kardex): <strong><?= $kardex['iddocumento'], $kardex['archivo'] ?></strong>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="<?= base_url('usuario/residentes/delete/1') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
+                                    <!-- a href="<?php // base_url('usuario/residentes/delete/1')?>" class="btn btn-danger mt-2">Eliminar</a -->
+                                    <button class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" 
+                                    data-info="¿Desea eliminar el Documento (<strong>Kardex</strong>)?" data-href="<?= base_url('usuario/residentes/delete/1')?>">Eliminar</button>
                                 </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/1') ?>" method="POST" enctype="multipart/form-data">
@@ -77,10 +95,12 @@
                             <!-- Verificar si ya hay un documento cargado -->
                             <?php if ($constanciaSS): ?>
                                 <div class="col-md-6">
-                                    Ya has subido un documento(Cons. Servicio Social.): <strong><?= esc($constanciaSS['iddocumento']), esc($constanciaSS['archivo']) ?></strong>
+                                    Ya has subido un documento(Constancia Servicio Social): <strong><?= $constanciaSS['iddocumento'], $constanciaSS['archivo'] ?></strong>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="<?= base_url('usuario/residentes/delete/2') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
+                                    <!-- a href="<?php // base_url('usuario/residentes/delete/2') ?>" class="btn btn-danger mt-2">Eliminar</a -->
+                                    <button class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" 
+                                    data-info="¿Desea eliminar el Documento (<strong>Constancia de Servicio Social</strong>)?" data-href="<?= base_url('usuario/residentes/delete/2')?>">Eliminar</button>
                                 </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/2') ?>" method="POST" enctype="multipart/form-data">
@@ -114,10 +134,12 @@
                             <!-- Verificar si ya hay un documento cargado -->
                             <?php if ($constanciaAC): ?>
                                 <div class="col-md-6">
-                                    Ya has subido un documento(Cons. Actividades Complementarias.): <strong><?= $constanciaAC['iddocumento'], $constanciaAC['archivo'] ?></strong>
+                                    Ya has subido un documento(Constancia Actividades Complementarias): <strong><?= $constanciaAC['iddocumento'], $constanciaAC['archivo'] ?></strong>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="<?= base_url('usuario/residentes/delete/3') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
+                                    <!-- a href="<?php // base_url('usuario/residentes/delete/3') ?>" class="btn btn-danger mt-2">Eliminar</a -->
+                                    <button class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" 
+                                    data-info="¿Desea eliminar el Documento (<strong>Constancia de Actividades Complementarias</strong>)?" data-href="<?= base_url('usuario/residentes/delete/3')?>">Eliminar</button>
                                 </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/3') ?>" method="POST" enctype="multipart/form-data">
@@ -151,10 +173,12 @@
                             <!-- Verificar si ya hay un documento cargado -->
                             <?php if ($pagoReinscripcion): ?>
                                 <div class="col-md-6">
-                                    Ya has subido un documento(Pago de Reinscripcion.): <strong><?= $pagoReinscripcion['iddocumento'], $pagoReinscripcion['archivo'] ?></strong>
+                                    Ya has subido un documento(Pago de Reinscripción): <strong><?= $pagoReinscripcion['iddocumento'], $pagoReinscripcion['archivo'] ?></strong>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="<?= base_url('usuario/residentes/delete/4') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
+                                    <!-- a href="<?php // base_url('usuario/residentes/delete/4') ?>" class="btn btn-danger mt-2">Eliminar</a -->
+                                    <button class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" 
+                                    data-info="¿Desea eliminar el Documento (<strong>Pago de Reinscripción</strong>)?" data-href="<?= base_url('usuario/residentes/delete/4')?>">Eliminar</button>
                                 </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/4') ?>" method="POST" enctype="multipart/form-data">
@@ -188,10 +212,12 @@
                             <!-- Verificar si ya hay un documento cargado -->
                             <?php if ($vigenciaSeguro): ?>
                                 <div class="col-md-6">
-                                    Ya has subido un documento(Vigencia de Seguro.): <strong><?= $vigenciaSeguro['iddocumento'], $vigenciaSeguro['archivo'] ?></strong>
+                                    Ya has subido un documento(Vigencia de Seguro): <strong><?= $vigenciaSeguro['iddocumento'], $vigenciaSeguro['archivo'] ?></strong>
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="<?= base_url('usuario/residentes/delete/5') ?>" class="btn btn-danger mt-2">Eliminar Documento</a>
+                                    <!-- a href="<?php // base_url('usuario/residentes/delete/5') ?>" class="btn btn-danger mt-2">Eliminar</a -->
+                                    <button class="btn btn-danger mt-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" 
+                                    data-info="¿Desea eliminar el Documento (<strong>Vigencia de Seguro</strong>)?" data-href="<?= base_url('usuario/residentes/delete/5')?>">Eliminar</button>
                                 </div>
                             <?php else: ?>
                                 <form action="<?= base_url('usuario/residentes/upload/5') ?>" method="POST" enctype="multipart/form-data">
@@ -250,7 +276,7 @@
                                                         <td><?= esc($row['archivo']) ?></td>
                                                         <td><?= esc($row['nombre']) ?></td>
                                                         <td>
-                                                            <div class="badge bg-primary text-white rounded-pill"><?= esc($row['estado']) ?></div>
+                                                            <div class="badge bg-primary text-white rounded-pill" style="background-color: rgb(59, 31, 189) ;"><?= esc($row['estado']) ?></div>
                                                         </td>
                                                         <td><?= esc($row['fecha_entrega']) ?></td>
                                                         <td>
@@ -278,5 +304,25 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script>
+    // Listen for the modal show event
+    var exampleModal = document.getElementById('exampleModalCenter');
+    exampleModal.addEventListener('show.bs.modal', function(event) {
+        // Get the button that triggered the modal
+        var button = event.relatedTarget; // Button that triggered the modal
+
+        // Extract info from data-* attributes
+        var info = button.getAttribute('data-info');
+        var href = button.getAttribute('data-href'); // Get the href from the button
+
+        // Update the modal's content
+        var modalBody = exampleModal.querySelector('#modalBody');
+        modalBody.innerHTML = info; // Set the content of the modal body
+
+        // Update the href of the confirm button
+        var confirmDeleteButton = exampleModal.querySelector('#confirmDeleteButton');
+        confirmDeleteButton.setAttribute('href', href); // Set the new href
+    });
+</script>
 <script src="<?= base_url('resources/js/datatables/datatables-simple-demo.js') ?>"></script>
 <?= $this->endSection(); ?>

@@ -2,32 +2,20 @@
 
 namespace App\Controllers\Reposs\MenusResidente;
 
+use App\Models\Reposs\AsesorExternoModel;
+use App\Models\Reposs\ProyectoModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
-use App\Models\Reposs\EmpresaModel;
-use App\Models\Reposs\ProyectoModel;
-use App\Models\Reposs\AsesorExternoModel;
-use App\Models\Reposs\ResidenteModel;
-use App\Models\Reposs\SectorModel;
-use App\Models\Reposs\RamoModel;
 
-class DatosProyecto extends ResourceController
+class DatosAsesor extends ResourceController
 {
     protected $asesorExterno;
-    protected $residente;
     protected $proyecto;
-    protected $empresa;
     protected $userId;
-    protected $sector;
-    protected $ramo;
     public function __construct()
     {
         $this->asesorExterno = new AsesorExternoModel();
-        $this->residente = new ResidenteModel();
         $this->proyecto = new ProyectoModel();
-        $this->empresa = new EmpresaModel();
-        $this->sector = new SectorModel();
-        $this->ramo = new RamoModel();
         $this->userId = session()->get('idusuario');
     }
     /**
@@ -37,20 +25,7 @@ class DatosProyecto extends ResourceController
      */
     public function index()
     {
-        // Ensure the user is logged in
-        if (!session()->has('name')) {
-            return redirect()->to('/oauth/login');
-        }
-
-        $datosEmpresa = $this->empresa->getEmpresaByUserId($this->userId);
-        $user = session()->get('name');
-        $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('Reposs/MenusResidente/datosProyecto', [
-            'user' => $user,
-            'token' => $token,
-            'idusuario' => $this->userId,
-            'datosEmpresa' => $datosEmpresa
-        ]); // Se agregan los datos a la vista
+        //
     }
 
     /**
@@ -82,7 +57,24 @@ class DatosProyecto extends ResourceController
      */
     public function create()
     {
-        //
+        $post = $this->request->getPost([
+            'idasesor_externo',
+            'puesto',
+            'grado',
+            'nombre',
+            'apellido1',
+            'apellido2',
+            'correo',
+            'telefono'
+        ]);
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->asesorExterno->getValidationRules($post)) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
+        }
+        if ($this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId) == false) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar el asesor.');
+        }
+        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', 'Asesor agregado con exito.');
     }
 
     /**

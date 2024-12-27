@@ -33,7 +33,7 @@ class DatosResidente extends BaseController
         $user = session()->get('name');
         $token = session()->get('access_token');
         $programaEducativo = $this->programaE->findAll();
-        $datosResidente = $this->residente->where('principal_name', $user['userPrincipalName'])->first();
+        $datosResidente = $this->residente->findByCorreo($this->userId) ;//$this->residente->where('principal_name', $user['userPrincipalName'])->first();
         // linea para mandar los datos del Access token a la vista
         return view('Reposs/MenusResidente/datosResidente', [
             'user'      => $user,
@@ -49,7 +49,7 @@ class DatosResidente extends BaseController
         $rules = [
             'nombre'            => 'required|max_length[255]',
             'apellido1'         => 'required|max_length[255]',
-            'numero_control'    => 'required|is_unique[residente.numero_control]',
+            'numero_control'    => 'required',
             'domicilio'         => 'max_length[255]',
             'ciudad'            => 'max_length[255]',
             'seguro_social'     => 'required',
@@ -74,7 +74,7 @@ class DatosResidente extends BaseController
             'telefono',
             'celular'
         ]);
-        $this->residente->update($this->userId,[
+        if ($this->residente->update($this->userId,[
             'idprograma_educativo'  => trim($post['idprograma_educativo']),
             'principal_name'        => trim($post['principal_name']),
             'numero_control'        => trim($post['numero_control']),
@@ -87,7 +87,10 @@ class DatosResidente extends BaseController
             'numero_ss'             => $post['numero_ss'],
             'telefono'              => $post['telefono'],
             'celular'               => $post['celular'],
-        ]);
+        ]) == false){
+            return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('error', 'Error al actualizar los datos');
+        }
+        return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('updatestatus', 'Datos Actualizados Correctamente');
     }
     public function new()
     {
