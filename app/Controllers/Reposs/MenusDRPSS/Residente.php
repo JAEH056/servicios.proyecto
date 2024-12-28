@@ -14,6 +14,14 @@ class Residente extends BaseController
 {
     //Retorna los datos devuelta 'withInput()' al formulario
     protected $helpers = ['form'];
+    protected $programasEducativo;
+    protected $residentes;
+
+    public function __construct()
+    {
+        $this->programasEducativo = new ProgramaEducativoModel();
+        $this->residentes = new ResidenteModel();
+    }
 
     public function index()
     {
@@ -21,8 +29,7 @@ class Residente extends BaseController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
-        $programasEducativo = new ProgramaEducativoModel();
-        $programasEducativo = $programasEducativo->findAll();
+        $programasEducativo = $this->programasEducativo->findAll();
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
@@ -43,13 +50,15 @@ class Residente extends BaseController
             return redirect()->to('/oauth/login');
         }
 
-        $listaResidentes = new ResidenteModel();
-        $restLs = $listaResidentes->findAll();
-
+        $restLs = $this->residentes->residentesInfoList();
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('Reposs/MenusDRPSS/listaResidentes', ['user' => $user, 'token' => $token, 'idusuario' => $userId, '' => $restLs]); // Se agregan los datos a la vista
+        return view('Reposs/MenusDRPSS/listaResidentes', [
+            'user' => $user, 
+            'token' => $token, 
+            'idusuario' => $userId, 
+            'listaResidentes' => $restLs]); // Se agregan los datos a la vista
     }
     public function new()
     {

@@ -66,7 +66,13 @@
 
                                         <div class="mb-3">
                                             <label class="small mb-1" for="nombre_empresa">Nombre de la empresa</label>
-                                            <input class="form-control" id="nombre_empresa" type="text" placeholder="Ingresa el nombre del proyecto" value="<?= esc($datosEmpresa['nombre_empresa']) ?>" />
+                                            <?php if (isset($datosEmpresa)): ?>
+                                                <select class="form-control" id="nombre_empresa" name="idempresa">
+                                                    <option value="<?= esc($datosEmpresa['idempresa']) ?>"><?= esc($datosEmpresa['nombre_empresa']) ?></option>
+                                                </select>
+                                            <?php else: ?>
+                                                <input class="form-control" id="nombre_empresa" type="text" name="nombre_empresa" placeholder="Ingresa el nombre del proyecto" value="" />
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <hr class="my-4" />
@@ -149,7 +155,7 @@
                                     <tr>
                                         <td><i data-feather="file-text"></i>Solicitud de Residencias</td>
                                         <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a> e información de la <a href="<?= base_url('usuario/residentes/empresa') ?>">empresa y asesor externo</a>.</td>
-                                        <td><a class="btn btn-primary" href="<?=base_url('usuario/residentes/solicitud-residencias')?>" target="_blank">Descargar</a></td>
+                                        <td><a class="btn btn-primary" href="<?= base_url('usuario/residentes/solicitud-residencias') ?>" target="_blank">Descargar</a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -167,10 +173,17 @@
             "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css"
         ],
         zIndex: 10,
+        lang: 'es-ES',
         plugins: [
             "RangePlugin"
-        ]
+        ],
+        RangePlugin: {
+          locale: {
+            one: 'día',
+            other: 'días',
+          },
+        },
+
     });
-    
 </script>
 <?= $this->endSection(); ?>

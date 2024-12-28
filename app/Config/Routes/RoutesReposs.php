@@ -9,6 +9,7 @@ use App\Controllers\Reposs\MenusDRPSS\Residente;
 use App\Controllers\Reposs\MenusDRPSS\Empresa;
 use App\Controllers\Reposs\MenusDRPSS\AsesorInterno;
 use App\Controllers\Reposs\MenusDRPSS\HomeDRPSS;
+use App\Controllers\Reposs\MenusDRPSS\Validacion;
 /// ----------- Residentes Controllers ------------
 //use App\Controllers\Reposs\MenusResidente\InicioResidente;
 use App\Controllers\Reposs\MenusResidente\Documentos;
@@ -16,7 +17,6 @@ use App\Controllers\Reposs\MenusResidente\DatosEmpresa;
 use App\Controllers\Reposs\MenusResidente\HomeResidente;
 use App\Controllers\Reposs\MenusResidente\DatosProyecto;
 use App\Controllers\Reposs\MenusResidente\DatosResidente;
-use App\Controllers\Reposs\MenusResidente\DocumentosRes;
 use App\Controllers\Reposs\Formatos\PdfController;
 use App\Controllers\Reposs\MenusResidente\DatosAsesor;
 
@@ -45,6 +45,7 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('drpss/residentes',   [Residente::class, 'listaResidentes']);
     $routes->get('drpss/nuevo',        [Residente::class, 'index']);
+    $routes->get('drpss/documentos',   [Validacion::class, 'index']);
     $routes->get('drpss/empresa',      [Empresa::class, 'index']);
     $routes->get('drpss/asesor',       [AsesorInterno::class, 'index']);
     $routes->get('drpss/home',         [HomeDRPSS::class, 'index']);

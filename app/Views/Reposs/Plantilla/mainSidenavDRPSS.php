@@ -29,7 +29,7 @@
             <div class="collapse" id="collapseDocs" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('') ?>">Revision de Documentos</a>
+                    <a class="nav-link" href="<?= base_url('usuario/drpss/documentos') ?>">Revision de Documentos</a>
                     <a class="nav-link" href="<?= base_url('usuario/drpss/residentes') ?>">Lista de Residentes</a>
                     <a class="nav-link" href="<?= base_url('usuario/drpss/nuevo') ?>">Nuevo Residente</a>
                     <a class="nav-link" href="<?= base_url('') ?>">Liberaciones</a>

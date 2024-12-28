@@ -8,7 +8,7 @@
 <?= $this->extend('Reposs/MenusDRPSS/inicioDRPSS'); ?>
 <?= $this->section('contenido') ?>
 <main>
-    <?= $this->include('Reposs/Plantilla/mainHeaderDRPSS'); ?>
+<?= $this->include('Reposs/Plantilla/mainHeaderDRPSS'); ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n10">
         <div class="card">
