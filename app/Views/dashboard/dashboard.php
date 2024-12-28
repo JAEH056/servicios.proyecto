@@ -43,6 +43,20 @@
                         <?php if (session()->has('info')): ?>
                             <div class="alert alert-danger"> <?= session('info') ?> </div>
                         <?php endif; ?>
+                        <?php if (session()->getFlashdata('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('success') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('error') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
                         <!-- Primera tarjeta REPOSS -->
                         <div class="col-lg-3 mb-4">
                             <div class="card mb-4">
@@ -86,7 +100,7 @@
                                     <img class="img-fluid mb-5" width="200px" height="200px" src="<?= base_url("resources/assets/img/logo_ITSH.png") ?>" />
                                     <h4>Gestión de laboratorios (Docente)</h4>
                                     <p class="d-inline-flex gap-1">
-                                        <a href="<?= base_url('usuario/horario') ?>" class="btn btn-primary">Ingresar</a>
+                                        <a href="<?= base_url('usuario/ver/horario') ?>" class="btn btn-primary">Ingresar</a>
                                     </p>
                                 </div>
                             </div>

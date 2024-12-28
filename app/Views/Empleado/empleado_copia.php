@@ -199,7 +199,15 @@
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <!-- Botón de Editar -->         
+
+                                <!-- Botón de Editar -->
+                                <div class="d-flex justify-content-end">
+                                    <?= form_button('edit', 'Editar Perfil', [
+                                        'type' => 'button',
+                                        'class' => 'btn btn-primary',
+                                        'onclick' => "window.location.href='" . base_url('/usuario/editar/perfil') . "'",
+                                    ]) ?>
+                                </div>
                             <?= form_close() ?>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 <?php
 
-    namespace App\Controllers\Labs;
+    namespace App\Controllers\Labs\MenuLaboratorista;
 
 use App\Controllers\BaseController;
 use \App\Models\Labs\SemestreModel;

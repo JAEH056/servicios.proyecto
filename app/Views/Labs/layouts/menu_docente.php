@@ -4,7 +4,7 @@
             <!-- Sidenav Menu Heading (Core) -->
             <div class="sidenav-menu-heading">Menu</div>
             <!-- Menú Principal sin "Opciones" -->
-            <a class="nav-link" href="<?= base_url('/usuario/horario') ?>">
+            <a class="nav-link" href="<?= base_url('usuario/ver/horario') ?>">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar"></i></div>
                 Solicitar horarios
             </a>

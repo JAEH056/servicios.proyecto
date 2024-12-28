@@ -21,10 +21,27 @@ class PuestoEmpleadoModel extends Model
         return $this->insert($data);
 
     }
-    public function puestoAsignadoPorUsuario($userId)
+    public function puestoAsignadoPorUsuario($userId,\DateTimeImmutable $fecha_actual = null)
     {
-        return $this->where('idusuario', $userId)
-                    ->where('fecha_fin', null)  // Verificar que la fecha_fin sea NULL (puesto activo)
-                    ->first();  // Retorna el primer resultado (si existe)
+        //$fecha_actual = !is_null($fecha_actual) ? $fecha_actual : new \DateTimeImmutable();
+        $fecha_actual = $fecha_actual ?? new \DateTimeImmutable();
+        $fecha_actualStr = $fecha_actual->format('Y-m-d');
+
+        
+        $builder = $this->db->table($this->table)
+        ->select('organigrama.cargo')
+        ->join('organigrama','organigrama.idorganigrama=puesto_empleado.idorganigrama')
+        ->where('idusuario', $userId)
+        ->groupStart() 
+            ->where('fecha_inicio <=', $fecha_actualStr)
+            ->where('fecha_fin IS NULL')
+        ->groupEnd()  
+        ->orGroupStart() 
+            ->where('fecha_fin >=', $fecha_actualStr)
+        ->groupEnd();  
+        $query = $builder->get();
+        $puestoempleado = $query->getRowArray();
+        return $puestoempleado;
+
     }
 }

@@ -35,11 +35,7 @@
                     <?= $this->renderSection('content_editar_empleado') ?>
 
                     <!-- Horario -->
-                    <?= $this->renderSection('content_horario') ?>
-                    <?= $this->renderSection('content_agregar_horario') ?>
-                    <?= $this->renderSection('content_horarios') ?>
-
-                    <?= $this->renderSection('content_horario_semanal') ?>
+                    <?= $this->renderSection('content_horario_docente') ?>
 
                     <!-- Errores -->
                     <?= $this->renderSection('content_error_404') ?>

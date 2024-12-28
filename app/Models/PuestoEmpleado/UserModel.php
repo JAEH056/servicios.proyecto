@@ -16,7 +16,10 @@ class UserModel extends Model
     protected $allowedFields = ['principal_name', 'nombre', 'apellido1', 'apellido2', ];
 
     public function findByCorreo($correo) {
-        return $this->where('principal_name', $correo)->first();
+        $datosusuarios= $this->where('principal_name', $correo)->first();
+        return $datosusuarios;
+       
+
     }
    
 }

@@ -29,7 +29,9 @@ $routes->get('/dashboard',                  [OAuthController::class, 'dashboard'
 $routes->get('/logout',                     [OAuthController::class, 'logout']);     // Step 4
 
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('puesto', [Puesto::class, 'plantillaVista']);
-    
+    //ver datos del perfil 
+    $routes->get('puesto', [Puesto::class, 'index']);
+    //ver datos de perfil para actualizar los datos 
+    $routes->get('editar/perfil',[Puesto::class,'agregarGradoAcademico']);
     $routes->post('actualizar/perfil', [Puesto::class, 'agregarInfoPersonal']);
 });
