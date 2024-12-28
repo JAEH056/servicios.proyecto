@@ -1,15 +1,13 @@
 <?php
 
-use App\Controllers\Home;
-use App\Controllers\Labs\CrearHorario;
-use App\Controllers\Labs\DiasInhabiles;
-use App\Controllers\Labs\HomeLabs;
-use App\Controllers\Labs\Laboratorios;
-use App\Controllers\Labs\Laboratorista;
-use App\Controllers\Labs\PuestoEmpleado;
+
+use App\Controllers\Labs\MenuLaboratorista\CrearHorario;
+use App\Controllers\Labs\MenuLaboratorista\DiasInhabiles;
+use App\Controllers\Labs\MenuLaboratorista\Laboratorios;
+use App\Controllers\Labs\MenuLaboratorista\Laboratorista;
 use App\Controllers\Labs\Reticula;
-use App\Controllers\Labs\Semestre;
-use App\Controllers\Puestos\Puesto;
+use App\Controllers\Labs\MenuLaboratorista\Semestre;
+use App\Controllers\Labs\MenuUsuario\SolicitarLaboratorio;
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -18,7 +16,6 @@ use CodeIgniter\Router\RouteCollection;
 
 // SEMESTRE
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('laboratorista/home', [HomeLabs::class, 'index']);
     $routes->get('semestre/mostrar', [Semestre::class, 'index']);
     $routes->get('semestre/nuevo', [Semestre::class, 'nuevo']);
     $routes->get('semestre/editar/(:num)', [Semestre::class, 'editar/$1']);
@@ -48,18 +45,13 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('horario/(:num)', [CrearHorario::class, 'verHorario/$1']); // Con ID, muestra el horario
     $routes->get('horario', [CrearHorario::class, 'verHorario']); // Con ID, muestra el horario
 
-    // Puesto Empleado
-    //$routes->get('puesto',[PuestoEmpleado::class,'index']);
-
     //RETICULA
     $routes->get('reticula', [Reticula::class, 'index']);
     $routes->get('reticula/(:num)', [Reticula::class, 'index']);
-
-    //  $routes->get('horario/nuevo', [CrearHorario::class, 'nuevo']);
-    //  $routes->post('horario/crear',[CrearHorario::class, 'crear']);
-    //  $routes->get('horario/laboratorio/(:num)',[CrearHorario::class, 'mostrarHorario/$1']);
-
 });
-$routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-// $routes->get('puesto',                     [Puesto::class, 'index']);     // Step 4
+
+//Usuarios con correo huatusco.tecnm.mx
+    $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
+    $routes->get('empleado/horario/(:num)', [SolicitarLaboratorio::class, 'index/$1']);
+    $routes->get('ver/horario', [SolicitarLaboratorio::class, 'index']);
 });

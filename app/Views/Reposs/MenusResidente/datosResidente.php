@@ -26,22 +26,35 @@
                 <div class="tab-content" id="cardTabContent">
                     <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                         <!-- Envia la lista de errores al formulario -->
-                        <?php if (session()->getFlashdata('error') !== null || session()->getFlashdata('mensaje') !== null) { ?>
+                        <?php if (session()->getFlashdata('error') !== null): ?>
                             <div class="alert alert-danger">
                                 <?= session()->getFlashdata('error'); ?>
-                                <?= session()->getFlashdata('mensaje'); ?>
                             </div>
-                        <?php } ?>
+                        <?php endif; ?>
+                        <?php if (session()->getFlashdata('updatestatus') !== null): ?>
+                            <div class="alert alert-success">
+                                <?= session()->getFlashdata('updatestatus'); ?>
+                            </div>
+                        <?php endif; ?>
                         <!-- Envia la lista de errores al formulario -->
                         <div class="row justify-content-center">
                             <div class="col-xxl-6 col-xl-8">
-                            <h5 class="card-title mb-4">Verifica y actualiza tu informacion.</h5>
-                            <p>Ingresa los datos solicitados, esta informacion sera usada posteriormente para los formatos necesarios en el proceso de residencias profesionales.</p>
+                                <div class="alert alert-success" role="alert">
+                                    <h4 class="alert-heading">Verifica y actualiza tu informacion</h4>
+                                    <p>Ingresa los datos solicitados, esta informacion sera usada posteriormente para los formatos necesarios en el proceso de residencias profesionales.</p>
+                                </div>
                                 <form action="<?= base_url('usuario/residentes/datos'); ?>" method="post">
                                     <?= csrf_field(); ?>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
-                                        <!-- Form Group (username)-->
+                                        <!-- Form Group (correo institucional)-->
+                                        <div class="mb-3">
+                                            <label class="small mb-1" for="principal_name" hidden>Correo Institucional</label>
+                                            <input class="form-control" id="principal_name" type="text"
+                                                placeholder="Correo Institucional" name="principal_name"
+                                                value="<?= esc($datosResidente['principal_name']); ?>" hidden />
+                                        </div>
+                                        <!-- Form Group (Numero de control)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="numControl">Numero de control</label>
                                             <input class="form-control" id="numControl" type="text"
@@ -111,10 +124,13 @@
                                             <label class="small mb-1" name="seguroSocial" for="seguroSocial">Seguro
                                                 Social</label>
                                             <select class="form-control" id="seguroSocial" name="seguro_social">
-                                                <option value="<?= esc($datosResidente['seguro_social']); ?>" selected></option>
-                                                <option>IMSS</option>
-                                                <option>ISSSTE</option>
-                                                <option>Otros</option>
+                                                <?php if (isset($datosResidente['seguro_social'])): ?>
+                                                    <option value="<?= esc($datosResidente['seguro_social']); ?>" selected><strong><?= esc($datosResidente['seguro_social']); ?></strong></option>
+                                                <?php else: ?>
+                                                    <option>IMSS</option>
+                                                    <option>ISSSTE</option>
+                                                    <option>Otros</option>
+                                                <?php endif; ?>
                                             </select>
                                         </div>
                                         <!-- Form Group (phone number)-->
@@ -122,7 +138,11 @@
                                             <label class="small mb-1" for="numeroSS">Numero Seguro social</label>
                                             <input class="form-control" id="numeroSS" type="text" name="numero_ss"
                                                 placeholder="Ingresa numero de seguro social"
+                                                <?php if (isset($datosResidente['seguro_social'])): ?>
                                                 value="<?= esc($datosResidente['numero_ss']); ?>" />
+                                        <?php else: ?>
+                                            value="" />
+                                        <?php endif; ?>
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -131,12 +151,13 @@
                                         <div class="mb-3">
                                             <label class="small mb-1" name="idprograma_educativo" for="idprograma_educativo">Programa Educativo</label>
                                             <select class="form-control" id="idprograma_educativo" name="idprograma_educativo">
-                                                <?php if(isset($datosResidente['idprograma_educativo'])):?>
-                                                <option value="<?= esc($datosResidente['idprograma_educativo']); ?>" selected ><?= esc($datosResidente['nombre_programa']); ?></option>
-                                                <?php endif;?>
-                                                <?php foreach ($programa as $pe): ?>
-                                                    <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
-                                                <?php endforeach; ?>
+                                                <?php if (isset($datosResidente['idprograma_educativo'])): ?>
+                                                    <option value="<?= esc($datosResidente['idprograma_educativo']); ?>" selected><?= esc($datosResidente['nombre_programa_educativo']); ?></option>
+                                                <?php else: ?>
+                                                    <?php foreach ($programa as $pe): ?>
+                                                        <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
                                             </select>
                                         </div>
                                     </div>
@@ -148,24 +169,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="example" role="tabpanel" aria-labelledby="example-tab">
-                        <h5 class="card-title">Subir Documentos</h5>
-                        <!-- Form Row-->
-                        <div class="row gx-3 mb-3">
-                            <!-- Form Group (nombre)-->
-                            <div class="mb-3">
-                                <!-- Informacion extra  -->
-                            </div>
-                            <!-- Form Group (first name)-->
-                            <label for="file">Elegir archivo (Solo se permite PDF)</label>
-                            <div class="col-md-6">
-                                <input type="file" class="form-control" id="file" name="file" accept=".pdf" required>
-                                <small class="form-text text-muted">Solo se permiten documentos PDF.</small>
-                            </div>
-                            <!-- Form Group (last name)-->
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary">Subir</button>
-                            </div>
-                        </div>
+                        <h5 class="card-title">Mas Informacion...</h5>
                     </div>
                 </div>
             </div>

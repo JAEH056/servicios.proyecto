@@ -18,7 +18,7 @@
         <?= $this->renderSection('include_javascript') ?>
     </head>
     <body class="nav-fixed">
-        <?= $this->include('dashboard/navbar') ?>
+        <?= $this->include('dashboard/navbar')?>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <?= $this->include('Labs/layouts/menu_laboratorista') ?>
@@ -40,6 +40,7 @@
 
                     <!-- Cuenta -->
                     <?= $this->renderSection('content_empleado') ?>
+                    <?= $this->renderSection('content_editar_empleado') ?>
 
                     <!-- Semestre -->
                     <?= $this->renderSection('content_semestre') ?>

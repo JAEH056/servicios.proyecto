@@ -1,0 +1,39 @@
+body {
+    font-family: 'Segoe Print', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+header, footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+input {
+    display: block;
+    margin: 10px 0;
+    padding: 8px;
+    width: 100%;
+    max-width: 400 px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.contact-info {
+    font-size: 12px;
+    color: #737373;
+}
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .wcpage {
+        page-break-after: always;
+    }
+}

@@ -37,8 +37,10 @@
                         <!-- Envia la lista de errores al formulario -->
                         <div class="row justify-content-center">
                             <div class="col-xxl-6 col-xl-8">
-                                <h5 class="card-title mb-4">Agrega toda la información solicitada.</h5>
-                                <p>Ingresa los datos solicitados. Esta información se utilizará posteriormente para completar los formatos necesarios en el proceso de residencias profesionales.</p>
+                                <div class="alert alert-success" role="alert">
+                                    <h4 class="alert-heading">Agrega la información solicitada.</h4>
+                                    <p>Ingresa los datos solicitados, esta informacion sera usada posteriormente para los formatos necesarios en el proceso de residencias profesionales.</p>
+                                </div>
                                 <form>
                                     <!-- Form Row-->
                                     <div class="row gx-3 mb-3">
@@ -57,8 +59,20 @@
                                         </div>
                                         <!-- Form Group (last name)-->
                                         <div class="col-md-6">
-                                            <label class="small mb-1" for="puesto_titular">Periodo del Proyecto</label>
-                                            <input class="form-control" id="puesto_titular" type="text" placeholder="Ingresa el puesto de Titular" value="" />
+                                            <label class="small mb-1" for="datepicker">Periodo del proyecto</label>
+                                            <input class="form-control" id="datepicker" />
+                                        </div>
+                                        <!-- Form Group (username)-->
+
+                                        <div class="mb-3">
+                                            <label class="small mb-1" for="nombre_empresa">Nombre de la empresa</label>
+                                            <?php if (isset($datosEmpresa)): ?>
+                                                <select class="form-control" id="nombre_empresa" name="idempresa">
+                                                    <option value="<?= esc($datosEmpresa['idempresa']) ?>"><?= esc($datosEmpresa['nombre_empresa']) ?></option>
+                                                </select>
+                                            <?php else: ?>
+                                                <input class="form-control" id="nombre_empresa" type="text" name="nombre_empresa" placeholder="Ingresa el nombre del proyecto" value="" />
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <hr class="my-4" />
@@ -141,7 +155,7 @@
                                     <tr>
                                         <td><i data-feather="file-text"></i>Solicitud de Residencias</td>
                                         <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a> e información de la <a href="<?= base_url('usuario/residentes/empresa') ?>">empresa y asesor externo</a>.</td>
-                                        <td><button class="btn btn-primary">Descargar</button></td>
+                                        <td><a class="btn btn-primary" href="<?= base_url('usuario/residentes/solicitud-residencias') ?>" target="_blank">Descargar</a></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -152,4 +166,24 @@
         </div>
     </div>
 </main>
+<script>
+    const picker = new easepick.create({
+        element: document.getElementById('datepicker'),
+        css: [
+            "https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css"
+        ],
+        zIndex: 10,
+        lang: 'es-ES',
+        plugins: [
+            "RangePlugin"
+        ],
+        RangePlugin: {
+          locale: {
+            one: 'día',
+            other: 'días',
+          },
+        },
+
+    });
+</script>
 <?= $this->endSection(); ?>

@@ -19,21 +19,6 @@ class LaboratorioModel extends Model
     public function obtenerLaboratorios()
     {
 
-
-        //     $sql = <<<EOL
-        //     SELECT 
-        //         laboratorio.id AS id,
-        //         carrera.id AS carrera_id,
-        //         carrera.nombre AS carrera_nombre,
-        //         laboratorio.nombre AS nombre_laboratorio
-        //     FROM 
-        //         laboratorio
-        //     JOIN carrera ON carrera.id = laboratorio.id_carrera
-        //     GROUP BY laboratorio.id
-        //     EOL;
-
-        //     $query = $this->db->query($sql);
-        //     $laboratorios = $query->getResultArray();
         $builder = $this->db->table('laboratorio')
             ->select('laboratorio.id AS id, 
         carrera.id AS carrera_id, carrera.nombre AS carrera_nombre, 

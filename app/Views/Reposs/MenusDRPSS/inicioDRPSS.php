@@ -31,23 +31,13 @@
         <div id="layoutSidenav_content">
             <main>
                 <!-- Main page content-->
-                <div class="container-xl px-4 mt-n10">
-                    <!-- Contenido de alerta 
-                    <div class="card mb-4">
-                        <div class="card-header">Alerta</div>
-                        <div class="card-body">
-                            Contenido principal
-                        </div>
-                    </div>
-                    -->
-                </div>
+                <?= $this->renderSection('contenido'); ?>
             </main>
-            <!-- Se incluye nueva seccion -->
-             <?= $this->renderSection('contenido'); ?>
             <?= $this->include('Reposs/Plantilla/mainFooter'); ?>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="<?= base_url('resources/js/scripts.js') ?>"></script>
 </body>
+
 </html>

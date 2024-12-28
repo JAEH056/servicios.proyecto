@@ -15,7 +15,12 @@ class OrganigramaModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nombreM', 'nombreF', 'cargo', 'izquierda', 'derecha'];
 
-   
+    public function buscarCargo($cargo)
+    {
+        return $this->where('cargo', $cargo)->first();
+    }
+    public function buscarCargoNull()
+    {
+        return $this->where('cargo', null)->first();
+    }
 }
-
-

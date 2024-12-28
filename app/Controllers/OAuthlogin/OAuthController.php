@@ -2,6 +2,8 @@
 
 namespace App\Controllers\OAuthlogin;
 
+use App\Models\PuestoEmpleado\OrganigramaModel;
+use App\Models\PuestoEmpleado\PuestoEmpleadoModel;
 use CodeIgniter\Controller;
 use League\OAuth2\Client\Provider\GenericProvider;
 use App\Models\Reposs\UserModel;
@@ -16,6 +18,9 @@ class OAuthController extends Controller
     protected $userModel;
     protected $userRolesModel;
     protected $residenteModel;
+    protected $modelo_organigrama;
+    protected $modelo_puesto_empleado;
+    
 
     public function __construct()
     {
@@ -35,6 +40,9 @@ class OAuthController extends Controller
         $this->userModel = new UserModel();
         $this->userRolesModel = new UserRolesModel();
         $this->residenteModel = new ResidenteModel();
+        //para puesto empleado
+        $this->modelo_organigrama = new OrganigramaModel();
+        $this->modelo_puesto_empleado = new PuestoEmpleadoModel();
     }
 
     // Step 1: Redirect to Microsoft login page
@@ -92,6 +100,8 @@ class OAuthController extends Controller
         $surname = $userData['surname'];
         $apellidos = $this->splitSurname($surname); // Separar apellidos
         $nombreDeUsuario = $this->separarPrincipalname($userPrincipalName);
+        //se obtiene el puesto que tiene el usuario en su cuenta de microsoft
+        $jobTitle = $userData['jobTitle'];
 
         // Se crea un arreglo con la informacion del usuario
         $data = [
@@ -128,6 +138,10 @@ class OAuthController extends Controller
             $this->assignExistingUserRole($rbac, $data['principal_name']);
         } // El registro ya existe verificar roles y permisos
         /// FIN DE BLOQUE DE DATOS DE USUARIO
+        // se obtiene el id del usario con su correo 
+        $userId = $this->getUserIdByEmail($userPrincipalName);
+        //se inserta el usuario con su puesto 
+        $this->asignarPuesto($userId, $jobTitle);
         return redirect()->to(base_url('/dashboard'));
     }
 
@@ -277,5 +291,58 @@ class OAuthController extends Controller
             return (int) $residente['idusuario'];
         }
         return null;
+    }
+    public function asignarPuesto($userId, $jobTitle)
+    {
+
+        // Si no se ha asignado un título de trabajo, realizar búsqueda con un valor vacío
+        if (empty($jobTitle) || $jobTitle === null) {
+            $organigrama = $this->modelo_organigrama->buscarCargoNull();
+        } else {
+            // Buscar por el cargo específico
+            $organigrama = $this->modelo_organigrama->buscarCargo($jobTitle);
+        }
+
+        // Si no se encuentra el organigrama correspondiente
+        if (!$organigrama) {
+            return redirect()->to('/error')->with('error', 'Cargo no encontrado en el organigrama.');
+        }
+
+        // Verificar si el idusuario está presente
+        if (empty($userId)) {
+            return redirect()->to('/error')->with('error', 'Usuario no encontrado.');
+        }
+
+        // Verificar si el puesto ya está asignado al usuario
+        $puestoExistente = $this->modelo_puesto_empleado->puestoAsignadoPorUsuario($userId);
+
+        if ($puestoExistente) {
+            // Si ya existe un puesto activo, redirigir con un mensaje informando que el puesto ya está asignado
+            //  return redirect()->to('/usuario/puesto')->with('error', 'El usuario ya tiene un puesto asignado.');
+            return redirect()->to(base_url('/error'))->with('error', 'El usuario ya tiene un puesto asignado.');
+        }
+
+        // Datos para asignar el puesto
+        $data = [
+            'idusuario' => $userId,
+            'idorganigrama' => $organigrama['idorganigrama'],
+            'fecha_inicio' => date('Y-m-d H:i:s'),
+            'fecha_fin' => null, // Fecha de fin puede ser NULL si el puesto está activo
+        ];
+
+        try {
+            // Intentar insertar los datos en la base de datos
+            $resultado = $this->modelo_puesto_empleado->AsignarPuesto($data);
+
+            // Verificar si la inserción fue exitosa
+            if ($resultado) {
+                return redirect()->to('/error')->with('success', 'Puesto asignado correctamente.');
+            } else {
+                return redirect()->to('/error')->with('error', 'Error al asignar el puesto.');
+            }
+        } catch (\Exception $e) {
+            // En caso de error, mostrar el mensaje de la excepción
+            return redirect()->to('/error')->with('error', 'Error al asignar el puesto: ' . $e->getMessage());
+        }
     }
 }

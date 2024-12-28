@@ -14,70 +14,193 @@
             <div class="card mb-4">
                 <div class="card-header">Detalles de la cuenta</div>
                 <div class="card-body">
+                 
+
                     <!-- Component Preview-->
                     <div class="sbp-preview">
                         <div class="sbp-preview-content">
-                            <form>
-                                <!-- Form Group (username)-->
+                            <?= form_open('#', ['id' => 'form-empleado']) ?>
+                                <?= csrf_field() ?>
+                                <!-- Form Input (Nombre de usuario (correo))-->
                                 <div class="mb-3">
-                                    <label class="small mb-1" for="inputNombreUsuario">Nombre de usuario:</label>
-                                    <input class="form-control form-control-solid" id="inputNombreUsuario" type="text" placeholder="Nombre de usuario" />
+                                    <?= form_label('Nombre de usuario:', 'inputNombreUsuario', ['class' => 'small mb-1']) ?>
+                                    <?= form_input([
+                                        'name' => 'username',
+                                        'id' => 'inputNombreUsuario',
+                                        'type' => 'text',
+                                        'value' => esc($datosUsuario['principal_name']),
+                                        'class' => 'form-control form-control-solid',
+                                        'disabled' => true,
+                                        'placeholder' => 'Sin información disponible'
+                                    ]) ?>
+                                </div>
+                                <!-- Form Input (Nombre)-->
+                                <div class="mb-3">
+                                    <?= form_label('Nombre:', 'inputNombre', ['class' => 'small mb-1']) ?>
+                                    <?= form_input([
+                                        'name' => 'first_name',
+                                        'id' => 'inputNombre',
+                                        'type' => 'text',
+                                        'value' => esc($datosUsuario['nombre']),
+                                        'class' => 'form-control form-control-solid',
+                                        'disabled' => true,
+                                        'placeholder' => 'Sin información disponible'
+                                    ]) ?>
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
-                                    <!-- Form Group (first name)-->
+                                    <!-- Form Input (primer apellido)-->
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputNombre">Nombre:</label>
-                                        <input class="form-control form-control-solid" id="inputNombre" type="text" placeholder="Nombre" />
+                                        <?= form_label('Primer apellido:', 'inputPrimerApellido', ['class' => 'small mb-1']) ?>
+                                        <?= form_input([
+                                            'name' => 'last_name_one',
+                                            'id' => 'inputPrimerApellido',
+                                            'type' => 'text',
+                                            'value' => esc($datosUsuario['apellido1']),
+                                            'class' => 'form-control form-control-solid',
+                                            'disabled' => true,
+                                            'placeholder' => 'Sin información disponible'
+                                        ]) ?>
                                     </div>
-                                    <!-- Form Group (last name)-->
+                                    <!-- Form Input (segundo apellido)-->
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputApellidos">Apellidos:</label>
-                                        <input class="form-control form-control-solid" id="inputApellidos" type="text" placeholder="Apellidos" />
+                                        <?= form_label('Segundo apellido:', 'inputSegundoApellido', ['class' => 'small mb-1']) ?>
+                                        <?= form_input([
+                                            'name' => 'last_name_two',
+                                            'id' => 'inputSegundoApellido',
+                                            'type' => 'text',
+                                            'value' => esc($datosUsuario['apellido2']),
+                                            'class' => 'form-control form-control-solid',
+                                            'disabled' => true,
+                                            'placeholder' => 'Sin información disponible'
+                                        ]) ?>
                                     </div>
                                 </div>
-                                <!-- Form Row        -->
+                                <!-- Form Row -->
+                                <div class="mb-3">
+                                    <!-- Form Input (puesto)-->
+                                    <?= form_label('Puesto:', 'inputPuesto', ['class' => 'small mb-1']) ?>
+                                    <?= form_input([
+                                        'name' => 'puesto',
+                                        'id' => 'inputPuesto',
+                                        'type' => 'text',
+                                        'value' => esc($puesto['cargo']),
+                                        'class' => 'form-control form-control-solid',
+                                        'disabled' => true,
+                                        'placeholder' => 'Sin información disponible'
+                                    ]) ?>
+                                </div>
+
+                                <!-- Form Input (grado académico)-->
+                                <div class="mb-3">
+                                    <?php if (!empty($grados)): ?>
+                                        <?php foreach ($grados as $grado): ?>
+                                            <?= form_label('Carrera:', 'inputCarrera', ['class' => 'small mb-1']) ?>
+                                            <?= form_input([
+                                                'name' => 'programa_educativo',
+                                                'id' => 'inputCarrera',
+                                                'type' => 'text',
+                                                'value' => esc($grado['programa_educativo']),
+                                                'class' => 'form-control form-control-solid',
+                                                'disabled' => true,
+                                                'placeholder' => 'Sin información disponible'
+                                            ]) ?>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <p>No hay grados académicos disponibles.</p>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
-                                    <!-- Form Group (organization name)-->
+                                    <!-- Form Group (nivel académico) -->
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputPuesto">Puesto:</label>
-                                        <input class="form-control form-control-solid" id="inputPuesto" type="text" placeholder="Puesto" />
+                                        <?php if (!empty($grados)): ?>
+                                            <?php foreach ($grados as $grado): ?>
+                                                <?= form_label('Nivel académico:', 'inputNivelAcadémico', ['class' => 'small mb-1']) ?>
+                                                <?= form_input([
+                                                    'name' => 'nombre_nivel',
+                                                    'id' => 'idnivel',
+                                                    'type' => 'text',
+                                                    'value' => esc($grado['nombre_nivel']),
+                                                    'class' => 'form-control form-control-solid',
+                                                    'disabled' => true,
+                                                    'placeholder' => 'Sin información disponible'
+                                                ]) ?>
+
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <p>No hay grados académicos disponibles.</p>
+                                        <?php endif; ?>
                                     </div>
-                                    <!-- Form Group (location)-->
+
+                                    <!-- Form Group (birthday)-->
+                                    
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputGradoAcademico">Grado académico:</label>
-                                        <input class="form-control form-control-solid" id="inputGradoAcademico" type="text" placeholder="Grado académico" />
+                                        <?php if (!empty($grados)): ?>
+                                            <?php foreach ($grados as $grado): ?>
+                                                <?= form_label('Grado Académico:', 'inputGrado_', ['class' => 'small mb-1']) ?>
+                                                <?= form_input([
+                                                    'name' => 'grado',
+                                                    'id' => 'grado',
+                                                    'type' => 'text',
+                                                    'value' => esc($grado['nombre_grado']),
+                                                    'class' => 'form-control form-control-solid',
+                                                    'disabled' => true,
+                                                    'placeholder' => 'Sin información disponible'
+                                                ]) ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <p>No hay grados académicos disponibles.</p>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <!-- Form Row-->
                                 <div class="row gx-3 mb-3">
                                     <!-- Form Group (phone number)-->
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputNombreGradoAcademico">Nombre del grado académico:</label>
-                                        <input class="form-control form-control-solid" id="inputNombreGradoAcademico" type="text" placeholder="Nombre del grado académico" />
+                                        <?php if (!empty($grados)): ?>
+                                            <?php foreach ($grados as $grado): ?>
+                                                <?= form_label('Siglas del grado académico:', 'inputSiglasGradoAcademico', ['class' => 'small mb-1']) ?>
+                                                <?= form_input([
+                                                    'name' => 'siglas',
+                                                    'id' => 'inputSiglasGradoAcademico',
+                                                    'type' => 'text',
+                                                    //'value' => isset($siglas) && $siglas !== '' ? esc($siglas) : '',
+                                                    'value' => esc($grado['siglas']),
+                                                    'class' => 'form-control form-control-solid',
+                                                    'disabled' => true,
+                                                    'placeholder' => 'Sin información disponible'
+                                                ]) ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <p>No hay grados académicos disponibles.</p>
+                                        <?php endif; ?>
                                     </div>
+
                                     <!-- Form Group (birthday)-->
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="inputCarrera">Carrera:</label>
-                                        <input class="form-control form-control-solid" id="inputCarrera" type="text" name="carrera" placeholder="Carrera" />
+                                        <?php if (!empty($grados)): ?>
+                                            <?php foreach ($grados as $grado): ?>
+                                                <?= form_label('Fecha de obtención del grado académico:', 'inputFechaObtencionGradoAcademico', ['class' => 'small mb-1']) ?>
+                                                <?= form_input([
+                                                    'name' => 'fecha_grado',
+                                                    'id' => 'inputFechaObtencionGradoAcademico',
+                                                    'type' => 'date',
+                                                    'value' => esc($grado['fecha_creacion']),
+                                                    //'value' => isset($fecha_grado) && $fecha_grado !== '' ? esc($fecha_grado) : '',
+                                                    'class' => 'form-control form-control-solid',
+                                                    'disabled' => true,
+                                                    'placeholder' => 'Sin información disponible'
+                                                ]) ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <p>No hay grados académicos disponibles.</p>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                                <!-- Form Row-->
-                                <div class="row gx-3 mb-3">
-                                    <!-- Form Group (phone number)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputSiglasGradoAcademico">Siglas del grado académico:</label>
-                                        <input class="form-control form-control-solid" id="inputSiglasGradoAcademico" type="text" placeholder="Siglas del grado académico" />
-                                    </div>
-                                    <!-- Form Group (birthday)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputFechaObtencionGradoAcademico">Fecha de obtención del grado académico:</label>
-                                        <input class="form-control form-control-solid" id="inputFechaObtencionGradoAcademico" type="text" name="grado" placeholder="Fecha de obtención del grado académico" />
-                                    </div>
-                                </div>
-                                <!-- Save changes button-->
-                                <button class="btn btn-primary" type="button">Guardar cambios</button>
-                            </form>
+                                <!-- Botón de Editar -->         
+                            <?= form_close() ?>
                         </div>
                     </div>
                 </div>

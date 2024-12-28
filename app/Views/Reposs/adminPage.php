@@ -134,7 +134,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Permisos Asignados a Roles</div>
                         <div class="card-body">
-                            <table id="datatablesSimple" class="table table-bordered">
+                            <table id="datatables" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>Rol ID</th>
@@ -145,23 +145,13 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>Role ID</th>
-                                        <th>Role Name</th>
-                                        <th>Permission Name</th>
-                                        <th>Permission Description</th>
-                                        <th>Assignment Date</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </tfoot>
                                 <tbody>
                                     <?php foreach ($rolePermissions as $rp): ?>
                                         <tr>
                                             <td><?= $rp['RoleID'] ?></td>
                                             <td><?= $rp['RoleName'] ?></td>
+                                            <td><?= $rp['Title'] ?></td>
                                             <td><?= $rp['PermissionName'] ?></td>
-                                            <td><?= $rp['Description'] ?></td>
                                             <td><?= date('Y-m-d', $rp['AssignmentDate']) ?></td>
                                             <td>
                                                 <button
@@ -181,7 +171,7 @@
                     <div class="card mb-4">
                         <div class="card-header">Roles Asignados a Usuarios</div>
                         <div class="card-body">
-                            <table id="datatablesSimple" class="table table-bordered">
+                            <table id="datatables" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>ID Usuario</th>
@@ -192,29 +182,19 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tfoot>
-                                    <tr>
-                                        <th>ID Usuario</th>
-                                        <th>Nombre Usuario</th>
-                                        <th>Nombre del Rol</th>
-                                        <th>Descripción del Rol</th>
-                                        <th>Fecha de asignación</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </tfoot>
                                 <tbody>
-                                    <?php foreach ($rolePermissions as $rp): ?>
+                                    <?php foreach ($userRoleName as $rn): ?>
                                         <tr>
-                                            <td><?= $rp['RoleID'] ?></td>
-                                            <td><?= $rp['RoleName'] ?></td>
-                                            <td><?= $rp['PermissionName'] ?></td>
-                                            <td><?= $rp['Description'] ?></td>
-                                            <td><?= date('Y-m-d', $rp['AssignmentDate']) ?></td>
+                                            <td><?= $rn['UserID'] ?></td>
+                                            <td><?= $rn['NombreUsuario'] ?></td>
+                                            <td><?= $rn['Title'] ?></td>
+                                            <td><?= $rn['Description'] ?></td>
+                                            <td><?= date('Y-m-d', $rn['AssignmentDate']) ?></td>
                                             <td>
                                                 <button
                                                     class="btn btn-danger btn-sm delete-button"
-                                                    data-id="<?= $rp['RoleID'] . '-' . $rp['PermissionID'] ?>"
-                                                    data-type="role-permission">
+                                                    data-id="<?= $rn['UserID'] . '-' . $rn['RoleID'] ?>"
+                                                    data-type="user-role">
                                                     Eliminar
                                                 </button>
                                             </td>

@@ -31,7 +31,7 @@ class AdminController extends BaseController
     {
         // Se obtiene la consulta de cada uno de los modelos con su respectiva funcion
         $roles['roles'] = $this->roleModel->getRoles();
-        $userRoles = $this->userRoles->getUserNRoles();
+        $userRoleName = $this->userRoles->getUserRoleName();
         $permissions['permissions'] = $this->permissionModel->getPermissions();
         $rolePermissions['rolePermissions'] = $this->rolePermissionModel->getRolePermissions();
         // Se carga la vista del panel con los datos de las consultas
@@ -41,7 +41,15 @@ class AdminController extends BaseController
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token');
-        return view('Reposs/adminPage', ['roles' => $roles['roles'], 'permissions' => $permissions['permissions'], 'rolePermissions' => $rolePermissions['rolePermissions'], 'userRoles' => $userRoles, 'user' => $user, 'token' => $token, 'userId' => $userId]);
+        return view('Reposs/adminPage', [
+            'roles' => $roles['roles'],
+            'permissions' => $permissions['permissions'],
+            'rolePermissions' => $rolePermissions['rolePermissions'],
+            'userRoleName' => $userRoleName,
+            'user' => $user,
+            'token' => $token,
+            'userId' => $userId
+        ]);
     }
 
     // Crear un rol
@@ -128,8 +136,6 @@ class AdminController extends BaseController
         $roleId = $this->request->getPost('role_id');
 
         if ($userId && $roleId) {
-            //$db = \Config\Database::connect(); /// Eliminar conexion
-            //$db->table('user_roles')
             $this->userRoles->insert([
                 'user_id' => $userId,
                 'role_id' => $roleId,
@@ -149,8 +155,6 @@ class AdminController extends BaseController
             $permissionId = $this->request->getJSON()->permission_id;
 
             if ($roleId && $permissionId) {
-                //$db = \Config\Database::connect(); /// Eliminar conexion
-                //$db->table('users_rolepermissions')
                 $this->rolePermissionModel->where('RoleID', $roleId)
                     ->where('PermissionID', $permissionId)
                     ->delete();
@@ -164,6 +168,33 @@ class AdminController extends BaseController
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'Invalid RoleID or PermissionID.'
+            ]);
+        }
+
+        throw new \CodeIgniter\Exceptions\PageNotFoundException();
+    }
+
+    // Eliminar roles asignados a usuarios
+    public function deleteUserRole()
+    {
+        if ($this->request->isAJAX()) {
+            $userId = $this->request->getJSON()->user_id;
+            $roleId = $this->request->getJSON()->role_id;
+
+            if ($userId && $roleId) {
+                $this->userRoles->where('UserID', $userId)
+                    ->where('RoleID', $roleId)
+                    ->delete();
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'User-Role assignment deleted successfully.'
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Invalid UserID or RoleID.'
             ]);
         }
 

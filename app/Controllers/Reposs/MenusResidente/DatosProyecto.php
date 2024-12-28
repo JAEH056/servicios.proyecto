@@ -4,9 +4,32 @@ namespace App\Controllers\Reposs\MenusResidente;
 
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
+use App\Models\Reposs\EmpresaModel;
+use App\Models\Reposs\ProyectoModel;
+use App\Models\Reposs\AsesorExternoModel;
+use App\Models\Reposs\ResidenteModel;
+use App\Models\Reposs\SectorModel;
+use App\Models\Reposs\RamoModel;
 
 class DatosProyecto extends ResourceController
 {
+    protected $asesorExterno;
+    protected $residente;
+    protected $proyecto;
+    protected $empresa;
+    protected $userId;
+    protected $sector;
+    protected $ramo;
+    public function __construct()
+    {
+        $this->asesorExterno = new AsesorExternoModel();
+        $this->residente = new ResidenteModel();
+        $this->proyecto = new ProyectoModel();
+        $this->empresa = new EmpresaModel();
+        $this->sector = new SectorModel();
+        $this->ramo = new RamoModel();
+        $this->userId = session()->get('idusuario');
+    }
     /**
      * Return an array of resource objects, themselves in array format.
      *
@@ -19,10 +42,15 @@ class DatosProyecto extends ResourceController
             return redirect()->to('/oauth/login');
         }
 
-        $userId = session()->get('idusuario');
+        $datosEmpresa = $this->empresa->getEmpresaByUserId($this->userId);
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
-        return view('Reposs/MenusResidente/datosProyecto', ['user' => $user, 'token' => $token, 'idusuario' => $userId]); // Se agregan los datos a la vista
+        return view('Reposs/MenusResidente/datosProyecto', [
+            'user' => $user,
+            'token' => $token,
+            'idusuario' => $this->userId,
+            'datosEmpresa' => $datosEmpresa
+        ]); // Se agregan los datos a la vista
     }
 
     /**

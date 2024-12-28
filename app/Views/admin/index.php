@@ -15,7 +15,7 @@
 
 <body>
     <!-- Bootstrap Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <!-- div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div -->
     <div class="container mt-5">
         <h1 class="mb-4">Panel de Administración</h1>
 

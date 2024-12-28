@@ -6,7 +6,7 @@ use CodeIgniter\Database\ResultInterface;
 use CodeIgniter\Model;
 
 class UserRolesModel extends Model
-{   
+{
     protected $DBGroup = 'compartida';
     protected $table = 'phpRbca_userroles'; // Table name
     protected $primaryKey = 'UserID'; // Primary key, though it might not be required here
@@ -59,6 +59,23 @@ class UserRolesModel extends Model
     {
         $builder = $this->builder();
         $builder->select('UserID, RoleID');
+        // Ejecuta la consulta y devuelve los resultados como Array
+        return $builder->get()->getResultArray(); /// Retorna un arreglo con todos los roles del $
+    }
+
+    public function getUserRoleName()
+    {
+        $builder = $this->builder();
+        $builder = $this->db->table('phpRbca_userroles ur');
+        $builder->select('ur.UserID,
+                          ur.RoleID,
+                          IFNULL(u.principal_name, res.principal_name) AS NombreUsuario,
+                          r.Title,
+                          r.Description,
+                          ur.AssignmentDate')
+            ->join('phpRbca_roles r', 'ur.RoleID = r.ID', 'left')
+            ->join('usuario u', 'ur.UserID = u.idusuario', 'left')
+            ->join('reposs.residente res', 'ur.UserID = res.idresidente', 'left');
         // Ejecuta la consulta y devuelve los resultados como Array
         return $builder->get()->getResultArray(); /// Retorna un arreglo con todos los roles del $
     }
