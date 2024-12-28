@@ -41,7 +41,7 @@ class DiasInhabilesModel extends Model
         return $diasInhabiles;
     }
 
-    public function obtenerDiasInhabilesPorPeriodo($inicioPeriodo,$finPeriodo): array
+    public function obtenerDiasInhabilesPorPeriodo($inicioPeriodo, $finPeriodo): array
     {
         $builder = $this->db->table($this->table)
             ->select('dias_inhabiles.id as id, 

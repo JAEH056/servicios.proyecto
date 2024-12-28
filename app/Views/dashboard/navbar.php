@@ -161,7 +161,7 @@
                             </div>
                         </h6>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="/puesto">
+                        <a class="dropdown-item" href="/usuario/puesto">
                             <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
                             Mi cuenta
                         </a>
