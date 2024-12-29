@@ -5,7 +5,7 @@ use App\Controllers\Labs\MenuLaboratorista\CrearHorario;
 use App\Controllers\Labs\MenuLaboratorista\DiasInhabiles;
 use App\Controllers\Labs\MenuLaboratorista\Laboratorios;
 use App\Controllers\Labs\MenuLaboratorista\Laboratorista;
-use App\Controllers\Labs\Reticula;
+use App\Controllers\Labs\MenuLaboratorista\Reticula;
 use App\Controllers\Labs\MenuLaboratorista\Semestre;
 use App\Controllers\Labs\MenuUsuario\SolicitarLaboratorio;
 use CodeIgniter\Router\RouteCollection;
@@ -53,5 +53,5 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
 //Usuarios con correo huatusco.tecnm.mx
     $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('empleado/horario/(:num)', [SolicitarLaboratorio::class, 'index/$1']);
-    $routes->get('ver/horario', [SolicitarLaboratorio::class, 'index']);
+    $routes->get('ver/horario', [SolicitarLaboratorio::class, 'index']);    
 });

@@ -1,4 +1,4 @@
-<?= $this->extend('Labs/layouts/vista_principal') ?>
+<?= $this->extend('Labs/layouts/principal_docente') ?>
 
 <?= $this->section('include_css') ?>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />

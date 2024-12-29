@@ -4,10 +4,10 @@ namespace App\Models\Labs;
 
 use CodeIgniter\Model;
 
-class SolicitudesVariasModel extends Model
+class SolicitudesPracticasModel extends Model
 {
     protected $DBGroup = 'laboratorios';
-    protected $table      = 'solicitudes_varias';
+    protected $table      = 'solicitudes_practicas';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType     = 'array';
@@ -16,8 +16,8 @@ class SolicitudesVariasModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = [
         'id_solicitud',
-        'id_tipo_uso',
-        'descripcion_tareas',
-        'nombre_proyecto'
+        'id_clase',
+        'nombre_practica',
+        'objetivo'
     ];
 }

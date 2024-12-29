@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Labs;
-
+  
 use CodeIgniter\Model;
 
 class SolicitudModel extends Model
@@ -14,5 +14,5 @@ class SolicitudModel extends Model
 
 
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['hora_fecha_entrada', 'hora_fecha_salida','id'];
+    protected $allowedFields = ['hora_fecha_entrada', 'hora_fecha_salida', 'id_laboratorio'];
 }

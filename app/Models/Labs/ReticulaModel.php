@@ -24,7 +24,7 @@ class ReticulaModel extends Model
             asignatura.clave AS clave_materia,
             asignatura.satca AS satca_materia,
 
-            especialidad.nombre  AS especialidad
+            especialidad.nombre  AS especialidad,
             carrera.nombre As carrera
 
         FROM reticula

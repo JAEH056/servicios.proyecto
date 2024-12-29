@@ -3,21 +3,28 @@
 namespace App\Controllers\Labs\MenuUsuario;
 
 use App\Controllers\BaseController;
+use App\Models\Labs\CarreraModel;
 use App\Models\Labs\DiasInhabilesModel;
 use App\Models\Labs\HorarioModel;
 use App\Models\Labs\LaboratorioModel;
+use App\Models\Labs\TipoUsoModel;
 
 class SolicitarLaboratorio extends BaseController
 {
     protected $model_horario;
     protected $model_laboratorio;
     protected $model_dias_inhabiles;
+    protected $model_tipos_uso;
+    protected $model_carreras;
+    protected $helpers = ['form'];
 
     public function __construct()
     {
         $this->model_horario = model(HorarioModel::class);
         $this->model_laboratorio = model(LaboratorioModel::class);
         $this->model_dias_inhabiles = model(DiasInhabilesModel::class);
+        $this->model_tipos_uso = model(TipoUsoModel::class);
+        $this->model_carreras = model(CarreraModel::class);
     }
 
     public function index($idLaboratorio = null)
@@ -32,6 +39,8 @@ class SolicitarLaboratorio extends BaseController
 
         $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
         $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
+        $tipos_uso_solicitudes_varias = $this->model_tipos_uso->obtenerTiposUso();
+        $carreras = $this->model_carreras->obtenerCarrera();
         //los datos de sesion se pasan a la vista
 
         if (!$idLaboratorio && !empty($laboratorios)) {
@@ -127,13 +136,21 @@ class SolicitarLaboratorio extends BaseController
                     'user' => $user,
                     'token' => $token,
                     'idusuario' => $userId,
+                    'tipouso' => $tipos_uso_solicitudes_varias,
+                    'carrerasJson' =>$carreras
+                    
 
 
                 ];
             }
-
-            
+            print_r($data);
         }
-        return view('Labs/layouts/horario_docente', $data);
+    
+   
+        return view('Labs/layouts/horario_docente', $data,['carrerasJson' =>json_encode($carreras)]);
     }
+
+    
+   
+
 }
