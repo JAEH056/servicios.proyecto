@@ -71,7 +71,7 @@ class HorarioModel extends Model
     public function obtenerHorariosPorLaboratorio($idLaboratorio): array
     {
         $builder = $this->db->table('horario') 
-            ->select('laboratorio.id AS laboratorio_id,
+            ->select('semestre.id AS semestre_id, laboratorio.id AS laboratorio_id,
                   semestre.inicio AS inicio,
                   semestre.fin AS fin,
                   laboratorio.nombre AS nombre_laboratorio,

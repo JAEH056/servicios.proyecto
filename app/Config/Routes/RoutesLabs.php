@@ -52,6 +52,12 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
 
 //Usuarios con correo huatusco.tecnm.mx
     $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('empleado/horario/(:num)', [SolicitarLaboratorio::class, 'index/$1']);
-    $routes->get('ver/horario', [SolicitarLaboratorio::class, 'index']);    
+        $routes->get('empleado/horario/(:num)', [SolicitarLaboratorio::class, 'index/$1']);
+        $routes->get('ver/horario', [SolicitarLaboratorio::class, 'index']);
+       //para peticion de materia con base a carrera
+        $routes->get('pr/horario', [SolicitarLaboratorio::class,'obtenerMateriasCarrera']);
+        $routes->get('asignaturaclave/horario', [SolicitarLaboratorio::class,'obtenerClavePorMateria']);
+       
+        $routes->get('datos', [SolicitarLaboratorio::class, 'enviarSolicitud']);
+
 });
