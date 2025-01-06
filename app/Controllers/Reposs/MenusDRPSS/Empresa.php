@@ -34,7 +34,6 @@ class Empresa extends BaseController
     }
     public function guardar()
     {
-
         $rules = [
             'numero_control' => 'required',
             'nombre'    => 'required',
@@ -67,17 +66,17 @@ class Empresa extends BaseController
         ]);
         $residenteModel = new ResidenteModel();
         $residenteModel->insert([
-            'nombre'    => trim($post['nombre']),
-            'apellidoP' => trim($post['apellidoP']),
-            'apellidoM' => trim($post['apellidoM']),
-            'numControl' => trim($post['numControl']),
-            'domicilio' => $post['domicilio'],
-            'correo'    => $post['correo'],
-            'ciudad'    => $post['ciudad'],
-            'seguroSocial' => $post['seguroSocial'],
-            'numeroSS'  => $post['numeroSS'],
-            'telefono'  => $post['telefono'],
-            'celular'   => $post['celular'],
+            'nombre'            => trim($post['nombre']),
+            'apellidoP'         => trim($post['apellidoP']),
+            'apellidoM'         => trim($post['apellidoM']),
+            'numControl'        => trim($post['numControl']),
+            'domicilio'         => $post['domicilio'],
+            'correo'            => $post['correo'],
+            'ciudad'            => $post['ciudad'],
+            'seguroSocial'      => $post['seguroSocial'],
+            'numeroSS'          => $post['numeroSS'],
+            'telefono'          => $post['telefono'],
+            'celular'           => $post['celular'],
             'idprogramaEducativo' => $post['idprogramaEducativo'],
         ]);
 

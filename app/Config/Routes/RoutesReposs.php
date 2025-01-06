@@ -4,12 +4,11 @@ use CodeIgniter\Router\RouteCollection;
 use App\Controllers\Reposs\AdminController;
 use App\Controllers\Reposs\OpenUseController;
 /// ----------- DRPSS Controllers ------------
-use App\Controllers\Reposs\MenusDRPSS\Residentes;
 use App\Controllers\Reposs\MenusDRPSS\Residente;
 use App\Controllers\Reposs\MenusDRPSS\Empresa;
 use App\Controllers\Reposs\MenusDRPSS\AsesorInterno;
 use App\Controllers\Reposs\MenusDRPSS\HomeDRPSS;
-use App\Controllers\Reposs\MenusDRPSS\Validacion;
+use App\Controllers\Reposs\MenusDRPSS\DocumentosDRPSS;
 /// ----------- Residentes Controllers ------------
 //use App\Controllers\Reposs\MenusResidente\InicioResidente;
 use App\Controllers\Reposs\MenusResidente\Documentos;
@@ -18,7 +17,6 @@ use App\Controllers\Reposs\MenusResidente\HomeResidente;
 use App\Controllers\Reposs\MenusResidente\DatosProyecto;
 use App\Controllers\Reposs\MenusResidente\DatosResidente;
 use App\Controllers\Reposs\Formatos\PdfController;
-use App\Controllers\Reposs\MenusResidente\DatosAsesor;
 
 /**
  * @var RouteCollection $routes
@@ -26,31 +24,43 @@ use App\Controllers\Reposs\MenusResidente\DatosAsesor;
 
 // Rutas usuario: Residente con: permisos por defecto (default)
 $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
-    $routes->get('residentes/admin',        [OpenUseController::class, 'index']);
-    $routes->get('residentes/documentos',   [Documentos::class, 'index']);
-    $routes->get('residentes/datos',        [DatosResidente::class, 'index']);
-    $routes->get('residentes/proyecto',     [DatosProyecto::class, 'index']);
-    $routes->get('residentes/home',         [HomeResidente::class, 'index']);
-    $routes->get('residentes/empresa',      [DatosEmpresa::class, 'index']);
-    $routes->get('residentes/solicitud-residencias', [PdfController::class, 'generar']);
+    $routes->get('residentes/admin',                    [OpenUseController::class, 'index']);
+    $routes->get('residentes/documentos',               [Documentos::class, 'index']);
+    $routes->get('residentes/datos',                    [DatosResidente::class, 'index']);
+    $routes->get('residentes/proyecto',                 [DatosProyecto::class, 'index']);
+    $routes->get('residentes/asesor_interno',           [DatosProyecto::class, 'busquedaAsesor']);
+    $routes->get('residentes/home',                     [HomeResidente::class, 'index']);
+    $routes->get('residentes/empresa',                  [DatosEmpresa::class, 'index']);
+    $routes->get('residentes/solicitud-residencias',    [PdfController::class, 'generar']);
 
-    $routes->post('residentes/asesor-externo', [DatosEmpresa::class, 'createAsesor']);
-    $routes->post('residentes/empresa',        [DatosEmpresa::class, 'create']);
-    $routes->post('residentes/datos',          [DatosResidente::class, 'update']);
-    $routes->post('residentes/upload/(:num)',  [Documentos::class, 'upload']);
-    $routes->get('residentes/delete/(:num)',   [Documentos::class, 'delete']);
+    $routes->get('residentes/asesor_interno/busqueda',  [DatosProyecto::class, 'buscar']);
+    $routes->post('residentes/asesor-interno',          [DatosProyecto::class, 'guardarAsesorInterno']);
+    $routes->post('residentes/asesor-externo',          [DatosEmpresa::class, 'createAsesor']);
+    $routes->post('residentes/empresa',                 [DatosEmpresa::class, 'create']);
+    $routes->post('residentes/datos',                   [DatosResidente::class, 'update']);
+    $routes->post('residentes/upload/(:num)',           [Documentos::class, 'upload']);
+    $routes->get('residentes/delete/(:num)',            [Documentos::class, 'delete']);
 });
 
 // Rutas de departamento de residencias profecionales: Usuario con permisos de root
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('drpss/residentes',   [Residente::class, 'listaResidentes']);
     $routes->get('drpss/nuevo',        [Residente::class, 'index']);
-    $routes->get('drpss/documentos',   [Validacion::class, 'index']);
     $routes->get('drpss/empresa',      [Empresa::class, 'index']);
     $routes->get('drpss/asesor',       [AsesorInterno::class, 'index']);
     $routes->get('drpss/home',         [HomeDRPSS::class, 'index']);
-
     $routes->post('drpss/nuevo',       [Residente::class, 'guardar']);
+});
+
+// Rutas de departamento de residencias profecionales: Validacion de datos y documentos
+$routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
+    $routes->get('drpss/documentos',                    [DocumentosDRPSS::class, 'index']);
+    $routes->post('drpss/documentos/validar/(:segment)',[DocumentosDRPSS::class, 'validarDocumentos/$1'], ['filter' => 'regex']);
+    $routes->post('drpss/documentos/ver/(:any)',        [DocumentosDRPSS::class, 'vistaArchivo/$1']);
+    $routes->get('drpss/documentos/descargar/(:any)',   [DocumentosDRPSS::class, 'descargarArchivo/$1']);
+    $routes->get('drpss/editar/(:segment)',             [DocumentosDRPSS::class, 'editar/$1'],            ['filter' => 'regex']);
+    $routes->get('drpss/documentos/(:segment)',         [DocumentosDRPSS::class, 'documentos/$1'],        ['filter' => 'regex']);
+    $routes->get('drpss/perfil/(:segment)',             [DocumentosDRPSS::class, 'perfil/$1'],            ['filter' => 'regex']);
 });
 
 // Rutas administrador de roles y permisos con acceso solo para roles con permisos de root

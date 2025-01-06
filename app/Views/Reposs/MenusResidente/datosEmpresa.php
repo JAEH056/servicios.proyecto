@@ -16,14 +16,12 @@
                     <li class="nav-item">
                         <a class="nav-link active" id="overview-tab" href="#datosempresa" data-bs-toggle="tab" role="tab" aria-controls="datosempresa" aria-selected="true">Datos de Empresa</a>
                     </li>
-                    <?php if (!isset($datosEmpresa) && !isset($asesorExterno)): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" id="overview-tab" href="#agregarempresa" data-bs-toggle="tab" role="tab" aria-controls="agregarempresa" aria-selected="false">Agregar Empresa</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="example-tab" href="#asesorexterno" data-bs-toggle="tab" role="tab" aria-controls="asesorexterno" aria-selected="false">Asesor Externo</a>
-                        </li>
-                    <?php endif; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" id="overview-tab" href="#agregarempresa" data-bs-toggle="tab" role="tab" aria-controls="agregarempresa" aria-selected="false">Agregar Empresa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="example-tab" href="#asesorexterno" data-bs-toggle="tab" role="tab" aria-controls="asesorexterno" aria-selected="false">Asesor Externo</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" id="resume-tab" href="#carta" data-bs-toggle="tab" role="tab" aria-controls="carta" aria-selected="false">Descargar Carta</a>
                     </li>

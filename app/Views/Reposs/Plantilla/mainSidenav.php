@@ -30,7 +30,6 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?= base_url('usuario/residentes/documentos') ?>">Subir documentos</a>
-                    <a class="nav-link" href="invoice.html">Estado de entrega</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->

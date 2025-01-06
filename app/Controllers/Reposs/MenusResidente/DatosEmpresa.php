@@ -42,19 +42,19 @@ class DatosEmpresa extends ResourceController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
-        $datosEmpresa = $this->empresa->getEmpresaByUserId($this->userId);
-        $asesorExterno = $this->empresa->getAsesorFromEmpresa($this->userId);
-        $opcionSector = $this->sector->findAll();
-        $opcionRamo = $this->ramo->findAll();
+        $datosEmpresa   = $this->empresa->getEmpresaByUserId($this->userId);
+        $asesorExterno  = $this->empresa->getAsesorFromEmpresa($this->userId);
+        $opcionSector   = $this->sector->findAll();
+        $opcionRamo     = $this->ramo->findAll();
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
         return view('Reposs/MenusResidente/datosEmpresa', [
-            'user' => $user,
-            'token' => $token,
-            'idusuario' => $this->userId,
-            'datosEmpresa' => $datosEmpresa,
-            'opcionSector' => $opcionSector,
-            'opcionRamo' => $opcionRamo,
+            'user'          => $user,
+            'token'         => $token,
+            'idusuario'     => $this->userId,
+            'datosEmpresa'  => $datosEmpresa,
+            'opcionSector'  => $opcionSector,
+            'opcionRamo'    => $opcionRamo,
             'asesorExterno' => $asesorExterno,
         ]); // Se agregan los datos a la vista
     }
@@ -82,8 +82,10 @@ class DatosEmpresa extends ResourceController
     }
 
     /**
-     * Create a new resource object, from "posted" parameters.
-     *
+     *  Se crea una nueva empresa, con los datos obtenidos se crea un proyecto
+     *  Nota: se crea una empresa y proyecto para mantener la relacion entre empresa y residente
+     *  con el proyecto como intermediario.
+     * 
      * @return ResponseInterface
      */
     public function create()
@@ -147,6 +149,12 @@ class DatosEmpresa extends ResourceController
         return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', 'Empresa creada con exito.');
     }
 
+    /**
+     *  Se agregan los datos del asesor externo usando el ID del Residente
+     *  para guardarlo en la empresa asosiada al residente.
+     * 
+     * @return ResponseInterface
+     */
     public function createAsesor()
     {
         $post = $this->request->getPost([
@@ -158,21 +166,20 @@ class DatosEmpresa extends ResourceController
             'correo',
             'telefono'
         ]);
+        $rules = $this->asesorExterno->getValidationRules();
         //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->asesorExterno->getValidationRules($post)) {
+        if (!$this->validateData($post, $rules)) {
             return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
         }
 
+        // Se agrega el asesor a la empresa asociada al residente.
         $response = $this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId);
 
         if (!$response['success']) {
-            // Handle the error
             return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $response['message']);
-        } else {
-            // Success
-            echo $response['message'];
-            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', $response['message']);
         }
+        // Success
+        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', $response['message']);
     }
 
     /**

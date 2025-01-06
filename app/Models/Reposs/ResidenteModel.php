@@ -33,7 +33,17 @@ class ResidenteModel extends Model
     protected array $castHandlers = [];
 
     // Validation
-    protected $validationRules      = [];
+    protected $validationRules      = [
+        'numero_control'    => 'required',
+        'nombre'            => 'required|max_length[255]',
+        'apellido1'         => 'required|max_length[255]',
+        'apellido2'         => 'max_length[255]',
+        'domicilio'         => 'max_length[255]',
+        'ciudad'            => 'max_length[255]',
+        'seguro_social'     => 'required',
+        'numero_ss'         => 'required',
+        'celular'           => 'min_length[10]'
+    ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
@@ -131,8 +141,8 @@ class ResidenteModel extends Model
         $builder->join('reposs.modalidad mo', 'pe.idmodalidad = mo.idmodalidad');
         $builder->join('reposs.proyecto py', 'residente.idresidente = py.idresidente', 'left');
         $builder->join('reposs.empresa emp', 'py.idempresa = emp.idempresa', 'left');
-        $builder->join('reposs.sector sec', 'emp.idsector = sec.idsector');
-        $builder->join('reposs.ramo ro', 'emp.idramo = ro.idramo');
+        $builder->join('reposs.sector sec', 'emp.idsector = sec.idsector', 'left');
+        $builder->join('reposs.ramo ro', 'emp.idramo = ro.idramo', 'left');
         $builder->join('reposs.asesor_externo aex', 'emp.idasesor_externo = aex.idasesor_externo', 'left');
         $builder->join('reposs.asesor_interno aint', 'py.idasesor_interno = aint.idasesor_interno', 'left');
 

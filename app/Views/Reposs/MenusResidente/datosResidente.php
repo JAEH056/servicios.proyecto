@@ -49,17 +49,17 @@
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (correo institucional)-->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="principal_name" hidden>Correo Institucional</label>
+                                            <label class="small mb-1" for="principal_name" >Correo Institucional</label>
                                             <input class="form-control" id="principal_name" type="text"
                                                 placeholder="Correo Institucional" name="principal_name"
-                                                value="<?= esc($datosResidente['principal_name']); ?>" hidden />
+                                                value="<?= esc($datosResidente['principal_name']); ?>" readonly />
                                         </div>
                                         <!-- Form Group (Numero de control)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="numControl">Numero de control</label>
                                             <input class="form-control" id="numControl" type="text"
                                                 placeholder="numero de control" name="numero_control"
-                                                value="<?= esc($datosResidente['numero_control']); ?>" />
+                                                value="<?= esc($datosResidente['numero_control']); ?>" readonly/>
                                         </div>
                                         <!-- Form Group (nombre)-->
                                         <div class="mb-3">
@@ -126,6 +126,9 @@
                                             <select class="form-control" id="seguroSocial" name="seguro_social">
                                                 <?php if (isset($datosResidente['seguro_social'])): ?>
                                                     <option value="<?= esc($datosResidente['seguro_social']); ?>" selected><strong><?= esc($datosResidente['seguro_social']); ?></strong></option>
+                                                    <option>IMSS</option>
+                                                    <option>ISSSTE</option>
+                                                    <option>Otros</option>
                                                 <?php else: ?>
                                                     <option>IMSS</option>
                                                     <option>ISSSTE</option>
@@ -138,11 +141,7 @@
                                             <label class="small mb-1" for="numeroSS">Numero Seguro social</label>
                                             <input class="form-control" id="numeroSS" type="text" name="numero_ss"
                                                 placeholder="Ingresa numero de seguro social"
-                                                <?php if (isset($datosResidente['seguro_social'])): ?>
                                                 value="<?= esc($datosResidente['numero_ss']); ?>" />
-                                        <?php else: ?>
-                                            value="" />
-                                        <?php endif; ?>
                                         </div>
                                     </div>
                                     <!-- Form Row        -->
@@ -153,6 +152,9 @@
                                             <select class="form-control" id="idprograma_educativo" name="idprograma_educativo">
                                                 <?php if (isset($datosResidente['idprograma_educativo'])): ?>
                                                     <option value="<?= esc($datosResidente['idprograma_educativo']); ?>" selected><?= esc($datosResidente['nombre_programa_educativo']); ?></option>
+                                                    <?php foreach ($programa as $pe): ?>
+                                                        <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
+                                                    <?php endforeach; ?>
                                                 <?php else: ?>
                                                     <?php foreach ($programa as $pe): ?>
                                                         <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>

@@ -64,6 +64,10 @@ class Residente extends BaseController
     {
         //return view('residentes/formulario');
     }
+
+    /*
+    *   Funcion para guardar los datos de un nuevo estudiante (candidato).
+    */
     public function guardar(): RedirectResponse
     {
         helper('form');
@@ -88,15 +92,14 @@ class Residente extends BaseController
         // Gets the validated data.
         $post = $this->validator->getValidated();
 
-        $residenteModel = new ResidenteModel();
         // Verificar si existe el residente
-        if ($residenteModel->esPrimerIngreso(trim($post['numero_control'])) == false) {
+        if ($this->residentes->esPrimerIngreso(trim($post['numero_control'])) == false) {
             return redirect()->to(base_url('usuario/drpss/nuevo'))->with('error', 'El usuario ya existe');
         }
         // Concatenar el correo con el dominio
         $principal_name = trim($post['numero_control']) . '@alum.huatusco.tecnm.mx';
 
-        $residenteModel->insert([
+        $this->residentes->insert([
             'idprograma_educativo'  => $post['idprograma_educativo'],
             'principal_name'        => $principal_name,
             'numero_control'        => trim($post['numero_control']),
