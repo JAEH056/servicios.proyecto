@@ -127,7 +127,6 @@
                                                     'disabled' => true,
                                                     'placeholder' => 'Sin información disponible'
                                                 ]) ?>
-
                                             <?php endforeach; ?>
                                         <?php else: ?>
                                             <p>No hay grados académicos disponibles.</p>

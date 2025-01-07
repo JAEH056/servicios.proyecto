@@ -16,19 +16,34 @@ class LaboratorioModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['id_carrera', 'nombre'];
 
+    // public function obtenerLaboratorios()
+    // {
+
+    //     $builder = $this->db->table('laboratorio')
+    //         ->select('laboratorio.id AS id, 
+    //     carrera.id AS carrera_id, carrera.nombre AS carrera_nombre, 
+    //     laboratorio.nombre AS nombre_laboratorio')
+    //         ->join('carrera', 'carrera.id = laboratorio.id_carrera')
+    //         ->groupBy('laboratorio.id');
+    //     $query = $builder->get();
+    //     $laboratorios = $query->getResultArray();
+    //     return $laboratorios;
+    // }
     public function obtenerLaboratorios()
     {
-
         $builder = $this->db->table('laboratorio')
             ->select('laboratorio.id AS id, 
-        carrera.id AS carrera_id, carrera.nombre AS carrera_nombre, 
-        laboratorio.nombre AS nombre_laboratorio')
-            ->join('carrera', 'carrera.id = laboratorio.id_carrera')
+                  carrera.id AS carrera_id, 
+                  carrera.nombre AS carrera_nombre, 
+                  laboratorio.nombre AS nombre_laboratorio')
+            ->join('carrera', 'carrera.id = laboratorio.id_carrera', 'LEFT')
             ->groupBy('laboratorio.id');
+
         $query = $builder->get();
         $laboratorios = $query->getResultArray();
         return $laboratorios;
     }
+
 
     public function reglasValidacion()
     {

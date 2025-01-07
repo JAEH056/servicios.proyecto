@@ -29,7 +29,8 @@ class PuestoEmpleadoModel extends Model
 
         
         $builder = $this->db->table($this->table)
-        ->select('organigrama.cargo')
+        ->select('
+            puesto_empleado.idpuesto AS idpuesto, organigrama.cargo')
         ->join('organigrama','organigrama.idorganigrama=puesto_empleado.idorganigrama')
         ->where('idusuario', $userId)
         ->groupStart() 

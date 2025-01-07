@@ -28,7 +28,7 @@
             }
         });
 
-        // Elementos del DOM
+        // Selección de elementos del DOM
         const carreraSelector = document.getElementById('event-selector-carrera');
         const carreraIdHidden = document.getElementById('carrera-id-hidden');
         const asignaturaSelector = document.getElementById('event-selector-asignatura');
@@ -41,9 +41,11 @@
         carreraSelector.addEventListener('change', function() {
             const carreraId = carreraSelector.value;
             carreraIdHidden.value = carreraId;
+
             // Limpiar el selector de asignaturas y grupos al cambiar de carrera
             asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
             grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
+
             // Limpia el campo de clave de asignatura
             claveAsignaturaInput.value = "";
 
@@ -107,6 +109,7 @@
                     grupoSelector.innerHTML = '<option value="">Error al cargar grupos</option>';
                 });
         }
+
         // Función para manejar el cambio en el selector de grupo
         grupoSelector.addEventListener('change', function() {
             const grupoId = grupoSelector.value;
@@ -116,6 +119,7 @@
         // Función para manejar el cambio en el selector de asignatura
         asignaturaSelector.addEventListener('change', function() {
             const asignaturaId = asignaturaSelector.value;
+
             // Limpia el campo de clave y el campo oculto
             asignaturaIdHidden.value = asignaturaId;
             claveAsignaturaInput.value = "";
@@ -140,7 +144,9 @@
                     });
             }
         });
-        // -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        // ------------------------------------------------------------------------------------------------------------------------------------------
+
         // Lógica del calendario
         const Calendar = tui.Calendar;
         const locale = 'es-MX';
@@ -244,7 +250,6 @@
             };
         });
         calendar.createEvents(eventosFormateados);
-
         // Lógica del formulario de creación de eventos
         const tipoSolicitudSelector = document.getElementById('event-selector-solicitud');
         const camposPracticas = document.getElementById('campos-practicas');
@@ -272,81 +277,12 @@
             }
         });
 
-// Validación de formulario y mostrar errores
-function validateForm(event) {
-            let isValid = true;
-            const errorMessages = document.querySelectorAll('.text-danger');
-            errorMessages.forEach(msg => msg.style.display = 'none'); // Limpiar errores previos
-
-            // Validar tipo de solicitud
-            const tipoSolicitud = tipoSolicitudSelector.value;
-            if (!tipoSolicitud) {
-                showError('event-selector-solicitud', 'Por favor, seleccione un tipo de solicitud.');
-                isValid = false;
-            }
-
-            // Validación para 'practicas'
-            if (tipoSolicitud === 'practicas') {
-                const nombrePractica = document.getElementById('event-nombre-practica').value;
-                const objetivo = document.getElementById('event-objetivo-competencia').value;
-                const carrera = document.getElementById('event-selector-carrera').value;
-                const asignatura = document.getElementById('event-selector-asignatura').value;
-                const grupo = document.getElementById('event-selector-grupo').value;
-
-                if (!nombrePractica) {
-                    showError('event-nombre-practica', 'El nombre de la práctica es obligatorio.');
-                    isValid = false;
-                }
-                if (!objetivo) {
-                    showError('event-objetivo-competencia', 'El objetivo/competencia es obligatorio.');
-                    isValid = false;
-                }
-                if (!carrera) {
-                    showError('event-selector-carrera', 'Debe seleccionar una carrera.');
-                    isValid = false;
-                }
-                if (!asignatura) {
-                    showError('event-selector-asignatura', 'Debe seleccionar una asignatura.');
-                    isValid = false;
-                }
-                if (!grupo) {
-                    showError('event-selector-grupo', 'Debe seleccionar un grupo.');
-                    isValid = false;
-                }
-            }
-
-            // Validación para 'varias'
-            if (tipoSolicitud === 'varias') {
-                const fechaStart = document.getElementById('event-date-start').value;
-                const fechaEnd = document.getElementById('event-date-end').value;
-
-                if (!fechaStart) {
-                    showError('event-date-start', 'La fecha de inicio es obligatoria.');
-                    isValid = false;
-                }
-                if (!fechaEnd) {
-                    showError('event-date-end', 'La fecha de finalización es obligatoria.');
-                    isValid = false;
-                }
-            }
-
-            // Si no es válido, evitar el envío del formulario
-            if (!isValid) {
-                event.preventDefault();
-            }
+        // Asegurar que los campos se muestren correctamente al cargar la página
+        if (tipoSolicitudSelector.value === 'practicas') {
+            camposPracticas.style.display = 'block';
+        } else if (tipoSolicitudSelector.value === 'varias') {
+            camposVarias.style.display = 'block';
         }
-
-        // Función para mostrar errores
-        function showError(fieldId, message) {
-            const field = document.getElementById(fieldId);
-            const errorElement = document.createElement('div');
-            errorElement.classList.add('text-danger');
-            errorElement.textContent = message;
-            field.closest('.form-group').appendChild(errorElement);
-        }
-
-        form.addEventListener('submit', validateForm);
-
 
         // Mostrar el modal para crear eventos
         calendar.on('selectDateTime', function(event) {
@@ -374,15 +310,63 @@ function validateForm(event) {
                     format: 'yyyy-MM-dd HH:mm',
                 },
             });
+
+            // Guardar evento
+            const form = document.getElementById('eventForm');
+            form.addEventListener('submit', function handleSubmit(event) {
+                event.preventDefault(); // Prevenir el envío por defecto
+
+                const empleado = document.getElementById('event-empleado').value.trim();
+                const startEventDate = datepickerStart.getDate();
+                const endEventDate = datepickerEnd.getDate();
+
+                if (!empleado || !startEventDate || !endEventDate) {
+                    alert('Todos los campos son obligatorios.');
+                    return;
+                }
+
+                const start = new Date(startEventDate);
+                const end = new Date(endEventDate);
+
+                if (start >= end) {
+                    alert('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin.');
+                    return;
+                }
+
+                const newEvent = {
+                    id: String(new Date().getTime()),
+                    calendarId: 'cal2',
+                    //title: title,
+                    start: start,
+                    end: end,
+                    category: 'time',
+                    isAllDay: false,
+                    raw: {empleado},
+                };
+
+                calendar.createEvents([newEvent]);
+                // modal.hide();
+                form.reset();
+                datepickerStart.destroy();
+                datepickerEnd.destroy();
+                modal.hide();
+            });
         });
 
-        // ------------------------------------------------------------------------------------------------------------------------------------------------------
-        // Reiniciar el formulario y limpiar los errores al abrir el modal
-        document.getElementById('createEventModal').addEventListener('show.bs.modal', function() {
-            // Restablecer el formulario
+        // createEventModal.addEventListener('hidden.bs.modal', function () {
+        //     form.reset(); // Reinicia todos los campos del formulario
+        //     datepickerStart?.destroy();
+        //     datepickerEnd?.destroy();
+        // });
+
+        const createEventModal = document.getElementById('createEventModal');
+
+        // Reiniciar el formulario al abrir el modal
+        createEventModal.addEventListener('show.bs.modal', function() {
+            // Restablece el formulario
             form.reset();
 
-            // Ocultar los campos adicionales
+            // Oculta los campos adicionales
             camposPracticas.style.display = 'none';
             camposVarias.style.display = 'none';
 
@@ -393,11 +377,23 @@ function validateForm(event) {
             datepickerStart?.destroy();
             datepickerEnd?.destroy();
         });
+
+        // Mostrar modal con detalles del evento
+        calendar.on('clickEvent', function(event) {
+            const evento = event.event;
+            document.getElementById('eventoNombre').textContent = evento.title;
+            document.getElementById('eventoInicio').textContent = evento.start.toLocaleString(locale);
+            document.getElementById('eventoFin').textContent = evento.end.toLocaleString(locale);
+            document.getElementById('eventoDescripcion').textContent = evento.description || "No hay descripción disponible";
+
+            const modal = new bootstrap.Modal(document.getElementById('eventoModal'));
+            modal.show();
+        });
     });
 </script>
 <?= $this->endSection() ?>
 
-<?= $this->section('content_horario_docente') ?>
+<?= $this->section('content_horario_docente_copia') ?>
 <div class="container-xl px-4 mt-n5">
     <div class="card mb-4">
         <nav class="navbar d-flex flex-column align-items-center px-2 gap-2">
@@ -438,8 +434,18 @@ function validateForm(event) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-            
-            <?= form_open('/usuario/solicitud', ['id' => 'eventForm', 'method' => 'post', 'onsubmit' => 'return handleFormSubmit(event)']) ?>
+            <?php if (session()->getFlashdata('errors')): ?>
+        <?php $errors = session()->getFlashdata('errors'); ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errors as $error): ?>
+                    <li><?= esc($error) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+   
+                <?= form_open('/usuario/datos', ['id' => 'eventForm',  'method' => '']) ?>
                 <?= csrf_field() ?>
                 <!-- Campo Docente -->
                 <div class="mb-3">
@@ -451,6 +457,7 @@ function validateForm(event) {
                         'class' => 'form-control form-control-solid',
                         'disabled' => true,
                         'value' => esc($usuario['principal_name']),
+                        // set_value('empleado')
                     ]) ?>
                 </div>
 
@@ -476,6 +483,7 @@ function validateForm(event) {
                             'name' => 'event-nombre-practica',
                             'id' => 'event-nombre-practica',
                             'class' => 'form-control form-control-solid',
+                            // 'required' => true,
                             'value' => set_value('event-nombre-practica')
                         ]) ?>
                     </div>
@@ -485,6 +493,7 @@ function validateForm(event) {
                             'name' => 'event-objetivo-competencia',
                             'id' => 'event-objetivo-competencia',
                             'class' => 'form-control form-control-solid',
+                            // 'required' => true,
                             'value' => set_value('event-objetivo-competencia')
                         ]) ?>
                     </div>
@@ -539,50 +548,54 @@ function validateForm(event) {
                 <div id="campos-varias" class="additional-fields" style="display: none;">
                     <div class="mb-3">
                         <?php if (!empty($tipouso)): ?>
-                            <?= form_label('Seleccione el tipo de uso', 'id_tipo_uso', ['class' => 'form-label']) ?>
+                            <?= form_label('Seleccione el tipo de uso', 'event-selector-tipo-uso', ['class' => 'form-label']) ?>
                             <?= form_dropdown(
-                                'id_tipo_uso',
+                                'event-selector-tipo-uso',
                                 ['' => 'Seleccione el tipo de uso'] + array_column($tipouso, 'nombre', 'id'),
-                                set_value('id_tipo_uso'),
-                                ['id' => 'id_tipo_uso', 'class' => 'form-select custom-select form-control-solid', 'onchange' => "document.getElementById('tipo-id-hidden').value = this.value"]
+                                set_value('event-selector-tipo-uso'),
+                                ['id' => 'event-selector-tipo-uso', 'class' => 'form-select custom-select form-control-solid', 'onchange' => "document.getElementById('tipo-id-hidden').value = this.value"]
                             ) ?>
-                            <input type="hidden" id="tipo-id-hidden" name="tipo_id_uso">
-                        <span id="empleado-error" class="text-danger" style="display: none;"></span> <!-- Contenedor de error -->
-                        <?php else: ?>
-                            <p>No hay tipos de uso disponibles.</p>
-                        <?php endif; ?>    
-                    </div>
-                
-                    <div class="mb-3">
-                        <?= form_label('Nombre del proyecto, actividad u otro', 'nombre_proyecto', ['class' => 'form-label']) ?>
-                        <?= form_input([
-                            'name' => 'nombre_proyecto',
-                            'id' => 'id_nombre_proyecto',
-                            'class' => 'form-control form-control-solid',
-                            // 'required' => true,
-                            'value' => set_value('nombre_proyecto')
-                        ]) ?>
-                        <span id="empleado-error" class="text-danger" style="display: none;"></span> <!-- Contenedor de error -->
-                    </div>
+                            <input type="hidden" id="tipo-id-hidden" name="tipo_id">
+                    <?php else: ?>
+                        <p>No hay tipos de uso disponibles.</p>
+                    <?php endif; ?>
+                    <?php if (isset($errors['event-selector-tipo-uso'])): ?>
+        <div class="text-danger"><?= esc($errors['event-selector-tipo-uso']) ?></div>
+    <?php endif; ?>
+                </div>
 
                     <div class="mb-3">
-                        <?= form_label('Descripción de las tareas que se realizarán', 'descripcion_tareas', ['class' => 'form-label']) ?>
+                        <?= form_label('Nombre del proyecto, actividad u otro', 'event-nombre', ['class' => 'form-label']) ?>
+                        <?= form_input([
+                            'name' => 'event-nombre',
+                            'id' => 'event-nombre',
+                            'class' => 'form-control form-control-solid',
+                            // 'required' => true,
+                            'value' => set_value('event-nombre')
+                        ]) ?>
+                        <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre_proyecto') : '' ?></span>
+                    </div>
+                    <div class="mb-3">
+                        <?= form_label('Descripción de las tareas que se realizarán', 'proyecto-descripcion', ['class' => 'form-label']) ?>
                         <?= form_textarea([
-                            'name' => 'descripcion_tareas',
-                            'id' => 'id_descripcion_tareas',
+                            'name' => 'proyecto-descripcion',
+                            'id' => 'proyecto-descripcion',
                             'class' => 'form-control form-control-solid',
                             'rows' => 3,
-                            'value' => set_value('descripcion_tareas')
+                            // 'required' => true,
+                            'value' => set_value('proyecto-descripcion')
                         ]) ?>
-                        <span id="empleado-error" class="text-danger" style="display: none;"></span> <!-- Contenedor de error -->
-                </div>
+                        <span class="text-danger"><?= isset($validation) ? $validation->getError('descripcion_tareas') : '' ?></span>
+                    </div>
                 </div>
                 <!-- Fecha y Hora -->
+                <!-- <div class="row"> -->
+                <!-- <div class="col-6"> -->
                 <div class="mb-3">
                     <?= form_label('Fecha y Hora de Inicio', 'datepicker-start-input', ['class' => 'form-label']) ?>
                     <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
                         <?= form_input([
-                            'name' => 'datepicker-start-input1',
+                            'name' => 'datepicker-end-input1',
                             'id' => 'datepicker-start-input',
                             'aria-label' => 'Start Date-Time',
                             'class' => 'form-control'
@@ -591,8 +604,10 @@ function validateForm(event) {
                     </div>
                     <div id="datepicker-start-wrapper" style="width: 100%;"></div>
                 </div>
+                <!-- </div> -->
 
                 <!-- Fecha y Hora de Fin -->
+                <!-- <div class="col-6"> -->
                 <div class="mb-3">
                     <?= form_label('Fecha y Hora de Fin', 'datepicker-end-input', ['class' => 'form-label']) ?>
                     <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -606,12 +621,41 @@ function validateForm(event) {
                     </div>
                     <div id="datepicker-end-wrapper" style="width: 100%;"></div>
                 </div>
+                <!-- </div> -->
+                <!-- </div> -->
+
+
+                <!-- <div class="d-flex">
+                        <button type="Submit" class="btn btn-primary w-100" id="saveEventBtn">Guardar Evento</button>
+                    </div> -->
 
                 <!-- Botones de Guardar y Cancelar -->
                 <div class="mt-3 d-flex justify-content-end">
                     <?= form_submit('submit', 'Guardar Evento', ['class' => 'btn btn-primary me-2']) ?>
                 </div>
                 <?= form_close() ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los detalles del evento -->
+<div class="modal fade" id="eventoModal" tabindex="-1" role="dialog" aria-labelledby="eventoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eventoModalLabel">Detalles del Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Título:</strong> <span id="eventoNombre"></span></p>
+                <p><strong>Descripción:</strong> <span id="eventoDescripcion"></span></p>
+                <p><strong>Fecha de Inicio:</strong> <span id="eventoInicio"></span></p>
+                <p><strong>Fecha de Fin:</strong> <span id="eventoFin"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button">Aceptar</button>
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
