@@ -110,19 +110,6 @@
                         return;
                     }
 
-                    const newEvent = {
-                        id: String(new Date().getTime()),
-                        calendarId: 'cal2',
-                        title: title,
-                        start: start,
-                        end: end,
-                        category: 'time',
-                        isAllDay: false,
-                        raw: { docente, materia, grupo },
-                    };
-
-                    calendar.createEvents([newEvent]);
-
                     // Enviar el formulario si es necesario
                     // form.submit(); // Ahora puedes enviar el formulario después de la validación
                     // document.getElementById('createEventModal').modal('hide');

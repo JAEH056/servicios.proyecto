@@ -169,7 +169,8 @@
                 time: function(schedule) {
                     const raw = schedule.raw || {};
                     return `
-                        <div class="event-docente">${raw.docente}</div>
+                        <div>${schedule.title || 'sin titulo'}</div>
+                        <div class="event-docente">${raw.empleado || 'Sin asignar'}</div>
                     `;
                 }
             }
@@ -221,29 +222,6 @@
                 actualizarRangoFechas();
             }
         });
-
-        // Renderizar los eventos en el calendario
-        const eventosInhabiles = JSON.parse('<?= $events ?>');
-        const eventosFormateados = eventosInhabiles.map(evento => {
-            let backgroundColor, borderColor;
-            if (evento.raw && evento.raw.tipo_inhabil) {
-                backgroundColor = '#ff6f61'; // Rojo
-                borderColor = '#ff3b30';
-            } else {
-                backgroundColor = '#007bff'; // Azul
-                borderColor = '#0056b3';
-            }
-
-            return {
-                ...evento,
-                start: new Date(evento.start),
-                end: new Date(evento.end),
-                backgroundColor,
-                borderColor,
-                color: '#ffffff',
-            };
-        });
-        calendar.createEvents(eventosFormateados);
 
         // Lógica del formulario de creación de eventos
         const tipoSolicitudSelector = document.getElementById('event-selector-solicitud');
@@ -301,6 +279,21 @@
             });
         });
 
+        // Renderizar los eventos en el calendario
+        const eventos = <?= $events ?>;
+        // Si los eventos están disponibles, agregarlos al calendario
+        if (eventos && eventos.length > 0) {
+            // Asegúrate de que las fechas estén correctamente convertidas a objetos Date
+            const eventosConvertidos = eventos.map(event => {
+                event.start = new Date(event.start); // Convierte la fecha de inicio a un objeto Date
+                event.end = new Date(event.end); // Convierte la fecha de fin a un objeto Date
+                return event;
+            });
+
+            // Crear los eventos en el calendario
+            calendar.createEvents(eventosConvertidos);
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------------------------------------
         // Función que maneja el envío del formulario
         function handleFormSubmit(event) {
@@ -331,6 +324,8 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log("Respuesta del servidor:", data); // Verifica qué se está recibiendo
+
                 if (data.csrf) {
                     csrfField.value = data.csrf;  // Actualizar el CSRF token en el formulario
                 }
@@ -352,8 +347,9 @@
                     const modalInstance = bootstrap.Modal.getInstance(modalElement);
                     if (modalInstance) {
                         modalInstance.hide();
+                        window.location.reload(); // Recarga completa de la página
                     }
-               
+
                     // Reiniciar el formulario
                     resetModalFields();
                 }

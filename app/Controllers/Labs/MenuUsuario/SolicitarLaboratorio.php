@@ -32,6 +32,7 @@ class SolicitarLaboratorio extends BaseController
     protected $model_solicitud;
     protected $model_solicitudes_varias;
     protected $model_autorizacion;
+
     protected $helpers = ['form'];
 
     public function __construct()
@@ -112,7 +113,28 @@ class SolicitarLaboratorio extends BaseController
             }
         }
 
-        $todosLosEventos = array_merge($eventos);
+
+        //horarios solicitados varias
+        $horariosSolicitados = $this->model_horario->obtenerSolicitudesPorLaboratorio($idLaboratorio);
+        $solicitudvarias = [];
+        if (!empty($horariosSolicitados)) {
+            foreach ($horariosSolicitados as $datossolicitudvarias) {
+                $raw = [
+                    'empleado' => $datossolicitudvarias['correo'],
+                ];
+                $solicitudvarias[] = [
+
+                    'title' => $datossolicitudvarias['nombreproyecto'],
+                    'start' => $datossolicitudvarias['fecha_hora_entrada'],
+                    'end' => $datossolicitudvarias['fecha_hora_salida'],
+                    'raw'   => $raw,
+
+                ];
+            }
+        }
+
+
+        $todosLosEventos = array_merge($eventos, $solicitudvarias);
 
         $data = [];
         if (!empty($periodos)) {
@@ -135,6 +157,7 @@ class SolicitarLaboratorio extends BaseController
                     'usuario' => $obtenedatosUsuario,
                     'tipouso' => $tipos_uso_solicitudes_varias,
                     'carreras' => $carreras,
+
 
                 ];
             }
@@ -237,6 +260,7 @@ class SolicitarLaboratorio extends BaseController
     public function enviarSolicitud()
     {
 
+
         $userId = session()->get('idusuario');
         $idLaboratorio = session()->get('idLaboratorio');
         $carreraId = session()->get('idCarrera');
@@ -265,106 +289,8 @@ class SolicitarLaboratorio extends BaseController
         return view('Labs/sarai', $data);
     }
 
-    // public function enviarSolicitudVarias()
-    // {
-    //     // Obtener los datos del formulario
-    //     $tiposolicitud = $this->request->getPost('event-selector-solicitud');
-    //     $idLaboratorio = session()->get('idLaboratorio');
-    //     $userId = session()->get('idusuario');
-
-    //     // Obtener el puesto asignado al usuario
-    //     $puestoempleado = $this->model_puesto_empleado->puestoAsignadoPorUsuario($userId);
-
-    //     if (!$puestoempleado) {
-    //         return redirect()->back()->with('error', 'No se pudo determinar el puesto del empleado.');
-    //     }
-
-    //     // Obtener el ID del puesto
-    //     $idPuesto = $puestoempleado['idpuesto'];
-
-    //     // Verificar el tipo de solicitud
-    //     if ($tiposolicitud === 'varias') {
-    //         // Datos para la tabla de solicitud
-    //         $dataSolicitud = [
-    //             'id_laboratorio' => $idLaboratorio,
-    //             'id_puesto_empleado' => $idPuesto,
-    //             'hora_fecha_entrada' => $this->request->getPost('datepicker-start-input1'),
-    //             'hora_fecha_salida' => $this->request->getPost('datepicker-end-input2'),
-    //         ];
-
-    //         // Iniciar transacción
-    //         $db = db_connect('laboratorios');
-    //         $db->transStart();
-
-    //         // Insertar en la tabla solicitud
-    //         if (!$this->model_solicitud->insert($dataSolicitud)) {
-    //             $db->transRollback();
-    //             log_message('debug', 'No se pudo guardar la solicitud.');
-    //             return redirect()->back()->with('error', 'No se pudo guardar la solicitud.');
-    //         }
-
-    //         // Obtener el ID de la solicitud insertada
-    //         $idSolicitud = $this->model_solicitud->getInsertID();
-
-    //         // Verificar si se obtuvo un ID de solicitud válido
-    //         if (!$idSolicitud) {
-    //             log_message('error', 'No se obtuvo el ID de la solicitud.');
-    //             $db->transRollback();
-    //             return redirect()->back()->with('error', 'No se pudo obtener el ID de la solicitud.');
-    //         }
-
-    //         log_message('debug', 'ID de solicitud insertada: ' . $idSolicitud);
-
-    //         // Datos para la tabla solicitudes_varias
-    //         $dataSolicitudesVarias = [
-    //             'id_solicitud' => $idSolicitud,  // Usar el ID de solicitud generado
-    //             'id_tipo_uso' => $this->request->getPost('id_tipo_uso'),
-    //             'descripcion_tareas' => $this->request->getPost('descripcion_tareas'),
-    //             'nombre_proyecto' => $this->request->getPost('nombre_proyecto'),
-    //         ];
-
-    //         if (!$this->model_solicitudes_varias->validate($dataSolicitudesVarias)) {
-    //             $errors = $this->model_solicitudes_varias->errors();
-    //             return redirect()->back()->withInput()->with('errors', $errors);
-    //         }
-
-
-    //         // Verificar que los datos sean válidos antes de la inserción
-    //         log_message('debug', 'Datos para solicitudes_varias: ' . print_r($dataSolicitudesVarias, true));
-
-    //         // Intentar insertar en la tabla solicitudes_varias
-    //         if (!$this->model_solicitudes_varias->insert($dataSolicitudesVarias)) {
-    //             $db->transRollback();  // Revierte la transacción si la inserción falla
-
-    //             // Registrar el error
-    //             $db_error = $db->error();
-    //             log_message('error', 'Error al insertar en solicitudes_varias: ' . print_r($db_error, true));
-
-    //             return redirect()->back()->with('error', 'No se pudo guardar las solicitudes varias.');
-    //         }
-
-    //         // Verificar el estado de la transacción
-    //         if ($db->transStatus() === false) {
-    //             log_message('debug', 'Ocurrió un error al procesar la solicitud.');
-    //             return redirect()->back()->with('error', 'Ocurrió un error durante la transacción.');
-    //         }
-
-    //         // Completar la transacción
-    //         $db->transComplete();
-
-    //         // Redirigir a la página de éxito
-    //         if (!$idLaboratorio && !empty($laboratorios)) {
-    //             return redirect()->to('/usuario/empleado/horario/')->with('success', 'Solicitud enviada correctamente.' . $laboratorios[0]['id']);
-    //         }
-    //         // return redirect()->to('/usuario/empleado/horario/')->with('success', 'Solicitud enviada correctamente.');
-    //     }
-
-    //     // Si el tipo de solicitud no es "varias", retornar un error
-    //     return redirect()->back()->with('error', 'Tipo de solicitud no válido.');
-    // }
     public function enviarSolicitudVarias()
     {
-
         // Obtener los datos del formulario
         $tiposolicitud = $this->request->getPost('event-selector-solicitud');
         $idLaboratorio = session()->get('idLaboratorio');
@@ -374,15 +300,12 @@ class SolicitarLaboratorio extends BaseController
         $puestoempleado = $this->model_puesto_empleado->puestoAsignadoPorUsuario($userId);
 
         if (!$puestoempleado) {
-            // Responder con un error en formato JSON
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'No se pudo determinar el puesto del empleado.',
+                'csrf' => csrf_hash(),
             ]);
         }
-
-        // Obtener el ID del puesto
-        $idPuesto = $puestoempleado['idpuesto'];
 
         // Verificar el tipo de solicitud
         if ($tiposolicitud === 'varias') {
@@ -406,63 +329,56 @@ class SolicitarLaboratorio extends BaseController
             // Datos para la tabla de solicitud
             $dataSolicitud = [
                 'id_laboratorio' => $idLaboratorio,
-                'id_puesto_empleado' => $idPuesto,
+                'id_puesto_empleado' => $puestoempleado['idpuesto'],
                 'hora_fecha_entrada' => $this->request->getPost('datepicker-start-input1'),
                 'hora_fecha_salida' => $this->request->getPost('datepicker-end-input2'),
             ];
 
-            // Iniciar transacción
-            $db = db_connect('laboratorios');
-            $db->transStart();
-
-            // Insertar en la tabla solicitud
-            if (!$this->model_solicitud->insert($dataSolicitud)) {
-                $db->transRollback();
-                return $this->response->setJSON([
-                    'success' => false,
-                    'csrf' => csrf_hash(),
-                    'message' => 'No se pudo guardar la solicitud.',
-                ]);
-            }
-
-            // Obtener el ID de la solicitud insertada
-            $idSolicitud = $this->model_solicitud->getInsertID();
+            // Insertar la solicitud y obtener el ID de la solicitud
+            $idSolicitud = $this->model_solicitud->insertarSolicitud($dataSolicitud);
 
             // Verificar si se obtuvo un ID de solicitud válido
-            if (!$idSolicitud) {
-                $db->transRollback();
+            if ($idSolicitud === false || !$idSolicitud) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'No se pudo obtener el ID de la solicitud.',
+                    'message' => 'No se pudo guardar la solicitud.',
+                    'csrf' => csrf_hash(),
                 ]);
             }
 
-            // Agregar el ID de solicitud a los datos de solicitudes_varias
+            // Insertar las solicitudes varias (manejado por el modelo con transacción)
             $dataSolicitudesVarias['id_solicitud'] = $idSolicitud;
+            $solicitudesVarias = $this->model_solicitudes_varias->insertarSolicitudeVarias($dataSolicitudesVarias);
 
-            // Intentar insertar en la tabla solicitudes_varias
-            if (!$this->model_solicitudes_varias->insert($dataSolicitudesVarias)) {
-                $db->transRollback();
-                $db_error = $db->error();
+            // Verificar si la inserción fue exitosa
+            if (!$solicitudesVarias) {
                 return $this->response->setJSON([
                     'success' => false,
                     'message' => 'No se pudo guardar las solicitudes varias.',
-                    'db_error' => $db_error,
+                    'csrf' => csrf_hash(),
                 ]);
             }
 
-            // Verificar el estado de la transacción
-            if ($db->transStatus() === false) {
+           
+            $dataAutorizaciones = [
+                'id_solicitud' => $idSolicitud,
+                'estado' => 0
+
+
+            ];
+
+            $autorizacionsolicitud = $this->model_autorizacion->insertarAutorizacion($dataAutorizaciones);
+
+            // Verificar si la inserción en autorizacion fue exitosa
+            if (!$autorizacionsolicitud) {
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Ocurrió un error durante la transacción.',
+                    'message' => 'No se pudo guardar la autorización.',
+                    'csrf' => csrf_hash(),
                 ]);
             }
 
-            // Completar la transacción
-            $db->transComplete();
-
-            // Responder con éxito en formato JSON
+            // Responder con éxito
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Solicitud enviada correctamente.',
@@ -470,6 +386,8 @@ class SolicitarLaboratorio extends BaseController
 
             ]);
         }
+
+        // Si no es un tipo de solicitud válido
         return $this->response->setJSON([
             'success' => false,
             'message' => 'Tipo de solicitud no válido.',

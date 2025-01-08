@@ -21,7 +21,6 @@ class SolicitudesVariasModel extends Model
 
     // Validation
     protected $validationRules      = [
-        //     //id_tipo_uso
         'id_tipo_uso' => 'required|is_natural_no_zero',
         'descripcion_tareas' => 'required|max_length[255]|min_length[10]',
         'nombre_proyecto' => 'required|max_length[255]|min_length[10]',
@@ -43,4 +42,26 @@ class SolicitudesVariasModel extends Model
             'min_length' => 'El nombre debe tener al menos 10 caracteres.',
         ],
     ];
+
+    public function insertarSolicitudeVarias($dataSolicitudesVarias) {
+          // Iniciar la transacción
+          $this->db->transStart();
+
+          // Insertar solicitud
+          $this->insert($dataSolicitudesVarias);
+  
+          // Verificar el estado de la transacción
+          if ($this->db->transStatus() === false) {
+              // Si la transacción falla, revertir los cambios
+              $this->db->transRollback();
+              return false; // Devolver false para indicar que la operación falló
+          }
+  
+          // Si todo es exitoso, completar la transacción
+          $this->db->transComplete();
+  
+          // Si todo fue bien, devolver el ID de la solicitud insertada
+          return true;
+      
+    }
 }

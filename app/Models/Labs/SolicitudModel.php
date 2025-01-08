@@ -24,8 +24,23 @@ class SolicitudModel extends Model
         'hora_fecha_entrada',
         'hora_fecha_salida',
         'fecha_envio',
-        
+
     ];
 
-    
+    public function insertarSolicitud($dataSolicitud)
+    {
+
+     
+        $this->db->transStart();
+        $this->insert($dataSolicitud);
+
+
+        if ($this->db->transStatus() === false) {
+            $this->db->transRollback();
+            return false;
+        }
+
+        $this->db->transComplete();
+        return $this->getInsertID();
+    }
 }

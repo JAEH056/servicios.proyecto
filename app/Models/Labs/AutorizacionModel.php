@@ -21,5 +21,21 @@ class AutorizacionModel extends Model
         'estado',
         'observacion'
     ];
-    
+    public function insertarAutorizacion($dataAutorizacion): bool
+    {
+
+        $this->db->transStart();
+
+
+        $this->insert($dataAutorizacion);
+
+        if ($this->db->transStatus() === false) {
+            $this->db->transRollback();
+            return false;
+        }
+
+        $this->db->transComplete();
+
+        return true;
+    }
 }
