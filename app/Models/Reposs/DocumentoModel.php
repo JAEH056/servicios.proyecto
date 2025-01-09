@@ -50,10 +50,15 @@ class DocumentoModel extends Model
         $this->table('documento');
         return $this->select('documento.iddocumento, documento.archivo, ta.nombre')
             ->join('tipo_archivo ta', 'ta.idtipo = documento.idtipo')
-            ->join('pre_requisito preq', 'documento.iddocumento = preq.iddocumento')
+            ->join('pre_requisito preq', 'documento.iddocumento = preq.iddocumento', 'left')
+            ->join('requisito req', 'documento.iddocumento = req.iddocumento', 'left')
             ->groupStart()
             ->where('ta.nombre', $nombre)
             ->where('preq.idresidente', $idResidente)
+            ->groupEnd()
+            ->orGroupStart()
+            ->where('ta.nombre', $nombre)
+            ->where('req.idresidente', $idResidente)
             ->groupEnd()
             ->first();
     }
@@ -62,10 +67,14 @@ class DocumentoModel extends Model
     {
         $this->table('documento');
         return $this->select('documento.iddocumento, documento.archivo,ta.idtipo, ta.nombre, pr.idresidente, val.estado, val.fecha_entrega')
-            ->join('reposs.pre_requisito pr', 'documento.iddocumento = pr.iddocumento')
+            ->join('reposs.pre_requisito pr', 'documento.iddocumento = pr.iddocumento', 'left')
+            ->join('reposs.requisito r', 'documento.iddocumento = r.iddocumento', 'left')
             ->join('reposs.tipo_archivo ta', 'ta.idtipo = documento.idtipo')
             ->join('reposs.validacion val', 'val.iddocumento = documento.iddocumento')
+            ->groupStart()
             ->where('pr.idresidente', $userId)
+            ->orWhere('r.idresidente', $userId)
+            ->groupEnd()
             ->orderBy('val.fecha_entrega', 'ASC')
             ->get()
             ->getResultArray();

@@ -53,4 +53,16 @@ class ProyectoModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    /**
+     *  Obtener las empresas disponibles para cada residnete (las que creo en caso de haber mas de una)
+     */
+    public function getProyectoEmpresasByUserId($userId)
+    {
+        return $this->select('proyecto.idproyecto, proyecto.nombre_proyecto, emp.idempresa, emp.nombre_empresa')
+                      ->join('reposs.empresa emp', 'proyecto.idempresa = emp.idempresa')
+                      ->where('proyecto.idresidente', $userId)
+                      ->get()
+                      ->getResultArray();
+    }
 }

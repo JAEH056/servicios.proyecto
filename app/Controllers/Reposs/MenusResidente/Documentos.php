@@ -10,6 +10,7 @@ use App\Models\Reposs\DocumentoModel;
 use App\Models\Reposs\ResidenteModel;
 use App\Config\Services;
 use App\Models\Reposs\PreRequisitoModel;
+use App\Models\Reposs\RequisitoModel;
 use App\Models\Reposs\TipoArchivoModel;
 use App\Models\Reposs\ValidacionModel;
 use CodeIgniter\Database\Exceptions\DatabaseException;
@@ -17,6 +18,7 @@ use CodeIgniter\Database\Exceptions\DatabaseException;
 class Documentos extends ResourceController
 {
     protected $preRequisitoModel;
+    protected $requisitoModel;
     protected $validacionModel;
     protected $documentoModel;
     protected $residente;
@@ -27,6 +29,7 @@ class Documentos extends ResourceController
     {
         $this->userId = session()->get('idusuario');
         $this->preRequisitoModel = new PreRequisitoModel();
+        $this->requisitoModel = new RequisitoModel();
         $this->validacionModel = new ValidacionModel();
         $this->documentoModel = new DocumentoModel();
         $this->residente = new ResidenteModel();
@@ -97,54 +100,42 @@ class Documentos extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function upload($id = null)
+    public function upload(int $id = null)
     {
         // Obtener la configuración personalizada de la ruta
         $nuevaRuta = $this->ruta->uploadPath;
-        // Se inicializa filename
-        $filename = null;
-        switch ($id) {
-            case 1:
-                $filename = 'constancia_80%';
-                break;
-            case 2:
-                $filename = 'constancia_servicio_social';
-                break;
-            case 3:
-                $filename = 'constancia_actividades_complementarias';
-                break;
-            case 4:
-                $filename = 'pago_reinscripcion';
-                break;
-            case 5:
-                $filename = 'vigencia_seguro';
-                break;
-            case 6:
-                $filename = 'solicitud_residencias';
-                break;
-            case 7:
-                $filename = 'carta_presentacion';
-                break;
-            case 8:
-                $filename = 'carta_aceptacion';
-                break;
-            case 9:
-                $filename = 'anteproyecto';
-                break;
-            default:
-                return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', 'ID de documento no válido.');
+
+        // Arreglo de nombres (Tipo de archivo)
+        $filenames = [
+            1 => 'constancia_80%',
+            2 => 'constancia_servicio_social',
+            3 => 'constancia_actividades_complementarias',
+            4 => 'pago_reinscripcion',
+            5 => 'vigencia_seguro',
+            6 => 'solicitud_residencias',
+            7 => 'carta_presentacion',
+            8 => 'carta_aceptacion',
+            9 => 'anteproyecto',
+        ];
+
+        if (!array_key_exists($id, $filenames)) {
+            return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', 'ID de documento no válido.');
         }
-        // concatenar error/succes con su respectivo nombre
+        // Valores que se utilizan en el upload dependiendo el id (tipo archivo)
+        $filename = $filenames[$id];
         $errorname = "error{$filename}";
         $succesname = "success{$filename}";
+
         // Se obtienen los archivos
         $file = $this->request->getFile($filename);
         $validationRules = [
             $filename => $this->uploadRules($filename, $filename),
         ];
+
         if (!$this->validate($validationRules)) {
             return redirect()->to(base_url('usuario/residentes/documentos'))->withInput()->with($errorname, 'Uno o más archivos no son válidos');
         }
+
         // Si el archivo no se ha movido
         if ($file->isValid() && !$file->hasMoved()) {
             // Se obtiene el nombre original
@@ -158,31 +149,55 @@ class Documentos extends ResourceController
             // Guardar el nombre del archivo en la base de datos
             $iddocumentoGuardado = $this->documentoModel->insert(['archivo' => $newName, 'idtipo' => $id]);
         }
+
+        // Validar el id para guardar los datos en validacion
         if ($iddocumentoGuardado == null) {
             return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', 'Error al guardar el documento');
         }
+
         $validarDoc = [
             'estado'        => 'Enviado',
             'observaciones' => 'Sin observaciones',
             'idpuesto'      => NULL,
             'iddocumento'   => $iddocumentoGuardado,
         ];
-        $pre_requisito = [
-            'idresidente' => $this->userId,
-            'iddocumento' => $iddocumentoGuardado,
-            'nombre_pre_requisito' => $filename,
-        ];
-        //Se inicia la transaccion
-        try {
-            $this->documentoModel->transException(true)->transStart();
-            $this->validacionModel->save($validarDoc);
-            $this->preRequisitoModel->save($pre_requisito);
-            $this->documentoModel->transComplete();
-        } catch (DatabaseException $e) {
-            return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', $e->getMessage());
+
+        if ($id <= 5) {
+            $pre_requisito = [
+                'idresidente' => $this->userId,
+                'iddocumento' => $iddocumentoGuardado,
+                'nombre_pre_requisito' => $filename,
+            ];
+            //Se inicia la transaccion
+            try {
+                $this->documentoModel->transException(true)->transStart();
+                $this->validacionModel->save($validarDoc);
+                $this->preRequisitoModel->save($pre_requisito);
+                $this->documentoModel->transComplete();
+            } catch (DatabaseException $e) {
+                return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', $e->getMessage());
+            }
+            // Se redirige a la vista de documentos con mensaje de éxito
+            return redirect()->to(base_url('usuario/residentes/documentos'))->with($succesname, 'Documentos subidos correctamente');
         }
-        // Se redirige a la vista de documentos con mensaje de éxito
-        return redirect()->to(base_url('usuario/residentes/documentos'))->with($succesname, 'Documentos subidos correctamente');
+        if ($id > 5) {
+            $requisito = [
+                'idresidente' => $this->userId,
+                'iddocumento' => $iddocumentoGuardado,
+                'nombre_requisito' => $filename,
+            ];
+            //Se inicia la transaccion
+            try {
+                $this->documentoModel->transException(true)->transStart();
+                $this->validacionModel->save($validarDoc);
+                $this->requisitoModel->save($requisito);
+                $this->documentoModel->transComplete();
+            } catch (DatabaseException $e) {
+                return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', $e->getMessage());
+            }
+            // Se redirige a la vista de documentos con mensaje de éxito
+            return redirect()->to(base_url('usuario/residentes/documentos'))->with($succesname, 'Documentos subidos correctamente');
+        }
     }
 
     /**
@@ -238,63 +253,84 @@ class Documentos extends ResourceController
      */
     public function delete($id = null)
     {
-        // Obtener la configuración personalizada de la ruta
+        // Obtener la configuración de ruta personalizada
         $nuevaRuta = $this->ruta->uploadPath;
-        // Se inicializa filename
-        $filename = null;
-        switch ($id) {
-            case 1:
-                $filename = "constancia_80%";
-                break;
-            case 2:
-                $filename = "constancia_servicio_social";
-                break;
-            case 3:
-                $filename = "constancia_actividades_complementarias";
-                break;
-            case 4:
-                $filename = "pago_reinscripcion";
-                break;
-            case 5:
-                $filename = "vigencia_seguro";
-                break;
-            case 6:
-                $filename = 'solicitud_residencias';
-                break;
-            case 7:
-                $filename = 'carta_presentacion';
-                break;
-            case 8:
-                $filename = 'carta_aceptacion';
-                break;
-            case 9:
-                $filename = 'anteproyecto';
-                break;
-            default:
-                return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', 'ID de documento no válido.');
+
+        // Arreglo de nombres (Tipo de archivo)
+        $documentos = [
+            1 => [
+                'tipo' => 'constancia_80%',
+                'modelo' => $this->preRequisitoModel,
+            ],
+            2 => [
+                'tipo' => 'constancia_servicio_social',
+                'modelo' => $this->preRequisitoModel,
+            ],
+            3 => [
+                'tipo' => 'constancia_actividades_complementarias',
+                'modelo' => $this->preRequisitoModel,
+            ],
+            4 => [
+                'tipo' => 'pago_reinscripcion',
+                'modelo' => $this->preRequisitoModel,
+            ],
+            5 => [
+                'tipo' => 'vigencia_seguro',
+                'modelo' => $this->preRequisitoModel,
+            ],
+            6 => [
+                'tipo' => 'solicitud_residencias',
+                'modelo' => $this->requisitoModel,
+            ],
+            7 => [
+                'tipo' => 'carta_presentacion',
+                'modelo' => $this->requisitoModel,
+            ],
+            8 => [
+                'tipo' => 'carta_aceptacion',
+                'modelo' => $this->requisitoModel,
+            ],
+            9 => [
+                'tipo' => 'anteproyecto',
+                'modelo' => $this->requisitoModel,
+            ],
+        ];
+
+        if (!array_key_exists($id, $documentos)) {
+            return redirect()->to(base_url('usuario/residentes/documentos'))->with('error', 'ID de documento no válido.');
         }
-        // concatenar error/succes con su respectivo nombre
-        $errorname = "error{$filename}";
-        $succesname = "success{$filename}";
+
+        // Obtener el tipo de documento, modelo y mensajes basado en el valor de $id
+        $tipoDocumento = $documentos[$id]['tipo'];
+        $modelo = $documentos[$id]['modelo'];
+        $errorname = "error{$tipoDocumento}";
+        $succesname = "success{$tipoDocumento}";
+
         // Obtener el documento actual
-        $documentoActual = $this->documentoModel->getDocumentByTipo($filename, $this->userId);
+        $documentoActual = $this->documentoModel->getDocumentByTipo($tipoDocumento, $this->userId);
         if (!$documentoActual) {
             return redirect()->to(base_url('usuario/residentes/documentos'))->with($errorname, 'No hay documento para eliminar');
         }
+
         // Eliminar el archivo del servidor
         $filePath = $nuevaRuta . '/' . $documentoActual['archivo'];
         if (!file_exists($filePath)) {
             return redirect()->to(base_url('usuario/residentes/documentos'))->with($errorname, 'El archivo no se encontró en el servidor');
         }
-        unlink($filePath);
-        // Eliminar el registro de la base de datos
-        $isDeleted = $this->validacionModel->delete('iddocumento', $documentoActual['iddocumento']);
-        $isDeleted &= $this->preRequisitoModel->delete('idresidente', $this->userId);
 
-        if (!$isDeleted) {
-            return redirect()->to(base_url('usuario/residentes/documentos'))->with($errorname, 'Error al eliminar el documento de la base de datos');
+        // Se inicia la transacción
+        try {
+            $this->validacionModel->db->transException(true)->transStart();
+            // Eliminar el registro de la base de datos
+            $this->validacionModel->where('iddocumento', $documentoActual['iddocumento'])->delete();
+            $modelo->where('iddocumento', $documentoActual['iddocumento'])->delete();
+            $this->validacionModel->db->transComplete();
+        } catch (DatabaseException $e) {
+            return redirect()->to(base_url('usuario/residentes/documentos'))->with($errorname, 'Error al eliminar el documento de la base de datos'. $e->getMessage());
         }
+        // Se elimina el archivo del servidor y base de datos
         $this->documentoModel->delete($documentoActual['iddocumento']);
+        unlink($filePath);
         return redirect()->to(base_url('usuario/residentes/documentos'))->with($succesname, 'Documento eliminado correctamente');
     }
 

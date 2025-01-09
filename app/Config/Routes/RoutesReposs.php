@@ -31,15 +31,17 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
     $routes->get('residentes/asesor_interno',           [DatosProyecto::class, 'busquedaAsesor']);
     $routes->get('residentes/home',                     [HomeResidente::class, 'index']);
     $routes->get('residentes/empresa',                  [DatosEmpresa::class, 'index']);
+    $routes->get('residentes/empresa_asesor_externo',   [DatosEmpresa::class, 'datosAsesorExterno']);
     $routes->get('residentes/solicitud-residencias',    [PdfController::class, 'generar']);
 
-    $routes->get('residentes/asesor_interno/busqueda',  [DatosProyecto::class, 'buscar']);
-    $routes->post('residentes/asesor-interno',          [DatosProyecto::class, 'guardarAsesorInterno']);
-    $routes->post('residentes/asesor-externo',          [DatosEmpresa::class, 'createAsesor']);
-    $routes->post('residentes/empresa',                 [DatosEmpresa::class, 'create']);
-    $routes->post('residentes/datos',                   [DatosResidente::class, 'update']);
-    $routes->post('residentes/upload/(:num)',           [Documentos::class, 'upload']);
-    $routes->get('residentes/delete/(:num)',            [Documentos::class, 'delete']);
+    $routes->post('residentes/proyecto-actualizar/(:num)',  [DatosProyecto::class, 'update/$1']);
+    $routes->get('residentes/asesor_interno/busqueda',      [DatosProyecto::class, 'buscar']);
+    $routes->post('residentes/asesor-interno/(:num)',       [DatosProyecto::class, 'createAsesorInter/$1']);
+    $routes->post('residentes/asesor-externo',              [DatosEmpresa::class, 'createAsesor']);
+    $routes->post('residentes/empresa',                     [DatosEmpresa::class, 'create']);
+    $routes->post('residentes/datos',                       [DatosResidente::class, 'update']);
+    $routes->post('residentes/upload/(:num)',               [Documentos::class, 'upload']);
+    $routes->get('residentes/delete/(:num)',                [Documentos::class, 'delete']);
 });
 
 // Rutas de departamento de residencias profecionales: Usuario con permisos de root

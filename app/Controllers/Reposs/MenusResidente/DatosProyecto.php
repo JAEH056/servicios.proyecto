@@ -50,13 +50,15 @@ class DatosProyecto extends ResourceController
 
         //Se cargan los datos de la empresa existente (si la hay) en la vista de proyecto
         $datosEmpresa = $this->empresa->getEmpresaByUserId($this->userId);
+        $empresas = $this->proyecto->getProyectoEmpresasByUserId($this->userId);
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
         return view('Reposs/MenusResidente/datosProyecto', [
             'user' => $user,
             'token' => $token,
             'idusuario' => $this->userId,
-            'datosEmpresa' => $datosEmpresa
+            'datosEmpresa' => $datosEmpresa,
+            'empresas' => $empresas,
         ]); // Se agregan los datos a la vista
     }
 
@@ -69,12 +71,18 @@ class DatosProyecto extends ResourceController
      */
     public function busquedaAsesor()
     {
+        // Ensure the user is logged in
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+        $nombreProyectos = $this->proyecto->getProyectoEmpresasByUserId($this->userId);
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
         return view('Reposs/MenusResidente/datosAsesorInterno', [
             'user' => $user,
             'token' => $token,
             'idusuario' => $this->userId,
+            'nombreProyectos' => $nombreProyectos,
         ]);
     }
 
@@ -94,34 +102,39 @@ class DatosProyecto extends ResourceController
         return $this->response->setJSON($resultados);
     }
 
-    public function guardarAsesorInterno()
+    public function createAsesorInter($idusuario)
     {
         $post = $this->request->getPost([
+            'idproyecto',
+            'principal_name',
             'idpuesto',
-            'cargo',
+            'puesto',
+            'grado_academico',
             'nombre',
             'apellido1',
             'apellido2',
-            'principal_name',
         ]);
+        $idproyecto = (int)$post['idproyecto'];
         $rules = $this->asesorInterno->getValidationRules();
         //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
         if (!$this->validateData($post, $rules)) {
             return redirect()->to(base_url('usuario/residentes/asesor_interno'))->withInput()->with('error', $this->validator->listErrors());
         }
-
         $data = [
-            'idpuesto',
-            'cargo',
-            'nombre',
-            'apellido1',
-            'apellido2',
-            'principal_name',
+        'idpuesto'         => $post['idpuesto'],
+        'principal_name'   => $post['principal_name'],
+        'puesto'           => $post['puesto'],
+        'grado_academico'  => $post['grado_academico'],
+        'nombre'           => $post['nombre'],
+        'apellido1'        => $post['apellido1'],
+        'apellido2'        => $post['apellido2'],
         ];
-        if ($this->residente->update($this->userId, $data) == false){
-            return redirect()->to(base_url('usuario/residentes/asesor_interno'))->withInput()->with('error', 'Error al guardar los datos');
+        // Se insertan los datos del asesor y se actualiza el ID de asesor en el proyecto
+        $estado = $this->asesorInterno->updateAsesorInternoByIdResidente($data, $idusuario, $idproyecto);
+        if ($estado['success'] == false) {
+            return redirect()->to(base_url('usuario/residentes/asesor_interno'))->withInput()->with('error', 'Error al agregar el asesor: ' . $estado['message']);
         }
-        return redirect()->to(base_url('usuario/residentes/asesor_interno'))->withInput()->with('updatestatus', 'Datos guardados correctamente');
+        return redirect()->to(base_url('usuario/residentes/asesor_interno'))->withInput()->with('mensaje', $estado['message']);
     }
 
     /**
@@ -163,11 +176,82 @@ class DatosProyecto extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function update($id = null)
+    public function update($idusuario = null)
     {
-        //
+        $post = $this->request->getPost([
+            'idproyecto',
+            'nombre_proyecto',
+            'banco_proyecto',
+            'fecha_periodo',
+        ]);
+        // Se separan las fechas del campo
+        $periodo = $this->separarFechasDelPeriodo($post['fecha_periodo']);
+
+        // Se asignan los valores a un arreglo
+        $data = [
+            'idproyecto'        => $post['idproyecto'],
+            'idresidente'       => $idusuario,
+            'nombre_proyecto'   => $post['nombre_proyecto'],
+            'banco_proyecto'    => $post['banco_proyecto'],
+            'fecha_inicio'      => $periodo['fecha_inicio'],
+            'fecha_fin'         => $periodo['fecha_fin'],
+        ];
+        $rules = [
+            'idproyecto' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'El ID del proyecto es obligatorio.',
+                ],
+            ],
+            'idresidente' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'El ID del residente es obligatorio.',
+                ],
+            ],
+            'nombre_proyecto' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'El nombre del proyecto es obligatorio.',
+                ],
+            ],
+            'fecha_inicio' => [
+                'rules' => 'valid_date',
+                'errors' => [
+                    'valid_date' => 'La fecha de inicio es un campo requerido.',
+                ],
+            ],
+            'fecha_fin' => [
+                'rules' => 'valid_date',
+                'errors' => [
+                    'valid_date' => 'La fecha de finalizacion es un campo requerido.',
+                ],
+            ],
+        ];
+
+        // Se evalua los datos contruidos
+        if (!$this->validateData($data, $rules)) {
+            return redirect()->to(base_url('usuario/residentes/proyecto'))->withInput()->with('error', $this->validator->listErrors());
+        }
+        // Si los datos son validos se actualiza el proyecto
+        $this->proyecto->update($post['idproyecto'], $data);
+        // Se redirecciona a la vista de proyectos
+        return redirect()->to(base_url('usuario/residentes/proyecto'))->withInput()->with('mensaje', 'Datos del proyecto actualizados con exito.');
     }
 
+    public function separarFechasDelPeriodo(string $fecha)
+    {
+        // Separar las fechas del periodo
+        $dates = explode(' - ', $fecha);
+        // Asignar las fechas a una variable
+        $fechaInicio = trim($dates[0]);
+        $fechaFin = trim($dates[1]);
+        // Se retornan las fechas en un arreglo
+        return [
+            'fecha_inicio' => $fechaInicio,
+            'fecha_fin' => $fechaFin,
+        ];
+    }
     /**
      * Delete the designated resource object from the model.
      *

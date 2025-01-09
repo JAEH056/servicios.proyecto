@@ -96,7 +96,11 @@ class AsesorExternoModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function updateAsesorExternoByIdResidente($data, $userId)
+    /**
+     *  Actualiza el ID Asesor Externo usando como parametros
+     *  de referencia el ID de Residente e ID de la empresa.
+     */
+    public function updateAsesorExternoByIdResidente($data, $userId, $idEmpresa)
     {
         $this->transStart();
         // Step 1: Insertar el nuevo asesor externo 
@@ -113,11 +117,21 @@ class AsesorExternoModel extends Model
         // Paso 2: Actualizar el idasesor_externo en la tabla empresa
         $subQuery = $this->db->table('reposs.proyecto')
             ->select('proyecto.idempresa')
-            ->where('proyecto.idresidente', $userId);
+            ->groupStart()
+            ->where('proyecto.idresidente', $userId)
+            ->where('proyecto.idempresa', $idEmpresa)
+            ->groupEnd();
+        //Se actualiza el id del asesor
         $builder = $this->db->table('reposs.empresa');
         $builder->set('idasesor_externo', $idAsesorExterno)
-                ->whereIn('empresa.idempresa', $subQuery) // Usar subconsulta directamente
-                ->update();
+            ->whereIn('empresa.idempresa', $subQuery); // Usar subconsulta directamente
+        if (!$builder->update()) {
+            $this->transRollback();
+            return [
+                'success' => false,
+                'message' => 'Fallo al actualizar la empresa con el nuevo asesor externo.'
+            ];
+        }
         $this->transComplete();
         if ($this->transStatus() === false) {
             // Transaction failed
@@ -125,7 +139,7 @@ class AsesorExternoModel extends Model
                 'success' => false,
                 'message' => 'Transaccion fallida durante la actualizacion de datos.'
             ];
-        } 
+        }
         // Transaction successful
         return [
             'success' => true,
@@ -133,13 +147,14 @@ class AsesorExternoModel extends Model
         ];
     }
 
-    public function asesorExternoByUserId($userId){
+    public function asesorExternoByUserId($userId)
+    {
         $this->db->table('reposs.empresa emp');
         $this->select('py.idresidente,py.nombre_proyecto, emp.nombre_empresa, ae.*')
-             ->join('reposs.proyecto py', 'emp.idempresa = py.idempresa', 'left')
-             ->join('reposs.asesor_externo ae', 'emp.idasesor_externo = ae.idasesor_externo', 'left')
-             ->where('py.idresidente', $userId)
-             ->get()
-             ->getResult();
+            ->join('reposs.proyecto py', 'emp.idempresa = py.idempresa', 'left')
+            ->join('reposs.asesor_externo ae', 'emp.idasesor_externo = ae.idasesor_externo', 'left')
+            ->where('py.idresidente', $userId)
+            ->get()
+            ->getResult();
     }
 }

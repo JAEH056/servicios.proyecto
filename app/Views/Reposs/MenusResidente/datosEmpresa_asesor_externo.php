@@ -29,21 +29,38 @@
             <div class="card-header border-bottom">
                 <ul class="nav nav-tabs card-header-tabs" id="cardTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" id="overview-tab" href="<?= base_url('usuario/residentes/proyecto') ?>" aria-controls="overview" aria-selected="false">Datos de Proyecto</a>
+                        <a class="nav-link" id="overview-tab" href="<?= base_url('/usuario/residentes/empresa') ?>" aria-selected="false">Datos de Empresa</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link  active" id="example-tab" href="#asesorInterno" data-bs-toggle="tab" role="tab" aria-controls="example" aria-selected="false">Asesor Interno</a>
+                        <a class="nav-link" id="overview-tab" href="<?= base_url('/usuario/residentes/empresa') ?>" aria-selected="false">Agregar Empresa</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="resume-tab" href="#solicitudResidencias" data-bs-toggle="tab" role="tab" aria-controls="download" aria-selected="false">Solicitud de Residencias</a>
+                        <a class="nav-link active" id="example-tab" href="#asesorexterno" data-bs-toggle="tab" role="tab" aria-controls="asesorexterno" aria-selected="true">Asesor Externo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="resume-tab" href="#carta" data-bs-toggle="tab" role="tab" aria-controls="carta" aria-selected="false">Descargar Carta</a>
                     </li>
                 </ul>
             </div>
             <div class="card-body">
                 <div class="tab-content" id="cardTabContent">
-                    <div class="tab-pane fade show active" id="asesorInterno" role="tabpanel" aria-labelledby="example-tab">
+                    <div class="tab-pane fade show active" id="asesorexterno" role="tabpanel" aria-labelledby="asesorexterno-tab">
                         <div class="row justify-content-center">
                             <div class="col-xxl-6 col-xl-8">
+                                <!-- Envia la lista de errores al formulario -->
+                                <?php if (session()->getFlashdata('error') !== null): ?>
+                                    <div class="alert alert-danger">
+                                        <?= session()->getFlashdata('error'); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (session()->getFlashdata('mensaje') !== null): ?>
+                                    <div class="alert alert-success">
+                                        <?= session()->getFlashdata('mensaje'); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <!-- Envia la lista de errores al formulario -->
+                                <h5 class="card-title">Datos de Asesor Externo</h5>
+                                <p>Ingresa los datos solicitados. Esta información se utilizará posteriormente para completar los formatos necesarios en el proceso de residencias profesionales.</p>
                                 <p>Busca los datos del asesor usando el nombre como parametro de busqueda.</p>
                                 <div class="row gx-3 mb-3">
                                     <form id="searchForm">
@@ -57,78 +74,69 @@
                                 <div class="mb-3">
                                     <ul id="results" class="list-group mt-3"></ul>
                                 </div>
-                                <h5 class="card-title">Datos del Asesor Interno</h5>
-                                <!-- Envia la lista de errores al formulario -->
-                                <?php if (session()->getFlashdata('error') !== null): ?>
-                                    <div class="alert alert-danger">
-                                        <?= session()->getFlashdata('error'); ?>
+                                <form action="<?= base_url('usuario/residentes/asesor-externo') ?>" method="post">
+                                    <?= csrf_field(); ?>
+                                    <!-- Form Group (Asesor Externo)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="empresa_asesor">Empresa del Asesor</label>
+                                        <?php if (empty($datosEmpresa['nombre_empresa']) == true): ?>
+                                            <label class="form-control">Agrega una nueva empresa.</label>
+                                        <?php else: ?>
+                                            <select class="form-control" id="idempresa" name="idempresa">
+                                                <?php foreach ($listaEmpresas as $empresa): ?>
+                                                    <option value="<?= $empresa['idempresa'] ?>"><?= $empresa['nombre_empresa'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
-                                <?php if (session()->getFlashdata('mensaje') !== null): ?>
-                                    <div class="alert alert-success">
-                                        <?= session()->getFlashdata('mensaje'); ?>
-                                    </div>
-                                <?php endif; ?>
-                                <!-- Envia la lista de errores al formulario -->
-                                <form method="post" action="<?= base_url('usuario/residentes/asesor-interno/' . $idusuario) ?>">
-                                    <?= csrf_field() ?>
                                     <!-- Form Row        -->
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (Puesto)-->
                                         <div class="mb-3">
-                                            <!-- label class="small mb-1" for="idpuesto">ID Puesto</label -->
-                                            <input class="form-control" id="idpuesto" type="hidden" name="idpuesto" readonly />
-                                        </div>
-                                        <!-- Form Group (nombre proyecto)-->
-                                        <div class="mb-3">
-                                            <label class="small mb-1" for="nombre_proyecto">Nombre del Proyecto</label>
-                                            <select class="form-select" id="nombre_proyecto" name="idproyecto" aria-label="Default select example">
-                                                <?php foreach ($nombreProyectos as $proyecto): ?>
-                                                    <option class="form-control" id="nombre_proyecto" name="idproyecto" type="text" value="<?= esc($proyecto['idproyecto']) ?>"><?= esc($proyecto['nombre_proyecto']) ?></option>
-                                                <?php endforeach ?>
-                                            </select>
-                                        </div>
-                                        <!-- Form Group (Puesto)-->
-                                        <div class="mb-3">
-                                            <label class="small mb-1" for="principal_name">Correo Institucional</label>
-                                            <input class="form-control" id="principal_name" type="text"
-                                                placeholder="Correo" name="principal_name"
-                                                readonly />
+                                            <label class="small mb-1" for="cargo">Cargo</label>
+                                            <input class="form-control" id="cargo" type="text"
+                                                placeholder="Cargo del asesor" name="cargo" />
                                         </div>
                                         <!-- Form Group (Puesto)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="puesto">Puesto</label>
                                             <input class="form-control" id="puesto" type="text"
-                                                placeholder="Puesto del asesor" name="puesto"
-                                                readonly />
+                                                placeholder="Puesto del asesor" name="puesto" />
                                         </div>
                                         <!-- Form Group (Grado Academico)-->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="grado_academico">Grado Academico</label>
-                                            <input class="form-control" id="grado_academico" type="text"
-                                                placeholder="Grado academico" name="grado_academico"
-                                                 />
+                                            <label class="small mb-1" for="grado">Grado Academico</label>
+                                            <input class="form-control" id="grado" type="text"
+                                                placeholder="Grado academico ej.: Lic. ISC. MA. etc." name="grado" />
                                         </div>
                                         <!-- Form Group (Nombre Titular)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="nombre">Nombre(s)</label>
                                             <input class="form-control" id="nombre" type="text"
-                                                placeholder="Nombre(s) del asesor" name="nombre"
-                                                readonly />
+                                                placeholder="Ingresa el nombre(s) del asesor" name="nombre" />
                                         </div>
                                         <!-- Form Group (Primer Apellido)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="apellido1">Primer Apellido</label>
                                             <input class="form-control" id="apellido1" type="text"
-                                                placeholder="Primer apellido" name="apellido1"
-                                                readonly />
+                                                placeholder="Ingresa el primer apellido" name="apellido1" />
                                         </div>
                                         <!-- Form Group (Segundo Apellido)-->
                                         <div class="mb-3">
                                             <label class="small mb-1" for="apellido2">Segundo Apellido</label>
                                             <input class="form-control" id="apellido2" type="text"
-                                                placeholder="Segundo apellido" name="apellido2"
-                                                readonly />
+                                                placeholder="Ingresa el segundo apellido" name="apellido2" />
+                                        </div>
+                                        <!-- Form Group (email asesor)-->
+                                        <div class="mb-3">
+                                            <label class="small mb-1" for="correo_asesor_ext">Correo del asesor</label>
+                                            <input class="form-control" id="correo_asesor_ext" name="correo" type="email" placeholder="Ingresa el correo del asesor" />
+                                        </div>
+                                        <!-- Form Group (Segundo Apellido)-->
+                                        <div class="mb-3">
+                                            <label class="small mb-1" for="telefono">Telefono Asesor</label>
+                                            <input class="form-control" id="telefono" type="text"
+                                                placeholder="Ingresa el telefono del asesor" name="telefono" />
                                         </div>
                                     </div>
                                     <!-- Save changes button-->
@@ -137,7 +145,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="solicitudResidencias" role="tabpanel" aria-labelledby="download-tab">
+                    <div class="tab-pane fade" id="carta" role="tabpanel" aria-labelledby="carta-tab">
                         <h5 class="card-title">Resumen de Información.</h5>
                         <!-- Form Row-->
                         <div class="row gx-3 mb-3">
@@ -153,9 +161,14 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><i data-feather="file-text"></i>Solicitud de Residencias</td>
-                                        <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a> e información de la <a href="<?= base_url('usuario/residentes/empresa') ?>">empresa y asesor externo</a>.</td>
-                                        <td><a class="btn btn-primary" href="<?= base_url('usuario/residentes/solicitud-residencias') ?>" target="_blank">Descargar</a></td>
+                                        <td><i data-feather="file-text"></i>Carta Informal</td>
+                                        <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a> y de la <a href="<?= base_url('/usuario/residentes/empresa') ?>">empresa</a>.</td>
+                                        <td><button class="btn btn-primary">Descargar</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><i data-feather="file-text"></i>Carta Formal</td>
+                                        <td>Completar <a href="<?= base_url('usuario/residentes/datos') ?>">actualizar informacion personal</a>, de la <a href="<?= base_url('/usuario/residentes/empresa') ?>">empresa</a> y agregar informacion del <a href="<?= base_url('/usuario/residentes/empresa_asesor_externo') ?>">Asesor Externo</a>.</td>
+                                        <td><button class="btn btn-primary">Descargar</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -187,9 +200,8 @@
     });
 
     function llenarFormulario(asesor) {
-        document.getElementById('idpuesto').value = asesor.idpuesto;
-        document.getElementById('puesto').value = asesor.cargo;
-        document.getElementById('principal_name').value = asesor.principal_name;
+        document.getElementById('cargo').value = asesor.cargo;
+        document.getElementById('correo_asesor_ext').value = asesor.principal_name;
         document.getElementById('nombre').value = asesor.nombre;
         document.getElementById('apellido1').value = asesor.apellido1;
         document.getElementById('apellido2').value = asesor.apellido2;

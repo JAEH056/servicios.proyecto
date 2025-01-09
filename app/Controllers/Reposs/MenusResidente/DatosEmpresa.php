@@ -42,6 +42,7 @@ class DatosEmpresa extends ResourceController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
+        $listaEmpresas  = $this->empresa->getEmpresasListByUserId($this->userId);
         $datosEmpresa   = $this->empresa->getEmpresaByUserId($this->userId);
         $asesorExterno  = $this->empresa->getAsesorFromEmpresa($this->userId);
         $opcionSector   = $this->sector->findAll();
@@ -56,6 +57,7 @@ class DatosEmpresa extends ResourceController
             'opcionSector'  => $opcionSector,
             'opcionRamo'    => $opcionRamo,
             'asesorExterno' => $asesorExterno,
+            'listaEmpresas' => $listaEmpresas,
         ]); // Se agregan los datos a la vista
     }
 
@@ -76,9 +78,29 @@ class DatosEmpresa extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function new(): void
+    public function datosAsesorExterno()
     {
-        //
+        // Ensure the user is logged in
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+        $listaEmpresas  = $this->empresa->getEmpresasListByUserId($this->userId);
+        $datosEmpresa   = $this->empresa->getEmpresaByUserId($this->userId);
+        $asesorExterno  = $this->empresa->getAsesorFromEmpresa($this->userId);
+        $opcionSector   = $this->sector->findAll();
+        $opcionRamo     = $this->ramo->findAll();
+        $user = session()->get('name');
+        $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
+        return view('Reposs/MenusResidente/datosEmpresa_asesor_externo', [
+            'user'          => $user,
+            'token'         => $token,
+            'idusuario'     => $this->userId,
+            'datosEmpresa'  => $datosEmpresa,
+            'opcionSector'  => $opcionSector,
+            'opcionRamo'    => $opcionRamo,
+            'asesorExterno' => $asesorExterno,
+            'listaEmpresas' => $listaEmpresas,
+        ]); // Se agregan los datos a la vista
     }
 
     /**
@@ -107,13 +129,13 @@ class DatosEmpresa extends ResourceController
             'RFC',
             'idramo',
             'idsector',
-            'idasesor_externo',
         ]);
+        $rules = $this->empresa->getValidationRules();
         //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->empresa->getValidationRules($post)) {
+        if (!$this->validateData($post, $rules)) {
             return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
         }
-        if (!$idempresa = $this->empresa->insert([
+        $data = [
             'nombre_empresa'        => $post['nombre_empresa'],
             'mision'                => $post['mision'],
             'puesto_titular'        => $post['puesto_titular'],
@@ -130,16 +152,18 @@ class DatosEmpresa extends ResourceController
             'RFC'                   => $post['RFC'],
             'idramo'                => $post['idramo'],
             'idsector'              => $post['idsector'],
-            'idasesor_externo'      => $post['idasesor_externo'] ?? null,
-        ])) {
+        ];
+
+        if (!$this->empresa->insert($data)) {
             return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar la empresa.');
         }
+        $idempresa = $this->empresa->getInsertID();
         $datosProyecto = [
             'nombre_proyecto'   => null,
             'banco_proyecto'    => null,
             'idresidente'       => $this->userId,
             'idempresa'         => $idempresa,
-            'idasesor_interno'  => $post['idasesor_externo'],
+            'idasesor_interno'  => null,
             'fecha_inicio'      => null,
             'fecha_fin'         => null,
         ];
@@ -158,6 +182,7 @@ class DatosEmpresa extends ResourceController
     public function createAsesor()
     {
         $post = $this->request->getPost([
+            'idempresa',
             'puesto',
             'grado',
             'nombre',
@@ -169,17 +194,17 @@ class DatosEmpresa extends ResourceController
         $rules = $this->asesorExterno->getValidationRules();
         //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
         if (!$this->validateData($post, $rules)) {
-            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
+            return redirect()->to(base_url('usuario/residentes/empresa_asesor_externo'))->withInput()->with('error', $this->validator->listErrors());
         }
 
         // Se agrega el asesor a la empresa asociada al residente.
-        $response = $this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId);
+        $response = $this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId, $post['idempresa']);
 
         if (!$response['success']) {
-            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $response['message']);
+            return redirect()->to(base_url('usuario/residentes/empresa_asesor_externo'))->withInput()->with('error', $response['message']);
         }
         // Success
-        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', $response['message']);
+        return redirect()->to(base_url('usuario/residentes/empresa_asesor_externo'))->withInput()->with('mensaje', $response['message']);
     }
 
     /**

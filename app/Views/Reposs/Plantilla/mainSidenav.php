@@ -54,7 +54,7 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?=base_url('usuario/residentes/empresa')?>">Informacion de Empresa</a>
-                    <a class="nav-link" href="<?=base_url('')?>">Asesor Externo</a>
+                    <a class="nav-link" href="<?=base_url('usuario/residentes/empresa_asesor_externo')?>">Asesor Externo</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Applications)-->
@@ -67,7 +67,7 @@
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?=base_url('usuario/residentes/proyecto')?>">Informacion del Proyecto</a>
-                    <a class="nav-link" href="<?=base_url('usuario/residentes/empresa')?>">Asesor Interno</a>
+                    <a class="nav-link" href="<?=base_url('usuario/residentes/asesor_interno')?>">Asesor Interno</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Flows)-->
