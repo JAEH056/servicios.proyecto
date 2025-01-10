@@ -33,7 +33,7 @@
                             <!-- Knowledge base main category card 1-->
                             <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/drpss/nuevo') ?>">
                                 <div class="row g-0">
-                                    <div class="col-auto card-icon-aside bg-primary"><i class="text-white-50" data-feather="file"></i></div>
+                                    <div class="col-auto card-icon-aside bg-primary"><i class="text-white-50" data-feather="user"></i></div>
                                     <div class="col">
                                         <div class="card-body py-4">
                                             <h5 class="card-title text-primary mb-2">Nuevo Residente</h5>
@@ -46,7 +46,7 @@
                             <!-- Knowledge base main category card 2-->
                             <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/drpss/residentes') ?>">
                                 <div class="row g-0">
-                                    <div class="col-auto card-icon-aside bg-secondary"><i class="text-white-50" data-feather="briefcase"></i></div>
+                                    <div class="col-auto card-icon-aside bg-secondary"><i class="text-white-50" data-feather="users"></i></div>
                                     <div class="col">
                                         <div class="card-body py-4">
                                             <h5 class="card-title text-secondary mb-2">Lista de Residentes</h5>
@@ -59,7 +59,7 @@
                             <!-- Knowledge base main category card 3-->
                             <a class="card card-icon lift lift-sm mb-4" href="<?= base_url('usuario/drpss/liberaciones') ?>">
                                 <div class="row g-0">
-                                    <div class="col-auto card-icon-aside bg-teal"><i class="text-white-50" data-feather="grid"></i></div>
+                                    <div class="col-auto card-icon-aside bg-teal"><i class="text-white-50" data-feather="file-text"></i></div>
                                     <div class="col">
                                         <div class="card-body py-4">
                                             <h5 class="card-title text-teal mb-2">Liberaciones</h5>

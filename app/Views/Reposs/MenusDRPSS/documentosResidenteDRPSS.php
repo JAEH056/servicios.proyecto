@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var CodeIgniter\View\View $this
+ */
+?>
 <?= $this->extend('Reposs/MenusDRPSS/inicioDRPSS') ?>
 
 <?= $this->section('contenido') ?>
@@ -36,7 +41,7 @@
                         <a class="nav-link" href="<?= base_url('usuario/drpss/perfil/' . $datosResidente['numero_control']) ?>">Perfil</a>
                         <a class="nav-link active ms-0" href="<?= base_url('usuario/drpss/documentos/' . $datosResidente['numero_control']) ?>">Documentos</a>
                         <a class="nav-link" href="<?= base_url('usuario/drpss/proyecto/' . $datosResidente['numero_control']) ?>">Proyecto</a>
-                        <a class="nav-link" href="<?= base_url('usuario/drpss/liberacion/' . $datosResidente['numero_control']) ?>">Liberacion</a>
+                        <a class="nav-link" href="<?= base_url('usuario/drpss/liberacion/' . $datosResidente['numero_control']) ?>">Liberación</a>
                     </nav>
                     <hr class="mt-0 mb-4" />
                     <div class="row">

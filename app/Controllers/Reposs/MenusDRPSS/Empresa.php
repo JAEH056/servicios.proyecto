@@ -5,7 +5,6 @@ namespace App\Controllers\Reposs\MenusDRPSS;
 use App\Controllers\BaseController;
 use App\Controllers\ResponseInterface;
 use App\Models\Reposs\ResidenteModel;
-//use CodeIgniter\HTTP\ResponseInterface;
 
 class Empresa extends BaseController
 {
@@ -40,11 +39,6 @@ class Empresa extends BaseController
             'apellido1' => 'required',
             'apellido2' => 'required'
         ];
-        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->validate($rules)) {
-            //return redirect()->back()->withInput()->with('error', $this->validator->listErrors());
-            return redirect()->to(base_url('residentes'))->withInput()->with('error', $this->validator->listErrors());
-        }
         $post = $this->request->getPost([
             'idempresa',
             'nombre_empresa',
@@ -64,6 +58,10 @@ class Empresa extends BaseController
             'idsector',
             'idasesor_externo',
         ]);
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->validateData($post, $rules)) {
+            return redirect()->to(base_url('residentes'))->withInput()->with('error', $this->validator->listErrors());
+        }
         $residenteModel = new ResidenteModel();
         $residenteModel->insert([
             'nombre'            => trim($post['nombre']),

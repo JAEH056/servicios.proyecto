@@ -118,7 +118,7 @@ class AsesorInternoModel extends Model
             ];
         }
         // Obtener el ID generado del asesor externo 
-        $idAsesorInterno = $this->getInsertID();
+        $idAsesorInterno = $this->insertID();
         // Paso 2: Actualizar el idasesor_interno en la tabla proyecto
         $builder = $this->db->table('reposs.proyecto');
         $builder->set('proyecto.idasesor_interno', $idAsesorInterno)

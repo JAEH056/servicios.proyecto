@@ -16,11 +16,13 @@ class Residente extends BaseController
     protected $helpers = ['form'];
     protected $programasEducativo;
     protected $residentes;
+    protected $userId;
 
     public function __construct()
     {
         $this->programasEducativo = new ProgramaEducativoModel();
         $this->residentes = new ResidenteModel();
+        $this->userId = session()->get('idusuario');
     }
 
     public function index()
@@ -29,8 +31,7 @@ class Residente extends BaseController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
-        $programasEducativo = $this->programasEducativo->findAll();
-        $userId = session()->get('idusuario');
+        $programasEducativo = $this->programasEducativo->getProgramaEducativo();
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
         return view(
@@ -38,8 +39,32 @@ class Residente extends BaseController
             [
                 'user'      => $user,
                 'token'     => $token,
-                'idusuario' => $userId,
+                'idusuario' => $this->userId,
                 'programa'  => $programasEducativo
+            ]
+        ); // Se agregan los datos a la vista
+    }
+
+    /*
+    *   Carga la vista del perfil de residente en drpss
+    */
+    public function perfil($numeroControl)
+    {
+        // Ensure the user is logged in
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+
+        $datosResidente = $this->residentes->residentesInfoListByNumeroControl($numeroControl);
+        $user = session()->get('name');
+        $token = session()->get('access_token');
+        return view(
+            'Reposs/MenusDRPSS/perfilResidenteDRPSS',
+            [
+                'user'      => $user,
+                'token'     => $token,
+                'idusuario' => $this->userId,
+                'datosResidente' => $datosResidente,
             ]
         ); // Se agregan los datos a la vista
     }
@@ -50,7 +75,7 @@ class Residente extends BaseController
             return redirect()->to('/oauth/login');
         }
 
-        $restLs = $this->residentes->residentesInfoList();
+        $listaResidentes = $this->residentes->residentesInfoList();
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
@@ -58,7 +83,7 @@ class Residente extends BaseController
             'user' => $user, 
             'token' => $token, 
             'idusuario' => $userId, 
-            'listaResidentes' => $restLs]); // Se agregan los datos a la vista
+            'listaResidentes' => $listaResidentes]); // Se agregan los datos a la vista
     }
     public function new()
     {

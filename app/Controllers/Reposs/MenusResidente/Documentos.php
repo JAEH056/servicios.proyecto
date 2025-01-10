@@ -100,7 +100,7 @@ class Documentos extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function upload(int $id = null)
+    public function upload($id = null)
     {
         // Obtener la configuración personalizada de la ruta
         $nuevaRuta = $this->ruta->uploadPath;

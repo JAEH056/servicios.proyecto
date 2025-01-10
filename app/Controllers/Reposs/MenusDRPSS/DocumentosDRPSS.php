@@ -51,30 +51,6 @@ class DocumentosDRPSS extends BaseController
     }
 
     /*
-    *   Carga la vista del perfil de residente en drpss
-    */
-    public function perfil($numeroControl)
-    {
-        // Ensure the user is logged in
-        if (!session()->has('name')) {
-            return redirect()->to('/oauth/login');
-        }
-
-        $datosResidente = $this->residentes->residentesInfoListByNumeroControl($numeroControl);
-        $user = session()->get('name');
-        $token = session()->get('access_token');
-        return view(
-            'Reposs/MenusDRPSS/perfilResidenteDRPSS',
-            [
-                'user'      => $user,
-                'token'     => $token,
-                'idusuario' => $this->userId,
-                'datosResidente' => $datosResidente,
-            ]
-        ); // Se agregan los datos a la vista
-    }
-
-    /*
     *   Carga la vista de los documetos de residente en drpss
     */
     public function documentos($numeroControl)
@@ -150,7 +126,7 @@ class DocumentosDRPSS extends BaseController
         $rules = $this->validacion->getValidationRules();
         //Se validan los datos del post con las reglas del modelo (validacion)
         if (!$this->validateData($post, $rules)) {
-            return redirect()->to(base_url('usuario/drpss/documentos/' . $numeroControl))->with('error', 'Error al validar el formulario');
+            return redirect()->to(base_url("usuario/drpss/documentos/{$numeroControl}"))->with('error', 'Error al validar el formulario');
         }
         $data = [
             'idvalidacion'  => $post['idvalidacion'],
@@ -161,12 +137,12 @@ class DocumentosDRPSS extends BaseController
         ];
         try {
             if ($this->validacion->save($data)) {
-                return redirect()->to(base_url('usuario/drpss/documentos/'. $numeroControl))->with('message', 'Estado del documento actualizado con éxito');
+                return redirect()->to(base_url("usuario/drpss/documentos/{$numeroControl}"))->with('message', 'Estado del documento actualizado con éxito');
             } else {
-                return redirect()->to(base_url('usuario/drpss/documentos/'. $numeroControl))->with('error', 'Error al actualizar el documento');
+                return redirect()->to(base_url("usuario/drpss/documentos/{$numeroControl}"))->with('error', 'Error al actualizar el documento');
             }
         } catch (\Exception $e) {
-            return redirect()->to(base_url('usuario/drpss/documentos/'. $numeroControl))->with('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
+            return redirect()->to(base_url("usuario/drpss/documentos/{$numeroControl}"))->with('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
         }
     }
 }

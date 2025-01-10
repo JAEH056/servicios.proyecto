@@ -1,10 +1,12 @@
 <?php
 
+
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\Reposs\AdminController;
 use App\Controllers\Reposs\OpenUseController;
 /// ----------- DRPSS Controllers ------------
 use App\Controllers\Reposs\MenusDRPSS\Residente;
+use App\Controllers\Reposs\MenusDRPSS\Proyecto;
 use App\Controllers\Reposs\MenusDRPSS\Empresa;
 use App\Controllers\Reposs\MenusDRPSS\AsesorInterno;
 use App\Controllers\Reposs\MenusDRPSS\HomeDRPSS;
@@ -46,12 +48,13 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
 
 // Rutas de departamento de residencias profecionales: Usuario con permisos de root
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('drpss/residentes',   [Residente::class, 'listaResidentes']);
-    $routes->get('drpss/nuevo',        [Residente::class, 'index']);
-    $routes->get('drpss/empresa',      [Empresa::class, 'index']);
-    $routes->get('drpss/asesor',       [AsesorInterno::class, 'index']);
-    $routes->get('drpss/home',         [HomeDRPSS::class, 'index']);
-    $routes->post('drpss/nuevo',       [Residente::class, 'guardar']);
+    $routes->get('drpss/residentes',        [Residente::class, 'listaResidentes']);
+    $routes->get('drpss/nuevo',             [Residente::class, 'index']);
+    $routes->get('drpss/empresa',           [Empresa::class, 'index']);
+    $routes->get('drpss/asesor',            [AsesorInterno::class, 'index']);
+    $routes->get('drpss/home',              [HomeDRPSS::class, 'index']);
+    $routes->get('drpss/lista-proyectos',   [Proyecto::class, 'getListaProyectos']);
+    $routes->post('drpss/nuevo',            [Residente::class, 'guardar']);
 });
 
 // Rutas de departamento de residencias profecionales: Validacion de datos y documentos
@@ -60,9 +63,10 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->post('drpss/documentos/validar/(:segment)',[DocumentosDRPSS::class, 'validarDocumentos/$1'], ['filter' => 'regex']);
     $routes->post('drpss/documentos/ver/(:any)',        [DocumentosDRPSS::class, 'vistaArchivo/$1']);
     $routes->get('drpss/documentos/descargar/(:any)',   [DocumentosDRPSS::class, 'descargarArchivo/$1']);
-    $routes->get('drpss/editar/(:segment)',             [DocumentosDRPSS::class, 'editar/$1'],            ['filter' => 'regex']);
-    $routes->get('drpss/documentos/(:segment)',         [DocumentosDRPSS::class, 'documentos/$1'],        ['filter' => 'regex']);
-    $routes->get('drpss/perfil/(:segment)',             [DocumentosDRPSS::class, 'perfil/$1'],            ['filter' => 'regex']);
+    $routes->get('drpss/editar/(:segment)',             [DocumentosDRPSS::class, 'editar/$1'],     ['filter' => 'regex']);
+    $routes->get('drpss/documentos/(:segment)',         [DocumentosDRPSS::class, 'documentos/$1'], ['filter' => 'regex']);
+    $routes->get('drpss/perfil/(:segment)',             [Residente::class, 'perfil/$1'],           ['filter' => 'regex']);
+    $routes->get('drpss/proyecto/(:segment)',           [Proyecto::class, 'infoProyecto/$1'],      ['filter' => 'regex']);
 });
 
 // Rutas administrador de roles y permisos con acceso solo para roles con permisos de root

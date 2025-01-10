@@ -80,12 +80,14 @@ class ResidenteModel extends Model
             ->where('residente.idresidente', $userId)
             ->first();
     }
+    /**
+     * Muestra los datos del alumno y su carrera y modalidad
+     * @return mixed
+     */
     public function residentesInfoList()
     {
-        return $this->select('numero_control, nombre, apellido1, apellido2, pe.nombre_programa_educativo, nombre_proyecto, nombre_empresa, p.fecha_inicio, p.fecha_fin')
+        return $this->select('numero_control, nombre, apellido1, apellido2, pe.nombre_programa_educativo')
             ->join('reposs.programa_educativo pe', 'residente.idprograma_educativo = pe.idprograma_educativo')
-            ->join('reposs.proyecto p', 'residente.idresidente = p.idresidente', 'left')
-            ->join('reposs.empresa e', 'p.idempresa = e.idempresa', 'left')
             ->orderBy('residente.idresidente', 'asc')
             ->get()
             ->getResultArray();
@@ -133,7 +135,7 @@ class ResidenteModel extends Model
             'aex.nombre AS nombre_asesor_externo',
             'aex.correo AS correo_asesor_externo',
             'aint.nombre AS nombre_asesor_interno',
-            'aint.correo AS correo_asesor_interno'
+            'aint.principal_name AS correo_asesor_interno'
         ]);
 
         // Join con las tablas relacionadas

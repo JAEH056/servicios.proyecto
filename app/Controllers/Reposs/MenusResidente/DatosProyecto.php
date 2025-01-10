@@ -142,7 +142,7 @@ class DatosProyecto extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function new()
+    public function new(): void
     {
         //
     }
@@ -152,7 +152,7 @@ class DatosProyecto extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function create()
+    public function create(): void
     {
         //
     }
@@ -164,7 +164,7 @@ class DatosProyecto extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function edit($id = null)
+    public function edit($id = null): void
     {
         //
     }
@@ -259,7 +259,7 @@ class DatosProyecto extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function delete($id = null)
+    public function delete($id = null): void
     {
         //
     }
