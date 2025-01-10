@@ -16,9 +16,9 @@ use CodeIgniter\Router\RouteCollection;
 
 // SEMESTRE
 $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
-    $routes->get('semestre/mostrar', [Semestre::class, 'index']);
-    $routes->get('semestre/nuevo', [Semestre::class, 'nuevo']);
-    $routes->get('semestre/editar/(:num)', [Semestre::class, 'editar/$1']);
+    $routes->get('mostrar/semestre', [Semestre::class, 'index']);
+    $routes->get('nuevo/semestre', [Semestre::class, 'nuevo']);
+    $routes->get('editar/semestre/(:num)', [Semestre::class, 'editar/$1']);
     $routes->get('semestre/eliminar/(:num)', [Semestre::class, 'eliminar/$1']);
     $routes->post('semestre/actualizar/(:num)', [Semestre::class, 'actualizar/$1']);
     $routes->post('semestre/crear', [Semestre::class, 'crear']);
@@ -42,8 +42,10 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     //LABORATORISTA
     $routes->get('laboratorista', [Laboratorista::class, 'index']);
     // HORARIO 
-    $routes->get('horario/(:num)', [CrearHorario::class, 'verHorario/$1']); // Con ID, muestra el horario
-    $routes->get('horario', [CrearHorario::class, 'verHorario']); // Con ID, muestra el horario
+    $routes->get('horario/(:num)', [CrearHorario::class, 'index/$1']); // Con ID, muestra el horario
+    $routes->get('horario', [CrearHorario::class, 'index']); // Con ID, muestra el horario
+    // para mostrar todos los eventos del horario 
+    $routes->get('mostrar/eventos',[CrearHorario::class,'eventos']);
 
     //RETICULA
     $routes->get('reticula', [Reticula::class, 'index']);
@@ -57,7 +59,7 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     //para peticion de materia con base a carrera
     $routes->get('pr/horario', [SolicitarLaboratorio::class, 'obtenerMateriasCarrera']);
     $routes->get('asignaturaclave/horario', [SolicitarLaboratorio::class, 'obtenerClavePorMateria']);
-    // $routes->get('datos', [SolicitarLaboratorio::class, 'enviarSolicitud']);
+
 
     // mostrar eventos 
     $routes->get('eventos/empleados', [SolicitarLaboratorio::class, 'eventosLaboratorio']);

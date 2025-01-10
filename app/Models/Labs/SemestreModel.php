@@ -14,63 +14,66 @@ class SemestreModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nombre', 'inicio', 'fin', 'estado'];
 
-    // public function obtenerSemestre()
-    // {
-    //     $sql = <<<EOL
-    //         SELECT 
-    //             semestre.id AS id,
-    //             semestre.nombre AS nombre  ,
-    //             semestre.inicio AS inicio,
-    //             semestre.fin as fin,
-    //              semestre.estado AS estado
-    //         FROM 
-    //             semestre
-    //         ORDER BY
-    //         inicio ASC
-    //         EOL;
+    // Validation
+    protected $validationRules      = [
+        'nombre' => 'required|max_length[255]|min_length[8]',
+        'inicio' => 'required|valid_date',
+        'fin' => 'required|valid_date',
+        'estado' => 'required|in_list[0,1]'
 
-    //     $query = $this->db->query($sql);
-    //     $result = $query->getResultArray();
-    //     foreach ($result as &$row) {
-    //         $row['estado'] = $row['estado'] == 1 ? 'Activo' : 'Inactivo';
-    //     }
+    ];
+    protected $validationMessages = [
+        'nombre' => [
+            'required' => 'El nombre es obligatorio.',
+            'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+            'min_length' => 'El nombre debe tener al menos 8 caracteres.',
+        ],
+        'inicio' => [
+            'required' => 'La fecha de inicio es obligatoria.',
+            'valid_date' => 'La fecha de inicio no es válida.',
+        ],
+        'fin' => [
+            'required' => 'La fecha de fin es obligatoria.',
+            'valid_date' => 'La fecha de fin no es válida.',
+        ],
+        'estado' => [
+            'required' => 'El estado es obligatorio.',
+            'in_list'  => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
 
-    //     return $result;
-    // }
+        ]
+    ];
 
-    public function obtenerSemestre():array{
-        $builder =$this->db->table($this->table)
-        ->select('semestre.id AS id,
+    public function obtenerSemestre(): array
+    {
+        $builder = $this->db->table($this->table)
+            ->select('semestre.id AS id,
                   semestre.nombre AS nombre,
                   semestre.inicio AS inicio,
                   semestre.fin as fin,
                   semestre.estado AS estado')
-        ->orderBy('inicio ASC');   
+            ->orderBy('inicio ASC');
         $query = $builder->get();
-        $periodo=$query->getResultArray();
+        $periodo = $query->getResultArray();
         foreach ($periodo as &$row) {
             $row['estado'] = $row['estado'] == 1 ? 'Activo' : 'Inactivo';
         }
         return $periodo;
-        
     }
- 
-    public function obtenerSemestreActivos() :array{
-        $builder =$this->db->table($this->table)
-        ->select('semestre.id AS id,
+
+    public function obtenerSemestreActivos(): array
+    {
+        $builder = $this->db->table($this->table)
+            ->select('semestre.id AS id,
                   semestre.nombre AS nombre,
                   semestre.inicio AS inicio,
                   semestre.fin as fin,
                   semestre.estado AS estado')
-        ->where('semestre.estado','1')         
-        ->orderBy('inicio ASC');   
+            ->where('semestre.estado', '1')
+            ->orderBy('inicio ASC');
         $query = $builder->get();
-        $periodo=$query->getResultArray();
+        $periodo = $query->getResultArray();
         return $periodo;
-        
     }
-
-
 
     public function fechaFinPosteriorAInicio(string $fechaInicio, string $fechaFin): bool
     {
@@ -82,42 +85,6 @@ class SemestreModel extends Model
         return $fechaFinObj > $fechaInicioObj;
     }
 
-    // Método que contiene las reglas de validación
-    public function reglasValidacion()
-    {
-        return [
-            'nombre' => [
-                'rules' => 'required|max_length[255]|min_length[8]',
-                'errors' => [
-                    'required' => 'El nombre es obligatorio.',
-                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-                    'min_length' => 'El nombre debe tener al menos 8 caracteres.',
-                ],
-            ],
-            'inicio' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'La fecha de inicio es obligatoria.',
-                    'valid_date' => 'La fecha de inicio no es válida.',
-                ],
-            ],
-            'fin' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'La fecha de fin es obligatoria.',
-                    'valid_date' => 'La fecha de fin no es válida.',
-                ],
-            ],
-            'estado' => [
-                'rules' => 'required|in_list[0,1]',
-                'errors' => [
-                    'required' => 'El estado es obligatorio.',
-                    'in_list'  => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
-                ],
-            ],
-
-        ];
-    }
 
 
     public function insertarSemestre($data)

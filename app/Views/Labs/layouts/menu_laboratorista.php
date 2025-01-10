@@ -8,7 +8,7 @@
                 <div class="nav-link-icon"><i class="fa-regular fa-building fa-lg"></i></div>
                 Laboratorios
             </a>
-            <a class="nav-link" href="/usuario/semestre/mostrar">
+            <a class="nav-link" href="/usuario/mostrar/semestre">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar-days"></i></div>
                 Semestres
             </a>

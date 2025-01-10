@@ -11,7 +11,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center">
                 <span>Laboratorios</span>
-                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('laboratorio/nuevo') ?>'">
+                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('usuario/laboratorio/nuevo') ?>'">
                     <i class="fa-solid fa-plus me-2"></i>Agregar
                 </button>
             </div>

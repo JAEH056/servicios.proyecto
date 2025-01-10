@@ -141,11 +141,11 @@
             }
         });
         // -------------------------------------------------------------------------------------------------------------------------------------------------------
-        // Lógica del calendario
+        // Lógica del horario
         const Calendar = tui.Calendar;
         const locale = 'es-MX';
-        const periodo = JSON.parse('<?= $periodoJson ?>');
 
+        const periodo = JSON.parse('<?= $periodoJson ?>');
         const periodoInicio = new Date(periodo.inicio);
         const periodoFin = new Date(periodo.fin);
 
@@ -191,6 +191,7 @@
             const viewDate = calendar.getDate();
             const startOfWeek = new Date(viewDate);
             const endOfWeek = new Date(viewDate);
+            
             startOfWeek.setDate(viewDate.getDate() - viewDate.getDay());
             endOfWeek.setDate(startOfWeek.getDate() + 6);
 

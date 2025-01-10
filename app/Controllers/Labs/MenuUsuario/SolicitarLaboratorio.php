@@ -199,6 +199,11 @@ class SolicitarLaboratorio extends BaseController
     public function obtenerMateriasCarrera()
     {
         $carreraId = $this->request->getGet('carreraId');
+        
+        // $data = ['carreraId' => $carreraId];
+    
+        // // Devolver el array como una respuesta JSON
+        // return $this->response->setJSON($data);  
         session()->set('idCarrera', $carreraId);
 
         // Verificar si 'carreraId' está presente

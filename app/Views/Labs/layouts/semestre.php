@@ -11,7 +11,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center">
                 <span>Semestres</span>
-                <button class="btn btn-primary ms-auto" type="button" onclick="window.location = '<?= site_url('semestre/nuevo') ?>'">
+                <button class="btn btn-primary ms-auto" type="button" onclick="window.location = '<?= site_url('/usuario/nuevo/semestre') ?>'">
                     <i class="fa-solid fa-plus me-2"></i>Agregar
                 </button>
             </div>
@@ -38,7 +38,7 @@
                             <td><?= esc($datos_semestre['estado'])?></td>
                             <td>
                                 <!-- BOTÓN EDITAR -->
-                                 <button class="btn btn-sm btn-warning" type="button" onclick="window.location = '<?= site_url('usuario/semestre/editar/'. $datos_semestre['id']) ?>'">
+                                 <button class="btn btn-sm btn-warning" type="button" onclick="window.location = '<?= site_url('/usuario/editar/semestre/'. $datos_semestre['id']) ?>'">
                                     <i class="fa-solid fa-pencil me-2"></i>Editar
                                 </button>
                             </td>

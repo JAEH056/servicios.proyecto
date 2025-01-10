@@ -4,7 +4,6 @@ namespace App\Controllers\Labs\MenuLaboratorista;
 
 use App\Controllers\BaseController;
 use App\Models\Labs\CarreraModel;
-use App\Models\Labs\ReticuladModel;
 use App\Models\Labs\ReticulaModel;
 
 class Reticula extends BaseController {

@@ -18,7 +18,7 @@ class ReticulaModel extends Model
     {
         $builder = $this->db->table($this->table)
             ->select('asignatura.id AS id,
-                  asignatura.nombre AS nombre_asignatura')
+                        asignatura.clave,asignatura.nombre AS nombre_asignatura')
             ->join('asignatura', 'asignatura.id = reticula.id_asignatura')
             ->join('carrera', 'carrera.id = reticula.id_carrera')
             ->where('carrera.id', $id_carrera)
@@ -27,3 +27,13 @@ class ReticulaModel extends Model
         return $query->getResultArray();
     }
 }
+// $builder = $this->db->table($this->table)
+//     ->select('asignatura.id AS id,
+//               CONCAT(asignatura.clave, "/", asignatura.nombre) AS clave_nombre_asignatura')
+//     ->join('asignatura', 'asignatura.id = reticula.id_asignatura')
+//     ->join('carrera', 'carrera.id = reticula.id_carrera')
+//     ->where('carrera.id', $id_carrera)
+//     ->orderBy('asignatura.nombre', 'ASC');
+
+// $query = $builder->get();
+// return $query->getResultArray();
