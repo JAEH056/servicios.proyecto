@@ -57,8 +57,12 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     //para peticion de materia con base a carrera
     $routes->get('pr/horario', [SolicitarLaboratorio::class, 'obtenerMateriasCarrera']);
     $routes->get('asignaturaclave/horario', [SolicitarLaboratorio::class, 'obtenerClavePorMateria']);
-    $routes->get('datos', [SolicitarLaboratorio::class, 'enviarSolicitud']);
+    // $routes->get('datos', [SolicitarLaboratorio::class, 'enviarSolicitud']);
+
+    // mostrar eventos 
+    $routes->get('eventos/empleados', [SolicitarLaboratorio::class, 'eventosLaboratorio']);
+
 
     //enviar solicitud tipo varias
-    $routes->post('solicitud', [SolicitarLaboratorio::class, 'enviarSolicitudVarias']);
+    $routes->post('solicitud', [SolicitarLaboratorio::class, 'enviarSolicitud']);
 });

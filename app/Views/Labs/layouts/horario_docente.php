@@ -170,11 +170,15 @@
                     const raw = schedule.raw || {};
                     return `
                         <div>${schedule.title || 'sin titulo'}</div>
-                        <div class="event-docente">${raw.empleado || 'Sin asignar'}</div>
+                        <div class="event-empleado">${raw.empleado || 'Sin asignar'}</div>
+                        <div class="event-grupo">${raw.grupo || ''}</div>
+                        <div class="event-asignatura">${raw.clave_asignatura || ''}</div>
                     `;
                 }
             }
         });
+
+        recargarEventos(calendar);
 
         const today = new Date();
         if (today >= periodoInicio && today <= periodoFin) {
@@ -279,19 +283,41 @@
             });
         });
 
-        // Renderizar los eventos en el calendario
-        const eventos = <?= $events ?>;
-        // Si los eventos están disponibles, agregarlos al calendario
-        if (eventos && eventos.length > 0) {
-            // Asegúrate de que las fechas estén correctamente convertidas a objetos Date
-            const eventosConvertidos = eventos.map(event => {
-                event.start = new Date(event.start); // Convierte la fecha de inicio a un objeto Date
-                event.end = new Date(event.end); // Convierte la fecha de fin a un objeto Date
-                return event;
-            });
+        function recargarEventos(calendar) {
+            fetch('/usuario/eventos/empleados')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Eventos recargados:', data);  // Verifica la estructura de la respuesta
 
-            // Crear los eventos en el calendario
-            calendar.createEvents(eventosConvertidos);
+                    const eventos = data.events;  // Acceder a la propiedad 'events' que contiene los eventos
+
+                    if (Array.isArray(eventos)) {  // Asegurarse de que la respuesta es un array
+                        calendar.clear();
+                        calendar.createEvents(eventos.map(event => {
+                            event.start = new Date(event.start);  // Convertir las fechas a formato Date
+                            event.end = new Date(event.end);
+
+                            // Asignar colores de fondo basados en condiciones
+                            if (!event.raw.empleado && !event.raw.grupo && !event.raw.clave_asignatura) {
+                                event.backgroundColor = '#ff6f00'; // Naranja para dias inhabiles: "sin asignar"
+                                event.color = '#ffffff';
+                            } else if (event.raw.empleado && (!event.raw.grupo || !event.raw.clave_asignatura)) {
+                                event.backgroundColor = '#0059ff'; // Morado para solicitudes varias: "empleado asignado, pero faltan otros datos"
+                                event.color = '#ffffff';
+                            } else if (event.raw.empleado && event.raw.grupo && event.raw.clave_asignatura) {
+                                event.backgroundColor = '#13199a'; // Azul para solicitudes practicas para: "todos los datos completos"
+                                event.color = '#ffffff';
+                            } else {
+                                event.bgColor = '#D3D3D3'; // Gris como color predeterminado
+                                event.color = '#FFFFFF';
+                            }
+                            return event;
+                        }));
+                    } else {
+                        console.error('La respuesta no tiene la propiedad "events" o no es un array:', eventos);
+                    }
+                })
+                .catch(error => console.error('Error al recargar eventos:', error));
         }
 
         // ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -347,11 +373,11 @@
                     const modalInstance = bootstrap.Modal.getInstance(modalElement);
                     if (modalInstance) {
                         modalInstance.hide();
-                        window.location.reload(); // Recarga completa de la página
+                        // window.location.reload(); // Recarga completa de la página
                     }
-
                     // Reiniciar el formulario
                     resetModalFields();
+                    recargarEventos(calendar);
                 }
             })
             .catch(error => console.error('Error en la solicitud:', error));
@@ -494,20 +520,20 @@
                         <div class="mb-3">
                             <?= form_label('Nombre de la práctica', 'event-nombre-practica', ['class' => 'form-label']) ?>
                             <?= form_input([
-                                'name' => 'event-nombre-practica',
+                                'name' => 'nombre_practica',
                                 'id' => 'event-nombre-practica',
                                 'class' => 'form-control form-control-solid',
-                                'value' => set_value('event-nombre-practica')
+                                'value' => set_value('nombre_practica')
                             ]) ?>
                         </div>
 
                         <div class="mb-3">
                             <?= form_label('Objetivo/Competencia de la práctica', 'event-objetivo-competencia', ['class' => 'form-label']) ?>
                             <?= form_input([
-                                'name' => 'event-objetivo-competencia',
+                                'name' => 'objetivo',
                                 'id' => 'event-objetivo-competencia',
                                 'class' => 'form-control form-control-solid',
-                                'value' => set_value('event-objetivo-competencia')
+                                'value' => set_value('objetivo')
                             ]) ?>
                         </div>
 
@@ -517,26 +543,25 @@
                                 <?= form_dropdown(
                                     'event-selector-carrera',
                                     ['' => 'Seleccione una carrera'] + array_column($carreras, 'nombre_carrera', 'id'),
-                                    set_value('event-selector-carrera'),
+                                    set_value('id_carrera'),
                                     ['id' => 'event-selector-carrera', 'class' => 'form-select custom-select form-control-solid', 'onchange' => "document.getElementById('carrera-id-hidden').value = this.value"]
                                 ) ?>
                             <?php else: ?>
                                 <p>No hay carreras disponibles.</p>
                             <?php endif; ?>
-                            <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
                             <!-- Campo oculto para enviar el ID de la carrera -->
-                            <input type="hidden" name="carrera_id" id="carrera-id-hidden" value="<?= set_value('carrera_id') ?>">
+                            <input type="hidden" name="id_carrera" id="carrera-id-hidden" value="<?= set_value('carrera_id') ?>">
                         </div>
-
+                        <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
                         <div class="mb-3">
                             <?= form_label('Seleccione una asignatura', 'event-selector-asignatura', ['class' => 'form-label']) ?>
                             <?= form_dropdown(
                                 'event-selector-asignatura',
                                 ['' => 'Seleccione una asignatura'],
-                                set_value('event-selector-asignatura'),
+                                set_value('id_asignatura'),
                                 ['id' => 'event-selector-asignatura', 'class' => 'form-select custom-select form-control-solid']
                             ) ?>
-                            <input type="hidden" name="asignatura_id" id="asignatura-id-hidden" value="<?= set_value('asignatura_id') ?>">
+                            <input type="hidden" name="id_asignatura" id="asignatura-id-hidden" value="<?= set_value('asignatura_id') ?>">
                         </div>
 
                         <div class="mb-3">
@@ -555,10 +580,10 @@
                             <?= form_dropdown(
                                 'event-selector-grupo',
                                 ['' => 'Seleccione un grupo'],
-                                set_value('event-selector-grupo'),
+                                set_value('id_grupo'),
                                 ['id' => 'event-selector-grupo', 'class' => 'form-select custom-select form-control-solid']
                             ) ?>
-                            <input type="hidden" name="grupo_id" id="grupo-id-hidden" value="<?= set_value('grupo_id') ?>">
+                            <input type="hidden" name="id_grupo" id="grupo-id-hidden" value="<?= set_value('id_grupo') ?>">
                         </div>
                     </div>
                     <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
@@ -574,7 +599,6 @@
                                     ['id' => 'id_tipo_uso', 'class' => 'form-select custom-select form-control-solid', 'onchange' => "document.getElementById('tipo-id-hidden').value = this.value"]
                                 ) ?>
                                 <input type="hidden" id="tipo-id-hidden" name="tipo_id_uso">
-                                <span class="text-danger"><?= isset($validation) ? $validation->getError('id_tipo_uso') : '' ?></span>
                             <?php else: ?>
                                 <p>No hay tipos de uso disponibles.</p>
                             <?php endif; ?>    
