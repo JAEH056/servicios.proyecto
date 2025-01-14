@@ -16,6 +16,27 @@
                 </button>
             </div>
             <div class="card-body">
+
+            <?php if (session()->getFlashdata('creado')): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= session()->getFlashdata('creado') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+                <?php if (session()->getFlashdata('actualizado')): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= session()->getFlashdata('actualizado') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (session()->getFlashdata('eliminado')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('eliminado') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                <?php endif; ?>
+               
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
@@ -64,7 +85,7 @@
         // Mostrar la alerta de confirmación
         if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             // Si el usuario confirma, redirigir a la URL de eliminación
-            window.location.href = '<?= site_url('semestre/eliminar/') ?>' + id;
+            window.location.href = '<?= site_url('usuario/eliminar/semestre/') ?>' + id;
         }
     }
 </script>

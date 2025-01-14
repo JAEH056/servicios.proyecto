@@ -7,20 +7,10 @@
             <span>Agregar semestre</span>
         </div>
         <div class="card-body">
-            <!--MENSAJE DE EXITO O ERROR  -->
-            <?php if (session()->get('success')): ?>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        alert('<?= esc(session()->get('success')) ?>');
-                        window.location.href = '/usuario/mostrar/semestre'; // Redirige a la página principal después del alert
-                    });
-                </script>
-            <?php endif; ?>
-
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
                     <!-- Abrir formulario con Form Helper -->
-                    <?= form_open('/usuario/semestre/crear', ['id' => 'form-semestre']) ?>
+                    <?= form_open('/usuario/crear/semestre', ['id' => 'form-semestre']) ?>
                     <?= csrf_field() ?>
                     <?php $errors = session('errors'); ?>
 
@@ -28,6 +18,8 @@
                     <div class="mb-3">
                         <?= form_label('Nombre del semestre', 'nombre', ['class' => 'form-label']) ?>
                         <?= form_input([
+
+
                             'name' => 'nombre',
                             'id' => 'nombre',
                             'type' => 'text',
@@ -35,7 +27,7 @@
                             'class' => 'form-control form-control-solid',
                             'placeholder' => 'Nombre del semestre',
                         ]) ?>
-                        <?php if (isset($errors['nombre'])): ?>
+                           <?php if (isset($errors['nombre'])): ?>
                             <span class="text-danger"><?= $errors['nombre'] ?></span>
                         <?php endif; ?>
                     </div>
@@ -82,7 +74,7 @@
                             set_value('estado' ?? ''),
                             ['id' => 'estado', 'class' => 'form-control form-control-solid']
                         ) ?>
-                        <?php if (isset($errors['estado'])): ?>
+                         <?php if (isset($errors['estado'])): ?>
                             <span class="text-danger"><?= $errors['estado'] ?></span>
                         <?php endif; ?>
                     </div>

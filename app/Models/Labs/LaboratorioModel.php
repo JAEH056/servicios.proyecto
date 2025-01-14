@@ -11,24 +11,30 @@ class LaboratorioModel extends Model
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType     = 'array';
-
-
     protected $useSoftDeletes = false;
     protected $allowedFields = ['id_carrera', 'nombre'];
 
-    // public function obtenerLaboratorios()
-    // {
 
-    //     $builder = $this->db->table('laboratorio')
-    //         ->select('laboratorio.id AS id, 
-    //     carrera.id AS carrera_id, carrera.nombre AS carrera_nombre, 
-    //     laboratorio.nombre AS nombre_laboratorio')
-    //         ->join('carrera', 'carrera.id = laboratorio.id_carrera')
-    //         ->groupBy('laboratorio.id');
-    //     $query = $builder->get();
-    //     $laboratorios = $query->getResultArray();
-    //     return $laboratorios;
-    // }
+    protected $validationRules = [
+        'nombre' => [
+            'rules' => 'required|max_length[255]|min_length[4]',
+            'errors' => [
+                'required' => 'El nombre es obligatorio.',
+                'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                'min_length' => 'El nombre debe tener al menos 4 caracteres.'
+            ],
+        ],
+
+        'id_carrera' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'La carrera es obligatoria',
+                
+            ],
+        ],
+    ];
+
+
     public function obtenerLaboratorios()
     {
         $builder = $this->db->table('laboratorio')
@@ -44,29 +50,6 @@ class LaboratorioModel extends Model
         return $laboratorios;
     }
 
-
-    public function reglasValidacion()
-    {
-
-        return [
-            'nombre' => [
-                'rules' => 'required|max_length[255]|min_length[8]',
-                'errors' => [
-                    'required' => 'El nombre es obligatorio.',
-                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-                    'min_length' => 'El nombre debe tener al menos 8 caracteres.'
-                ],
-            ],
-
-            'id_carrera' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Seleccionar carrera no es una opcion válida',
-                    'integer' => 'Selección no válido.'
-                ],
-            ],
-        ];
-    }
 
     public function insertarLaboratorio($data)
     {

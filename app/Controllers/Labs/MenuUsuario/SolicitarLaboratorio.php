@@ -168,33 +168,40 @@ class SolicitarLaboratorio extends BaseController
                 ];
             }
         }
-        //horarios solicitados varias
-        $horariosSolicitados = $this->model_horario->obtenerSolicitudesPorLaboratorio($idLaboratorio);
-        $solicitudvarias = [];
-        if (!empty($horariosSolicitados)) {
-            foreach ($horariosSolicitados as $datossolicitudvarias) {
-                $raw = [
-                    'fechaEnvio'=>$datossolicitudvarias['fecha_envio'],
-                    'empleado' => $datossolicitudvarias['correo'],
-                    'grupo'=>$datossolicitudvarias['grupo'],
-                    'clave_asignatura'=>$datossolicitudvarias['clave_asignatura'],
-                ];
-                $solicitudvarias[] = [
-                    'id'    => $datossolicitudvarias['solicitud_id'],
-                    'title' => $datossolicitudvarias['titulo'],
-                    'start' => $datossolicitudvarias['fecha_hora_entrada'],
-                    'end' => $datossolicitudvarias['fecha_hora_salida'],
-                    'raw'   => $raw,
+       //horarios solicitados 
+       $allsolicitudes = $this->model_horario->obtenerSolicitudesPorLaboratorio($idLaboratorio);
+       $solicitudes = [];
+       if (!empty($allsolicitudes)) {
+           foreach ($allsolicitudes as $datossolicitud) {
+               $raw = [
+                   'fechaEnvio' => $datossolicitud['fecha_envio'],
+                   'empleado' => $datossolicitud['correo'],
+                   'grupo' => $datossolicitud['grupo'],
+                   'clave_asignatura' => $datossolicitud['clave_asignatura'],
+                   'objetivo'=>$datossolicitud['objetivo'],
+                   'carrera'=>$datossolicitud['carrera'],
+                   'descripcion_tareas'=>$datossolicitud['descripcion_tareas'],
+                   'estado'=>$datossolicitud['estado'],
+                   'tipo_uso'=>$datossolicitud['tipo_uso_varias']
 
-                ];
-            }
+               ];
+               $solicitudes[] = [
+                   'id'    => $datossolicitud['solicitud_id'],
+                   'title' => $datossolicitud['titulo'],
+                   'start' => $datossolicitud['fecha_hora_entrada'],
+                   'end' => $datossolicitud['fecha_hora_salida'],
+                   'raw'   => $raw,
+
+               ];
+           }
         }
-        $todosLosEventos = array_merge($eventos, $solicitudvarias);
+        $todosLosEventos = array_merge($eventos, $solicitudes);
         return $this->response->setJSON([
             'events' => $todosLosEventos,
 
         ]);
-    }
+    
+}
 
     public function obtenerMateriasCarrera()
     {
@@ -387,7 +394,7 @@ class SolicitarLaboratorio extends BaseController
 
             case 'practicas':
                
-                // Ejemplo de datos recibidos
+                
                 $dataPractica = [
                     
                     'nombre_practica' => $this->request->getPost('nombre_practica'),
@@ -492,9 +499,6 @@ class SolicitarLaboratorio extends BaseController
                     ]);
                 }
 
-
-               
-
                 // Insertar las solicitudes varias
                 $dataPractica['id_solicitud'] = $idSolicitud;
                 $dataPractica['id_clase'] = $idClase;
@@ -536,4 +540,5 @@ class SolicitarLaboratorio extends BaseController
                 break;
         }
     }
+
 }

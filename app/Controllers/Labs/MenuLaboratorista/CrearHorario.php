@@ -10,6 +10,7 @@ use App\Models\Labs\GrupoModel;
 use App\Models\Labs\HorarioModel;
 use App\Models\Labs\LaboratorioModel;
 use App\Models\Labs\ReticulaModel;
+use App\Models\PuestoEmpleado\UserModel;
 
 class CrearHorario extends BaseController
 {
@@ -20,6 +21,9 @@ class CrearHorario extends BaseController
     protected $model_grupo;
     protected $model_asignaturas;
     protected $model_carreras;
+    protected $model_usuario;
+    protected $helpers = ['form'];
+
 
     public function __construct()
     {
@@ -30,6 +34,7 @@ class CrearHorario extends BaseController
         $this->model_grupo = model(GrupoModel::class);
         $this->model_asignaturas = model(AsignaturaModel::class);
         $this->model_carreras = model(CarreraModel::class);
+        $this->model_usuario= model(UserModel::class);
       
     }
 
@@ -42,14 +47,13 @@ class CrearHorario extends BaseController
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token');
+        //pasar el nombre del usurio a la vista
+        $obtenerdatosusuario=$this->model_usuario->findByCorreo($user['userPrincipalName']);
 
         //obtener id laboratorio uso posterior
         session()->set('idLaboratorio', $idLaboratorio);
 
         $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
-
-        //uso de semestre posterior
-        session()->set('idsemestre', $periodos);
 
         $carreras = $this->model_carreras->obtenerCarrera();
         $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
@@ -64,6 +68,7 @@ class CrearHorario extends BaseController
                 'user' => $user,
                 'token' => $token,
                 'idusuario' => $userId,
+                'usuario'=>$obtenerdatosusuario,
             ]);
         }
 
@@ -76,8 +81,6 @@ class CrearHorario extends BaseController
 
                         'inicio' => $datosperiodo['inicio'],
                         'fin' => $datosperiodo['fin'],
-
-
                     ]),
                     'laboratorios' => $laboratorios,
                     'laboratorioSeleccionado' => $idLaboratorio,
@@ -86,14 +89,14 @@ class CrearHorario extends BaseController
                     'user' => $user,
                     'token' => $token,
                     'idusuario' => $userId,
+                     'usuario'=>$obtenerdatosusuario
                 ];
             }
-            //  print_r($data);
+              print_r($data);
         }
 
         return view('Labs/layouts/horario_laboratorista', $data);
     }
-
 
     public function eventos()
     {
@@ -135,16 +138,22 @@ class CrearHorario extends BaseController
                 ];
             }
         }
-        //horarios solicitados varias
-        $horariosSolicitados = $this->model_horario->obtenerSolicitudesPorLaboratorio($idLaboratorio);
+        //horarios solicitados 
+        $allsolicitudes = $this->model_horario->mostrarDatosSolicitud($idLaboratorio);
         $solicitudes = [];
-        if (!empty($horariosSolicitados)) {
-            foreach ($horariosSolicitados as $datossolicitud) {
+        if (!empty($allsolicitudes)) {
+            foreach ($allsolicitudes as $datossolicitud) {
                 $raw = [
                     'fechaEnvio' => $datossolicitud['fecha_envio'],
                     'empleado' => $datossolicitud['correo'],
                     'grupo' => $datossolicitud['grupo'],
                     'clave_asignatura' => $datossolicitud['clave_asignatura'],
+                    'objetivo'=>$datossolicitud['objetivo'],
+                    'carrera'=>$datossolicitud['carrera'],
+                    'descripcion_tareas'=>$datossolicitud['descripcion_tareas'],
+                    'estado'=>$datossolicitud['estado'],
+                    'tipo_uso'=>$datossolicitud['tipo_uso_varias']
+
                 ];
                 $solicitudes[] = [
                     'id'    => $datossolicitud['solicitud_id'],
@@ -154,98 +163,18 @@ class CrearHorario extends BaseController
                     'raw'   => $raw,
 
                 ];
-            }
+            
         }
+    }
         $todosLosEventos = array_merge($eventos, $solicitudes);
         return $this->response->setJSON([
             'events' => $todosLosEventos,
 
         ]);
-    }
-    public function obtenerMateriasCarrera()
-    {
-        $carreraId = $this->request->getGet('carreraId');
-        session()->set('idCarrera', $carreraId);
-
-        // Verificar si 'carreraId' está presente
-        if (!$carreraId) {
-            return $this->response->setJSON(['error' => 'Parámetro carreraId no proporcionado'])->setStatusCode(400);
-        }
-
-        // Validar que el ID de la carrera no esté vacío
-        if (empty($carreraId)) {
-            return $this->response->setJSON(['error' => 'ID de carrera no proporcionado'])->setStatusCode(400);
-        }
-
-        // Inicializar las variables de asignaturas y grupos
-        $asignaturas = [];
-        $gruposcreados = [];
-
-        // Obtener las asignaturas del modelo
-        $materias = $this->model_reticula->obtenerReticula($carreraId);
-
-        // Verificar si se encontraron materias
-        if ($materias) {
-            // Crear un nuevo arreglo con los ids y los nombres de las asignaturas
-            $asignaturas = array_map(function ($materia) {
-                return [
-                    'id' => $materia['id'], // Asumiendo que el id de la asignatura está en la clave 'id'
-                    'nombre_asignatura' => $materia['nombre_asignatura']
-                ];
-            }, $materias);
-        }
-
-        // Obtener los grupos por carrera
-        $grupos = $this->model_grupo->obtenerGruposPorCarrera($carreraId);
-        if ($grupos) {
-            $gruposcreados = array_map(function ($grupo) {
-                return [
-                    'id' => $grupo['id_grupo'],
-                    'nombre' => $grupo['nombre_grupo'] // Asegúrate de que el campo 'nombre_grupo' exista
-                ];
-            }, $grupos);
-        }
-
-        // Devolver la respuesta en formato JSON
-        return $this->response->setJSON([
-            'asignaturas' => $asignaturas,
-            'grupos' => $grupos,
-            'mensaje' => [
-                'asignaturas' => empty($asignaturas) ? 'No se encontraron asignaturas' : 'Asignaturas encontradas',
-                'grupos' => empty($gruposcreados) ? 'No se encontraron grupos' : 'Grupos encontrados'
-            ]
-        ]);
-    }
-
-    public function obtenerClavePorMateria()
-    {
-        $asignaturaId = $this->request->getGet('asignaturaId');
-        session()->set('idasignatura', $asignaturaId);
-
-        // Verificar si 'carreraId' está presente
-        if (!$asignaturaId) {
-            return $this->response->setJSON(['error' => 'Parámetro id asignatura no proporcionado'])->setStatusCode(400);
-        }
-
-        if (empty($asignaturaId)) {
-            return $this->response->setJSON(['error' => 'ID de asignatura no proporcionado'])->setStatusCode(400);
-        }
-
-        $claveasignatura = $this->model_asignaturas->obtenerClaveMateria($asignaturaId);
-
-        // Verificar si se encontraron materias
-        if ($claveasignatura) {
-            // Crear un nuevo arreglo con los ids y los nombres de las asignaturas
-            $asignaturaclave = array_map(function ($clave) {
-                return [
-                    'claveasignatura' => $clave['clave_asignatura'],
-                ];
-            }, $claveasignatura);
-
-            return $this->response->setJSON(['clave' => $asignaturaclave]);
-        } else {
-
-            return $this->response->setJSON(['error' => 'No se encontro la clave de la asignatura'], 404);
-        }
+    }  
+    
+    public function editarSolicitud($idSolicitud){
+        
+     
     }
 }

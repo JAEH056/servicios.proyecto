@@ -1,16 +1,16 @@
 <?= $this->extend('Labs/layouts/principal_docente') ?>
 
 <?= $this->section('include_css') ?>
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
-<link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
 <?= $this->endSection() ?>
 
 <?= $this->section('include_javascript') ?>
-<script src="https://cdn.jsdelivr.net/npm/tui-code-snippet@latest/dist/tui-code-snippet.min.js"></script>
-<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
-<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
-<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tui-code-snippet@latest/dist/tui-code-snippet.min.js"></script>
+    <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <?= $this->endSection() ?>
 
 <?= $this->section('inline_javascript') ?>
@@ -170,9 +170,15 @@
                     const raw = schedule.raw || {};
                     return `
                         <div>${schedule.title || 'sin titulo'}</div>
-                        <div class="event-empleado">${raw.empleado || 'Sin asignar'}</div>
+                        <div class="event-empleado">${raw.empleado || ''}</div>
                         <div class="event-grupo">${raw.grupo || ''}</div>
                         <div class="event-asignatura">${raw.clave_asignatura || ''}</div>
+
+                        ${raw.objetivo && false ? `<div class="event-objetivo">${raw.objetivo}</div>` : ''}
+                        ${raw.carrera && false ? `<div class="event-carrera">${raw.carrera}</div>` : ''}
+                        ${raw.tipo_uso && false ? `<div class="event-tipo-uso">${raw.tipo_uso}</div>` : ''}
+                        ${raw.descripcion_tareas && false ? `<div class="event-descripcion-tareas">${raw.descripcion_tareas}</div>` : ''}
+                        ${raw.estado && false ? `<div class="event-estado">${raw.estado}</div>` : ''}
                     `;
                 }
             }
@@ -427,6 +433,52 @@
         } else {
             console.error("No se encontró el formulario con ID 'eventForm'");
         }
+
+        calendar.on('clickEvent', function(event) {
+            const evento = event.event;
+            const colorEvento = evento.backgroundColor;
+
+            // Ocultar todos los modales
+            const modals = ['practicaModal', 'solicitudesModal', 'inhabilModal'];
+            modals.forEach(modalId => {
+                const modalElement = new bootstrap.Modal(document.getElementById(modalId));
+                modalElement.hide();
+            });
+
+            if (colorEvento === '#13199a') {
+                // Mostrar el modal de práctica
+                const modal = new bootstrap.Modal(document.getElementById('practicaModal'));
+                modal.show();
+
+                // Actualizar campos del modal de práctica
+                document.getElementById('empleado').value = evento.raw.empleado || 'Sin asignar';
+                document.getElementById('nombre').value = evento.title;
+                document.getElementById('objetivo').value = evento.raw.objetivo;
+                document.getElementById('carrera').value = evento.raw.carrera;
+                document.getElementById('grupo').value = evento.raw.grupo || '';
+                document.getElementById('claveAsignatura').value = evento.raw.clave_asignatura || '';
+                document.getElementById('estado').value = evento.raw.estado;
+
+            } else if (colorEvento === '#0059ff') {
+                // Mostrar el modal de solicitudes varias
+                const modal = new bootstrap.Modal(document.getElementById('solicitudesModal'));
+                modal.show();
+
+                // Actualizar campos del modal de solicitud
+                document.getElementById('empleadoVarias').value = evento.raw.empleado || 'Sin asignar';
+                document.getElementById('nombreVarias').value = evento.title;
+                document.getElementById('descripcionTareas').value = evento.raw.descripcion_tareas;
+                document.getElementById('tipoUso').value = evento.raw.tipo_uso;
+                document.getElementById('estadoVarias').value = evento.raw.estado;
+
+            } else if (colorEvento === '#ff6f00') {
+                // Mostrar el modal de días inhábiles
+                const modal = new bootstrap.Modal(document.getElementById('inhabilModal'));
+                modal.show();
+
+                document.getElementById('nombreDiaInhabil').value = evento.title;
+            }
+        });
     });
 </script>
 <?= $this->endSection() ?>
@@ -677,4 +729,112 @@
         </div>
     </div> 
 </div>
+
+<!-- Modal para mostrar los detalles de la práctica -->
+<div class="modal fade" id="practicaModal" tabindex="-1" role="dialog" aria-labelledby="practicaModalLabel">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="practicaModalLabel">Detalles de la Solicitud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Empleado</label>
+                        <input type="text" class="form-control form-control-solid" id="empleado" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre de la práctica</label>
+                        <input type="text" class="form-control form-control-solid" id="nombre" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Objetivo de la práctica</label>
+                        <input type="text" class="form-control form-control-solid" id="objetivo" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Carrera</label>
+                        <input type="text" class="form-control form-control-solid" id="carrera" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Grupo</label>
+                        <input type="text" class="form-control form-control-solid" id="grupo" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Clave Asignatura</label>
+                        <input type="text" class="form-control form-control-solid" id="claveAsignatura" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estado de la solicitud</label>
+                        <input type="text" class="form-control form-control-solid" id="estado" disabled>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar las solicitudes varias -->
+<div class="modal fade" id="solicitudesModal" tabindex="-1" role="dialog" aria-labelledby="solicitudesModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="solicitudesModalLabel">Detalles de la Solicitud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Empleado</label>
+                        <input type="text" class="form-control form-control-solid" id="empleadoVarias" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control form-control-solid" id="nombreVarias" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción de las tareas</label>
+                        <input type="text" class="form-control form-control-solid" id="descripcionTareas" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de uso</label>
+                        <input type="text" class="form-control form-control-solid" id="tipoUso" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Estado de la solicitud</label>
+                        <input type="text" class="form-control form-control-solid" id="estadoVarias" disabled>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar los detalles de los días inhábiles -->
+<div class="modal fade" id="inhabilModal" tabindex="-1" role="dialog" aria-labelledby="inhabilModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inhabilModalLabel">Detalles del Día Inhábil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control form-control-solid" id="nombreDiaInhabil" disabled>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?= $this->endSection() ?>

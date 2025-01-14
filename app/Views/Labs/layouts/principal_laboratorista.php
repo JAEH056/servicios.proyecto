@@ -62,7 +62,8 @@
                     <!-- Gestión carreras -->
                     <?= $this->renderSection('content_carrera') ?>
                     <?= $this->renderSection('content_especialidad') ?>
-                    <?= $this->renderSection('content_asignatura') ?>
+                    <?= $this->renderSection('content_asignaturas') ?>
+                    <?= $this->renderSection('content_grupos') ?>
                     <?= $this->renderSection('content_reticula') ?>
 
                     <!-- Errores -->

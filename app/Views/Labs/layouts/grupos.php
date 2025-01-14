@@ -5,7 +5,7 @@
     <script src= "<?=base_url("resources/js/datatables/datatables-simple-demo.js") ?>" ></script>
 <?= $this->endSection() ?>
 
-<?= $this->section('content_dias_inhabiles') ?>
+<?= $this->section('content_grupos') ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n5">
         <div class="card mb-4">
@@ -20,7 +20,7 @@
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
-                            <th>Nombre del día</th>
+                            <th></th>
                             <th>Tipo</th>
                             <th>Fecha de inicio</th>
                             <th>Fecha de fin</th>

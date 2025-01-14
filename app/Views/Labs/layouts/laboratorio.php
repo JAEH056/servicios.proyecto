@@ -11,11 +11,31 @@
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center">
                 <span>Laboratorios</span>
-                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('usuario/laboratorio/nuevo') ?>'">
+                <button class="btn btn-primary ms-auto" type="button" onclick="window.location.href='<?= base_url('usuario/nuevo/laboratorio') ?>'">
                     <i class="fa-solid fa-plus me-2"></i>Agregar
                 </button>
             </div>
             <div class="card-body">
+                <?php if (session()->getFlashdata('creado')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('creado') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                <?php if (session()->getFlashdata('actualizado')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('actualizado') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (session()->getFlashdata('eliminado')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?= session()->getFlashdata('eliminado') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
                 <table id="datatablesSimple">
                     <thead>
                         <tr>
@@ -34,7 +54,7 @@
                             <td><?= esc($datos_laboratorios['nombre_laboratorio']) ?></td>
                             <td>
                                 <!-- Botón Editar -->
-                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('/usuario/laboratorio/editar/'.  $datos_laboratorios['id']) ?>'">
+                                <button class="btn btn-warning" type="button" onclick="window.location = '<?= site_url('/usuario/editar/laboratorio/'.  $datos_laboratorios['id']) ?>'">
                                     <i class="fa-solid fa-pencil me-2"></i>Editar
                                 </button>
                             </td>
@@ -64,7 +84,7 @@
             //Mostrar la alerta de confirmación
             if(confirm("¿Estás seguro de que deseas eliminar este registro?")){
                 //Si el usuario confirma, redirigir a la URL  de elimación
-                window.location.href = '<?= site_url('laboratorio/eliminar/') ?>' + id;
+                window.location.href = '<?= site_url('usuario/eliminar/laboratorio/') ?>' + id;
             }
         }
     </script>

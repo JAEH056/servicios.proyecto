@@ -14,34 +14,39 @@ class SemestreModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nombre', 'inicio', 'fin', 'estado'];
 
-    // Validation
     protected $validationRules      = [
-        'nombre' => 'required|max_length[255]|min_length[8]',
-        'inicio' => 'required|valid_date',
-        'fin' => 'required|valid_date',
-        'estado' => 'required|in_list[0,1]'
+            'nombre' => [
+                'rules' => 'required|max_length[255]|min_length[8]',
+                'errors' => [
+                    'required' => 'El nombre es obligatorio.',
+                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                    'min_length' => 'El nombre debe tener al menos 8 caracteres.',
+                ],
+            ],
+            'inicio' => [
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'La fecha de inicio es obligatoria.',
+                    'valid_date' => 'La fecha de inicio no es válida.',
+                ],
+            ],
+            'fin' => [
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'La fecha de fin es obligatoria.',
+                    'valid_date' => 'La fecha de fin no es válida.',
+                ],
+            ],
+            'estado' => [
+                'rules' => 'required|in_list[0,1]',
+                'errors' => [
+                    'required' => 'El estado es obligatorio.',
+                    'in_list' => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
+                ],
+            ],
+        ];
+    
 
-    ];
-    protected $validationMessages = [
-        'nombre' => [
-            'required' => 'El nombre es obligatorio.',
-            'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-            'min_length' => 'El nombre debe tener al menos 8 caracteres.',
-        ],
-        'inicio' => [
-            'required' => 'La fecha de inicio es obligatoria.',
-            'valid_date' => 'La fecha de inicio no es válida.',
-        ],
-        'fin' => [
-            'required' => 'La fecha de fin es obligatoria.',
-            'valid_date' => 'La fecha de fin no es válida.',
-        ],
-        'estado' => [
-            'required' => 'El estado es obligatorio.',
-            'in_list'  => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
-
-        ]
-    ];
 
     public function obtenerSemestre(): array
     {
