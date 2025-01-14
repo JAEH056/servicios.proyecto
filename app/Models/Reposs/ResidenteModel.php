@@ -68,6 +68,57 @@ class ResidenteModel extends Model
     {
         return empty($this->where('principal_name', $correo)->first());
     }
+
+    /**
+     *  Funcion para actualizar los datos del usuario (residente)
+     *  Verifica que los datos sean los mismos que en la BD.
+     */
+    public function actualizarNombreUsuario(array $nombreCompleto, int $idResidente): array
+    {
+        // Obtener el usuario actual de la base de datos
+        $usuario = $this->find($idResidente);
+
+        // Si no se encuentra el usuario, retornar false
+        if (!$usuario || empty($usuario)) {
+            return [
+                'success' => false,
+                'mensaje' => 'No se encontro el usuario'
+            ];
+        }
+
+        // Separar los apellidos
+        $apellidos = $this->splitSurname($nombreCompleto['surname']);
+
+        // Verificar si los datos coinciden
+        if (
+            $usuario['nombre'] === $nombreCompleto['givenName'] &&
+            $usuario['apellido1'] === $apellidos['apellido1'] &&
+            $usuario['apellido2'] === $apellidos['apellido2']
+        ) {
+            return [
+                'success' => true,
+                'mensaje' => 'No es necesario actualizar'
+            ];
+        }
+
+        // Actualizar los datos del usuario
+        $data = [
+            'nombre'    => $nombreCompleto['givenName'],
+            'apellido1' => $apellidos['apellido1'],
+            'apellido2' => $apellidos['apellido2'],
+        ];
+        // se actualizan los datos
+        if (!$this->update($idResidente, $data)) {
+            return [
+                'success' => false,
+                'mensaje' => 'Error al actualizar nombre de usuario'
+            ];
+        }
+        return [
+            'success' => true,
+            'mensaje' => 'Datos actualizados correctamente'
+        ];
+    }
     public function findByCorreo2($correo)
     {
         return $this->where('principal_name', $correo)->first();
@@ -154,5 +205,29 @@ class ResidenteModel extends Model
         // Generar y ejecutar la consulta
         $query = $builder->get();   /// Se ejecuta la consulta
         return $query->getRowArray(); /// Se espera una sola fila
+    }
+
+    public function splitSurname(string $fullSurname): array
+    {
+        // Usa explode() para romper la cadena en piezas separadas por espacios.
+        $parts = explode(" ", $fullSurname);
+        // Se revisa si tiene mas de una palabra (to ensure it's a full name).
+        if (count($parts) > 1) {
+            // Se separa la ultima palabra como segundo apellido.
+            $familySurname = array_pop($parts);
+            // Se unen las palabras restantes como el primer apellido.
+            $prefixOrFirstSurname = implode(" ", $parts);
+            // Se regresan las dos partes en un arreglo.
+            return [
+                'apellido1' => $prefixOrFirstSurname,
+                'apellido2' => $familySurname
+            ];
+        } else {
+            // Si no hay un espacio se regresa la cadena original.
+            return [
+                'apellido1' => $fullSurname,
+                'apellido2' => ''
+            ];
+        }
     }
 }

@@ -15,9 +15,37 @@ class OrganigramaModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nombreM', 'nombreF', 'cargo', 'izquierda', 'derecha'];
 
-    public function buscarCargo($cargo)
+    public function buscarCargoEmpleado(string $nombreTrabajo)
     {
-        return $this->where('cargo', $cargo)->first();
+        $cargo = explode(" ", $nombreTrabajo, 2);
+        // Subconsulta laboratoristas a los cuales se les asignara un rol
+        $subquery = $this->db->table('db_compartida.organigrama')
+            ->select('idorganigrama, cargo')
+            ->groupStart()
+            ->where('idorganigrama', 13)
+            ->orWhere('idorganigrama', 22)
+            ->orWhere('idorganigrama', 25)
+            ->groupEnd()
+            ->get()
+            ->getResultArray();
+        // Consulta principal para comparar el rol entrante (login)
+        $query = $this->db->table("({$subquery}) AS labs")
+            ->select('labs.idorganigrama, labs.cargo')
+            ->like('labs.cargo', $cargo[0])
+            ->orlike('labs.cargo', isset($cargo[1]) ? $cargo[1] : 'n/a')
+            ->get()
+            ->getRowArray();
+        if ($query == null) {
+            // Consulta secundaria cuando se tarte de otro puesto
+            $query = $this->db->table('db_compartida.organigrama')
+                ->select('organigrama.idorganigrama, organigrama.cargo')
+                ->like('organigrama.cargo', $cargo[0])
+                ->orlike('organigrama.cargo', isset($cargo[1]) ? $cargo[1] : 'n/a')
+                ->get()
+                ->getRowArray();
+        }
+        // Obtener el cargo del empleado 
+        return $query;
     }
     public function buscarCargoNull()
     {

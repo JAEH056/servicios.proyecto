@@ -20,27 +20,23 @@ class PuestoEmpleadoModel extends Model
     {
         return $this->insert($data);
     }
-    public function puestoAsignadoPorUsuario($userId, \DateTimeImmutable $fecha_actual = null)
+    public function puestoDelUsuario(int $userId, \DateTimeImmutable $fecha_actual = null)
     {
         //$fecha_actual = !is_null($fecha_actual) ? $fecha_actual : new \DateTimeImmutable();
         $fecha_actual = $fecha_actual ?? new \DateTimeImmutable();
         $fecha_actualStr = $fecha_actual->format('Y-m-d');
 
-
-        $builder = $this->db->table($this->table)
-            ->select('organigrama.cargo')
+        $builder = $this->db->table($this->table);
+        $builder->select('organigrama.cargo')
             ->join('organigrama', 'organigrama.idorganigrama=puesto_empleado.idorganigrama')
             ->where('idusuario', $userId)
             ->groupStart()
             ->where('fecha_inicio <=', $fecha_actualStr)
             ->where('fecha_fin IS NULL')
             ->groupEnd()
-            ->orGroupStart()
-            ->where('fecha_fin >=', $fecha_actualStr)
-            ->groupEnd();
-        $query = $builder->get();
-        $puestoempleado = $query->getRowArray();
-        return $puestoempleado;
+            ->get()->getRowArray();
+
+        return $builder->get()->getRowArray();
     }
 
     public function puestoUsuario(int $userId)
@@ -59,14 +55,15 @@ class PuestoEmpleadoModel extends Model
         return null;
     }
 
-    public function buscarDocenteBy($nombreDocente){
-    return $this->select('us.principal_name, us.nombre, us.apellido1, us.apellido2, og.nombreM, og.cargo')
-             ->join('db_compartida.usuario us', 'puesto_empleado.idusuario = us.idusuario')
-             ->join('db_compartida.organigrama og', 'puesto_empleado.idorganigrama = og.idorganigrama')
-             ->where('puesto_empleado.fecha_fin', null)
-             ->where('og.cargo', 'Docente')
-             ->where('us.nombre', $nombreDocente)
-             ->get()
-             ->getResultArray();
+    public function buscarDocenteBy(string $nombreDocente)
+    {
+        return $this->select('us.principal_name, us.nombre, us.apellido1, us.apellido2, og.nombreM, og.cargo')
+            ->join('db_compartida.usuario us', 'puesto_empleado.idusuario = us.idusuario')
+            ->join('db_compartida.organigrama og', 'puesto_empleado.idorganigrama = og.idorganigrama')
+            ->where('puesto_empleado.fecha_fin', null)
+            ->where('og.cargo', 'Docente')
+            ->where('us.nombre', $nombreDocente)
+            ->get()
+            ->getResultArray();
     }
 }
