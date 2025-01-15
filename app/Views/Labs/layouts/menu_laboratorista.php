@@ -4,11 +4,11 @@
             <!-- Sidenav Menu Heading (Core) -->
             <div class="sidenav-menu-heading">Menu</div>
             <!-- Menú Principal sin "Opciones" -->
-            <a class="nav-link" href="/usuario/laboratorio">
+            <a class="nav-link" href="/usuario/mostrar/laboratorio">
                 <div class="nav-link-icon"><i class="fa-regular fa-building fa-lg"></i></div>
                 Laboratorios
             </a>
-            <a class="nav-link" href="/usuario/semestre/mostrar">
+            <a class="nav-link" href="/usuario/mostrar/semestre">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar-days"></i></div>
                 Semestres
             </a>
@@ -33,7 +33,8 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                     <a class="nav-link" href="dashboard-3.html">Carrrera</a>
                     <a class="nav-link" href="dashboard-4.html">Especialidad</a>
-                    <a class="nav-link" href="dashboard-2.html">Asignatura</a>
+                    <a class="nav-link" href="dashboard-2.html">Asignaturas</a>
+                    <a class="nav-link" href="dashboard-2.html">Grupos</a>
                     <a class="nav-link" href="dashboard-1.html">Retícula</a>
                 </nav>
             </div>

@@ -55,18 +55,19 @@
                     <!-- Horario -->
                     <?= $this->renderSection('content_horario') ?>
                     <?= $this->renderSection('content_agregar_horario') ?>
-                    <?= $this->renderSection('content_horarios') ?>
+                    <?= $this->renderSection('content_horario_laboratorista') ?>
 
                     <?= $this->renderSection('content_horario_semanal') ?>
 
                     <!-- Gestión carreras -->
                     <?= $this->renderSection('content_carrera') ?>
                     <?= $this->renderSection('content_especialidad') ?>
-                    <?= $this->renderSection('content_asignatura') ?>
+                    <?= $this->renderSection('content_asignaturas') ?>
+                    <?= $this->renderSection('content_grupos') ?>
                     <?= $this->renderSection('content_reticula') ?>
 
                     <!-- Errores -->
-                    <?= $this->renderSection('content_error_404') ?>
+                    <?= $this->renderSection('content_error_404_laboratorista') ?>
 
                     <?= $this->renderSection('content_prueba') ?>
                 </main>

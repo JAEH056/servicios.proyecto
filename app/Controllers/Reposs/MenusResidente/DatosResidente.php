@@ -43,23 +43,12 @@ class DatosResidente extends BaseController
             'datosResidente' => $datosResidente,
         ]); // Se agregan los datos a la vista
     }
+
+    /**
+     * Se actualizan los datos del residente (solo podra modificar ciertos campos)
+    */
     public function update()
     {
-        //$userId = session()->get('idusuario');
-        $rules = [
-            'nombre'            => 'required|max_length[255]',
-            'apellido1'         => 'required|max_length[255]',
-            'numero_control'    => 'required',
-            'domicilio'         => 'max_length[255]',
-            'ciudad'            => 'max_length[255]',
-            'seguro_social'     => 'required',
-            'numero_ss'         => 'required|is_unique[residente.numero_ss]',
-            'celular'           => 'min_length[10]'
-        ];
-        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->validate($rules)) {
-            return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('error', $this->validator->listErrors());
-        }
         $post = $this->request->getPost([
             'idprograma_educativo',
             'principal_name',
@@ -74,7 +63,12 @@ class DatosResidente extends BaseController
             'telefono',
             'celular'
         ]);
-        if ($this->residente->update($this->userId,[
+        $rules = $this->residente->getValidationRules();
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->validateData($post, $rules)) {
+            return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('error', $this->validator->listErrors());
+        }
+        $data = [
             'idprograma_educativo'  => trim($post['idprograma_educativo']),
             'principal_name'        => trim($post['principal_name']),
             'numero_control'        => trim($post['numero_control']),
@@ -87,61 +81,16 @@ class DatosResidente extends BaseController
             'numero_ss'             => $post['numero_ss'],
             'telefono'              => $post['telefono'],
             'celular'               => $post['celular'],
-        ]) == false){
+        ];
+        if ($this->residente->update($this->userId, $data) == false){
             return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('error', 'Error al actualizar los datos');
         }
         return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('updatestatus', 'Datos Actualizados Correctamente');
     }
+
     public function new()
     {
         //return view('residentes/formulario');
     }
-    public function guardar()
-    {
-        $rules = [
-            'nombre'            => 'required|max_length[255]',
-            'apellido1'         => 'required|max_length[255]',
-            'numero_control'    => 'required|is_unique[residente.numero_control]',
-            'domicilio'         => 'max_length[255]',
-            'ciudad'            => 'max_length[255]',
-            'seguro_social'     => 'required',
-            'numero_ss'         => 'required|is_unique[residente.numero_ss]',
-            'celular'           => 'min_length[10]'
-        ];
-        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->validate($rules)) {
-            return redirect()->to(base_url('usuario/residentes/datos'))->withInput()->with('error', $this->validator->listErrors());
-        }
-        $post = $this->request->getPost([
-            'idprograma_educativo',
-            'principal_name',
-            'numero_control',
-            'nombre',
-            'apellido1',
-            'apellido2',
-            'domicilio',
-            'ciudad',
-            'seguro_social',
-            'numero_ss',
-            'telefono',
-            'celular'
-        ]);
-        $this->residente->insert([
-            'idprograma_educativo'  => trim($post['idprograma_educativo']),
-            'principal_name'        => trim($post['principal_name']),
-            'numero_control'        => trim($post['numero_control']),
-            'nombre'                => trim($post['nombre']),
-            'apellido1'             => $post['apellido1'],
-            'apellido2'             => $post['apellido2'],
-            'domicilio'             => $post['domicilio'],
-            'ciudad'                => $post['ciudad'],
-            'seguro_social'         => $post['seguro_social'],
-            'numero_ss'             => $post['numero_ss'],
-            'telefono'              => $post['telefono'],
-            'celular'               => $post['celular'],
-        ]);
 
-        //Si los datos se ingresaron correctamente regresa al formulario con un mensaje
-        return redirect()->to(base_url('usuario/residentes/datos'))->with('mensaje', 'Se actualizaron los datos');
-    }
 }

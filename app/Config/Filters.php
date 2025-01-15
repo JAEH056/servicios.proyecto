@@ -13,6 +13,7 @@ use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\RoleFilter;
+use App\Filters\NumeroControlFilter;
 
 class Filters extends BaseFilters
 {
@@ -36,6 +37,7 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'rbac'          => RoleFilter::class,
+        'regex'         => NumeroControlFilter::class,
     ];
 
     /**
@@ -75,6 +77,7 @@ class Filters extends BaseFilters
              'csrf',
             // 'invalidchars',
             'rbac' => ['except' => ['/', '/oauth/login','/oauth/microsoft/callback' , '/dashboard', '/logout','/puesto']],
+            //'regex' => ['only' => ['drpss/editar/*', 'drpss/perfil/*', 'drpss/eliminar/*']],
         ],
         'after' => [
             // 'honeypot',

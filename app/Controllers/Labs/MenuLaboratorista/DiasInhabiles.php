@@ -12,22 +12,34 @@ class DiasInhabiles extends BaseController
     protected $model_diasInhabiles;
     protected $model_tipoDiaInhabil;
     protected $model_asignar_laboratorio;
+    protected $helpers = ['form'];
 
     public function __construct()
     {
         $this->model_diasInhabiles = model(DiasInhabilesModel::class);
         $this->model_tipoDiaInhabil = model(TipoDiaInhabilModel::class);
-        $this->model_asignar_laboratorio=model(AsignarLaboratorioModel::class);
+        $this->model_asignar_laboratorio = model(AsignarLaboratorioModel::class);
     }
 
     public function index()
     {
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+        //datos del usuario se pasan a la vista
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token');
+
         $dias = $this->model_diasInhabiles->obtenerDiasInhabiles();
-      
+
 
         $data = [
             'dias' => $dias,
-           
+            'user' => $user,
+            'token' => $token,
+            'idusuario' => $userId,
+
         ];
 
         print_r($data);
@@ -36,7 +48,7 @@ class DiasInhabiles extends BaseController
 
     public function nuevo()
     {
-        helper('form');
+
         $tiposdia = $this->model_tipoDiaInhabil->obtenerTiposInhabiles();
 
         $data = [
@@ -50,10 +62,10 @@ class DiasInhabiles extends BaseController
 
     public function crear()
     {
-        helper('form');
+
         $rules = $this->model_diasInhabiles->reglasValidacion();
         $tiposdia = $this->model_tipoDiaInhabil->obtenerTiposInhabiles();
-        
+
         $data = [
             'id_tipo_inhabil' => $this->request->getPost('tipo_inhabil'),
             'descripcion' => $this->request->getPost('nombre'),
@@ -75,7 +87,7 @@ class DiasInhabiles extends BaseController
 
     public function editar($id)
     {
-        helper('form');
+
 
         try {
             $diaInhabil = $this->model_diasInhabiles->editarDiaInhabil($id);
@@ -90,14 +102,14 @@ class DiasInhabiles extends BaseController
             return redirect()->to('/diasinhabiles')->with('error', $e->getMessage());
         }
     }
-    
+
 
     public function actualizar($id)
     {
-        helper('form');
-        
+
+
         $rules = $this->model_diasInhabiles->reglasValidacion();
-        
+
         $data = [
             'id_tipo_inhabil' => $this->request->getPost('tipo_inhabil'),
             'descripcion' => $this->request->getPost('nombre'),

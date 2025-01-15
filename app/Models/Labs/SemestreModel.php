@@ -14,78 +14,7 @@ class SemestreModel extends Model
     protected $useSoftDeletes = false;
     protected $allowedFields = ['nombre', 'inicio', 'fin', 'estado'];
 
-    // public function obtenerSemestre()
-    // {
-    //     $sql = <<<EOL
-    //         SELECT 
-    //             semestre.id AS id,
-    //             semestre.nombre AS nombre  ,
-    //             semestre.inicio AS inicio,
-    //             semestre.fin as fin,
-    //              semestre.estado AS estado
-    //         FROM 
-    //             semestre
-    //         ORDER BY
-    //         inicio ASC
-    //         EOL;
-
-    //     $query = $this->db->query($sql);
-    //     $result = $query->getResultArray();
-    //     foreach ($result as &$row) {
-    //         $row['estado'] = $row['estado'] == 1 ? 'Activo' : 'Inactivo';
-    //     }
-
-    //     return $result;
-    // }
-
-    public function obtenerSemestre():array{
-        $builder =$this->db->table($this->table)
-        ->select('semestre.id AS id,
-                  semestre.nombre AS nombre,
-                  semestre.inicio AS inicio,
-                  semestre.fin as fin,
-                  semestre.estado AS estado')
-        ->orderBy('inicio ASC');   
-        $query = $builder->get();
-        $periodo=$query->getResultArray();
-        foreach ($periodo as &$row) {
-            $row['estado'] = $row['estado'] == 1 ? 'Activo' : 'Inactivo';
-        }
-        return $periodo;
-        
-    }
- 
-    public function obtenerSemestreActivos() :array{
-        $builder =$this->db->table($this->table)
-        ->select('semestre.id AS id,
-                  semestre.nombre AS nombre,
-                  semestre.inicio AS inicio,
-                  semestre.fin as fin,
-                  semestre.estado AS estado')
-        ->where('semestre.estado','1')         
-        ->orderBy('inicio ASC');   
-        $query = $builder->get();
-        $periodo=$query->getResultArray();
-        return $periodo;
-        
-    }
-
-
-
-    public function fechaFinPosteriorAInicio(string $fechaInicio, string $fechaFin): bool
-    {
-        // Convertimos las fechas a objetos DateTimeImmutable
-        $fechaInicioObj = new \DateTimeImmutable($fechaInicio);
-        $fechaFinObj = new \DateTimeImmutable($fechaFin);
-
-        // Comparamos las fechas
-        return $fechaFinObj > $fechaInicioObj;
-    }
-
-    // Método que contiene las reglas de validación
-    public function reglasValidacion()
-    {
-        return [
+    protected $validationRules      = [
             'nombre' => [
                 'rules' => 'required|max_length[255]|min_length[8]',
                 'errors' => [
@@ -112,12 +41,55 @@ class SemestreModel extends Model
                 'rules' => 'required|in_list[0,1]',
                 'errors' => [
                     'required' => 'El estado es obligatorio.',
-                    'in_list'  => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
+                    'in_list' => 'El estado debe ser "Activo" (1) o "Inactivo" (0).',
                 ],
             ],
-
         ];
+    
+
+
+    public function obtenerSemestre(): array
+    {
+        $builder = $this->db->table($this->table)
+            ->select('semestre.id AS id,
+                  semestre.nombre AS nombre,
+                  semestre.inicio AS inicio,
+                  semestre.fin as fin,
+                  semestre.estado AS estado')
+            ->orderBy('inicio ASC');
+        $query = $builder->get();
+        $periodo = $query->getResultArray();
+        foreach ($periodo as &$row) {
+            $row['estado'] = $row['estado'] == 1 ? 'Activo' : 'Inactivo';
+        }
+        return $periodo;
     }
+
+    public function obtenerSemestreActivos(): array
+    {
+        $builder = $this->db->table($this->table)
+            ->select('semestre.id AS id,
+                  semestre.nombre AS nombre,
+                  semestre.inicio AS inicio,
+                  semestre.fin as fin,
+                  semestre.estado AS estado')
+            ->where('semestre.estado', '1')
+            ->orderBy('inicio ASC');
+        $query = $builder->get();
+        $periodo = $query->getResultArray();
+        return $periodo;
+    }
+
+    public function fechaFinPosteriorAInicio(string $fechaInicio, string $fechaFin): bool
+    {
+        // Convertimos las fechas a objetos DateTimeImmutable
+        $fechaInicioObj = new \DateTimeImmutable($fechaInicio);
+        $fechaFinObj = new \DateTimeImmutable($fechaFin);
+
+        // Comparamos las fechas
+        return $fechaFinObj > $fechaInicioObj;
+    }
+
 
 
     public function insertarSemestre($data)
