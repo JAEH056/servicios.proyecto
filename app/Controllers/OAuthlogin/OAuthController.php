@@ -156,7 +156,6 @@ class OAuthController extends Controller
 
         // ARREGLO CON LA INFORMACION DEL USUARIO
         $data = [
-            'jobtitle'       => $datosUsuario['jobTitle'],          /// Puesto del usuario
             'principal_name' => $datosUsuario['userPrincipalName'], /// Correo del usuario
             'nombre'         => $datosUsuario['givenName'],         /// Nombre completo
             'apellido1'      => $apellidos['apellido1'],            /// Primer apellido
@@ -164,16 +163,20 @@ class OAuthController extends Controller
         ];
 
         $idUsuario = $tipoUsuario['model']->insert($data);
-        if ($tipoUsuario['model']) {
+        if ($tipoUsuario['roleId'] == 3) {
             // Se le asigna un puesto al usuario
-            $this->asignarPuesto($idUsuario, $datosUsuario['jobtitle']);
+            $respuesta = $this->asignarPuesto($idUsuario, $datosUsuario['jobtitle']);
+            if ($respuesta['success'] == false) {
+                return redirect()->to(base_url('/dashboard'))->with('error', 'Error al asignar el puesto: ' . $respuesta['mensaje']);
+            }
         }
+        session()->set('idusuario', $idUsuario);
         // Se asignan roles al usuario
-        $this->crearNuevoTipoUsuario($data, $tipoUsuario);
+        $this->asignarRolAlUsuario($idUsuario, $tipoUsuario);
     }
 
     // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
-    private function AsignarRolAlUsuario(array $userData, array $tipoUsuario)
+    private function RolesdeUsuario(array $userData, array $tipoUsuario)
     {
         // Obtener el ID del usuario basado en el correo
         $idUsuario = $this->getUserIdByEmail($tipoUsuario['principal_name']);
@@ -207,23 +210,14 @@ class OAuthController extends Controller
     }
 
     // Metodo para asignar roles a nuevos usuarios
-    private function crearNuevoTipoUsuario(array $infoUsuario, array $tipoUsuario)
+    private function asignarRolAlUsuario(int $userId, array $tipoUsuario)
     {
-        // Insertar los datos del usuario en la base de datos
-        if (!$idUsuario = $tipoUsuario['model']->insert($infoUsuario)) {
-            return redirect()->to('/error')->with('message', 'Error al insertar los datos del usuario.');
-        }
-        if ($tipoUsuario['roleId'] == 3) {
-            $this->asignarPuesto($idUsuario, $infoUsuario['jobtitle']);
-            $this->rbac->Users->assign($tipoUsuario['roleId'], $idUsuario);
-        }
-        if ($tipoUsuario['roleId'] == 2) {
-            $this->rbac->Users->assign($tipoUsuario['roleId'], $idUsuario);
-        }
-        session()->set('idusuario', $idUsuario);
+        // Se le asigna el rol al usuario
+        $this->rbac->Users->assign($tipoUsuario['roleId'], $userId);
+
         // Set flash data message with inserted data
         $redirect = (string)$tipoUsuario['actualizarDatos'];
-        return redirect()->to(base_url($redirect))->with('notification', 'Usuario agregado!, Primera vez ' . $infoUsuario['nombre'] . ' ' . $infoUsuario['apellido1'] . ' ? (' . $infoUsuario['principal_name'] . ')');
+        return redirect()->to(base_url($redirect))->with('notification', 'Usuario agregado!');
     }
 
     // Funcion para separar apellidos con varias palabras
@@ -301,37 +295,34 @@ class OAuthController extends Controller
     {
         // Si no se ha asignado un título de trabajo, realizar búsqueda con un valor vacío
         if (empty($jobTitle) || $jobTitle === null) {
-            return redirect()->to('/error')->with('error', 'Cargo no encontrado en el organigrama.');
+            return ['success' => false, 'mensaje' => 'No cuenta con un puesto de trabajo'];
         }
-
         // Buscar por el cargo específico
         $cargo = $this->modelo_organigrama->buscarCargoEmpleado($jobTitle);
-
         // Si no se encuentra el organigrama correspondiente
         if (!$cargo) {
-            return redirect()->to('/error')->with('error', 'Cargo no encontrado en el organigrama.');
+            return ['success' => false, 'mensaje' => 'Puesto no encontrado en el organigrama'];
         }
-
         // Datos para asignar el puesto
         $data = [
             'idusuario' => $userId,
             'idorganigrama' => $cargo['idorganigrama'],
-            'fecha_inicio' => date('Y-m-d H:i:s'),
+            'fecha_inicio' => date('Y-m-d'),
             'fecha_fin' => null, // Fecha de fin puede ser NULL si el puesto está activo
         ];
-
         try {
             // Insertar los datos en la base de datos
-            $resultado = $this->modelo_puesto_empleado->save($data);
-
+            $resultadoPuesto = $this->modelo_puesto_empleado->save($data);
+            // Se le asigna el rol al usuario usando el modelo de organigrama
+            $resultadoRol = $this->rbac->Users->assign($cargo['idorganigrama'], $userId);
             // Verificar si la inserción fue exitosa
-            if (!$resultado) {
-                return redirect()->to('/error')->with('error', 'Error al asignar el puesto.');
+            if (!$resultadoPuesto && !$resultadoRol) {
+                return ['success' => false, 'mensaje' => 'Error al asignar el puesto'];
             }
-            return redirect()->to('/error')->with('success', 'Puesto asignado correctamente.');
+            return redirect()->to(base_url('/dashboard'))->with('success', 'Puesto asignado correctamente');
         } catch (\Exception $e) {
             // En caso de error, mostrar el mensaje de la excepción
-            return redirect()->to('/error')->with('error', 'Error al asignar el puesto: ' . $e->getMessage());
+            return ['success' => false, 'mensaje' => 'Error al asignar el puesto: ' . $e->getMessage()];
         }
     }
 }
