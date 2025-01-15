@@ -1,4 +1,4 @@
-<?= $this->extend('Labs/layouts/vista_principal') ?>
+<?= $this->extend('Labs/layouts/principal_docente') ?>
 
 <?= $this->section('include_css') ?>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
@@ -109,19 +109,6 @@
                         alert('La fecha y hora de inicio deben ser anteriores a la fecha y hora de fin.');
                         return;
                     }
-
-                    const newEvent = {
-                        id: String(new Date().getTime()),
-                        calendarId: 'cal2',
-                        title: title,
-                        start: start,
-                        end: end,
-                        category: 'time',
-                        isAllDay: false,
-                        raw: { docente, materia, grupo },
-                    };
-
-                    calendar.createEvents([newEvent]);
 
                     // Enviar el formulario si es necesario
                     // form.submit(); // Ahora puedes enviar el formulario después de la validación

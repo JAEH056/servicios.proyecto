@@ -7,21 +7,14 @@
             <span>Editar laboratorio</span>
         </div>
         <div class="card-body">
-            <?php if(session()->get('success')): ?>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function(){
-                        alert('<?= esc(session()->get('success')) ?>');
-                        window.location.href = '/laboratorio';
-                    });
-                </script>
-            <?php endif; ?>
             <!-- Component Preview-->
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
                     <!-- Abrir formulario con Form Helper -->
                      
-                    <?= form_open('laboratorio/actualizar/' .esc($laboratorio['id']), ['id' => 'fomr-laboratorio']) ?>
+                    <?= form_open('usuario/actualizar/laboratorio/' .esc($laboratorio['id']), ['id' => 'fomr-laboratorio']) ?>
                     <?= csrf_field() ?>
+                    <?php $errors = session('errors'); ?>
                     <!-- Nombre del laboratorio -->
                     <div class="mb-3">
                         <?= form_label('Nombre del laboratorio', 'nombre', ['class' => 'form-label']) ?>
@@ -33,8 +26,11 @@
                             'placeholder' => 'Nombre del laboratorio',
                             'value' => set_value('nombre', $laboratorio['nombre'] ?? null),
                         ]) ?>
+                         <?php if (isset($errors['nombre'])): ?>
+                            <span class="text-danger"><?= $errors['nombre'] ?></span>
+                        <?php endif; ?>
                     </div>
-                    <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre') : '' ?></span>
+                  
                     <!-- Selector carrera -->
                     <div class="mb-3">
                         <?= form_label('Carrera', 'carrera', ['class' => 'form-label']) ?>
@@ -44,7 +40,9 @@
                             set_value('id_carrera',$laboratorio['id_carrera'] ?? null),
                             ['id' => 'id_carrera', 'class' => 'form-control form-control-solid']
                         ) ?>
-                    <span class="text-danger"><?= isset($validation) ? $validation->getError('id_carrera') : '' ?></span>
+                             <?php if (isset($errors['id_carrera'])): ?>
+                            <span class="text-danger"><?= $errors['id_carrera'] ?></span>
+                        <?php endif; ?>
                     </div>
                     <!-- Botones de Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">

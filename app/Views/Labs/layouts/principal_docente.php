@@ -36,9 +36,11 @@
 
                     <!-- Horario -->
                     <?= $this->renderSection('content_horario_docente') ?>
+                    <?= $this->renderSection('content_horario_prueba') ?>
+                    <?= $this->renderSection('content_horario2') ?>
 
                     <!-- Errores -->
-                    <?= $this->renderSection('content_error_404') ?>
+                    <?= $this->renderSection('content_error_404_docente') ?>
 
                     <?= $this->renderSection('content_prueba') ?>
                 </main>

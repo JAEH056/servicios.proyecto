@@ -68,41 +68,4 @@ class AsignarLaboratorioModel extends Model
     return $laboratoriosAsignados;
 }
 
-
-
-//         $sql = <<<EOL
-// SELECT 
-//     laboratorio.nombre AS nombre_laboratorio,
-//     asignar_laboratorio.inicio AS inicio,
-//     asignar_laboratorio.fin AS fin,
-//     GROUP_CONCAT(
-//         CONCAT(usuario.nombre, ' ', usuario.apellido1, ' ', usuario.apellido2) 
-//         ORDER BY usuario.id ASC
-//     ) AS encargado
-// FROM asignar_laboratorio
-// JOIN laboratorio ON asignar_laboratorio.id_laboratorio = laboratorio.id
-// JOIN usuario ON asignar_laboratorio.id_usuario = usuario.id
-// WHERE usuario.id =$id_usuario
-// AND asignar_laboratorio.inicio <=  '$fecha_actualStr'
-// AND (
-//     asignar_laboratorio.fin IS NULL OR
-//     asignar_laboratorio.fin >= '$fecha_actualStr'
-// )
-// GROUP BY laboratorio.id,
-//          asignar_laboratorio.inicio,
-//           asignar_laboratorio.fin
-// EOL;
-
-         
-
-            
-           
-            // $query = $this->db->query($sql);
-            // $laboratoriosAsignados= $query ->getResultArray();
-            //     print_r($laboratoriosAsignados);
-              
-            // return $laboratoriosAsignados;
-    
-        
-
 }
