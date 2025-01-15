@@ -5,7 +5,6 @@ namespace App\Controllers\Reposs\MenusDRPSS;
 use App\Controllers\BaseController;
 use App\Controllers\ResponseInterface;
 use App\Models\Reposs\ResidenteModel;
-//use CodeIgniter\HTTP\ResponseInterface;
 
 class Empresa extends BaseController
 {
@@ -34,18 +33,12 @@ class Empresa extends BaseController
     }
     public function guardar()
     {
-
         $rules = [
             'numero_control' => 'required',
             'nombre'    => 'required',
             'apellido1' => 'required',
             'apellido2' => 'required'
         ];
-        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->validate($rules)) {
-            //return redirect()->back()->withInput()->with('error', $this->validator->listErrors());
-            return redirect()->to(base_url('residentes'))->withInput()->with('error', $this->validator->listErrors());
-        }
         $post = $this->request->getPost([
             'idempresa',
             'nombre_empresa',
@@ -65,19 +58,23 @@ class Empresa extends BaseController
             'idsector',
             'idasesor_externo',
         ]);
+        //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
+        if (!$this->validateData($post, $rules)) {
+            return redirect()->to(base_url('residentes'))->withInput()->with('error', $this->validator->listErrors());
+        }
         $residenteModel = new ResidenteModel();
         $residenteModel->insert([
-            'nombre'    => trim($post['nombre']),
-            'apellidoP' => trim($post['apellidoP']),
-            'apellidoM' => trim($post['apellidoM']),
-            'numControl' => trim($post['numControl']),
-            'domicilio' => $post['domicilio'],
-            'correo'    => $post['correo'],
-            'ciudad'    => $post['ciudad'],
-            'seguroSocial' => $post['seguroSocial'],
-            'numeroSS'  => $post['numeroSS'],
-            'telefono'  => $post['telefono'],
-            'celular'   => $post['celular'],
+            'nombre'            => trim($post['nombre']),
+            'apellidoP'         => trim($post['apellidoP']),
+            'apellidoM'         => trim($post['apellidoM']),
+            'numControl'        => trim($post['numControl']),
+            'domicilio'         => $post['domicilio'],
+            'correo'            => $post['correo'],
+            'ciudad'            => $post['ciudad'],
+            'seguroSocial'      => $post['seguroSocial'],
+            'numeroSS'          => $post['numeroSS'],
+            'telefono'          => $post['telefono'],
+            'celular'           => $post['celular'],
             'idprogramaEducativo' => $post['idprogramaEducativo'],
         ]);
 

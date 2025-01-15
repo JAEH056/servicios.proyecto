@@ -39,36 +39,77 @@ class DocumentoModel extends Model
         return $this->first();  // Devuelve el primer (y único) documento
     }
 
-    public function getDocumentByTipo(string $nombre)
+    /**
+     *  Se busca el documento por tipo y ID del residente
+     *  @param int $idResidente
+     *  @param string $nombre
+     *  @return array
+     */
+    public function getDocumentByTipo(string $nombre, int $idResidente)
     {
         $this->table('documento');
-        return $this->select('documento.iddocumento, documento.archivo')
-            ->join('tipo_archivo', 'tipo_archivo.idtipo = documento.idtipo')
-            ->where('tipo_archivo.nombre', $nombre)
+        return $this->select('documento.iddocumento, documento.archivo, ta.nombre')
+            ->join('tipo_archivo ta', 'ta.idtipo = documento.idtipo')
+            ->join('pre_requisito preq', 'documento.iddocumento = preq.iddocumento', 'left')
+            ->join('requisito req', 'documento.iddocumento = req.iddocumento', 'left')
+            ->groupStart()
+            ->where('ta.nombre', $nombre)
+            ->where('preq.idresidente', $idResidente)
+            ->groupEnd()
+            ->orGroupStart()
+            ->where('ta.nombre', $nombre)
+            ->where('req.idresidente', $idResidente)
+            ->groupEnd()
             ->first();
     }
 
-    public function obtenerEstadoDocumento2(){
+    public function obtenerEstadoDocumento(int $userId)
+    {
         $this->table('documento');
-        return $this->select('doc.iddocumento, doc.archivo, ta.nombre, val.estado, val.fecha_entrega')
-                    ->from('reposs.documento doc')
-                    ->join('reposs.tipo_archivo ta', 'ta.idtipo = doc.idtipo')
-                    ->join('reposs.validacion val', 'val.iddocumento = doc.iddocumento')
-                    //->orderBy('doc.iddocumento', 'DESC')
-                    ->get()
-                    //->first()
-                    ->getResultArray();
-    }
-
-    public function obtenerEstadoDocumento(int $userId){
-        $this->table('documento' );
-        return $this->select( 'documento.iddocumento, documento.archivo, ta.nombre, pr.idresidente, val.estado, val.fecha_entrega')
-            ->join('reposs.pre_requisito pr', 'documento.iddocumento = pr.iddocumento')
+        return $this->select('documento.iddocumento, documento.archivo,ta.idtipo, ta.nombre, pr.idresidente, val.estado, val.fecha_entrega')
+            ->join('reposs.pre_requisito pr', 'documento.iddocumento = pr.iddocumento', 'left')
+            ->join('reposs.requisito r', 'documento.iddocumento = r.iddocumento', 'left')
             ->join('reposs.tipo_archivo ta', 'ta.idtipo = documento.idtipo')
             ->join('reposs.validacion val', 'val.iddocumento = documento.iddocumento')
+            ->groupStart()
             ->where('pr.idresidente', $userId)
+            ->orWhere('r.idresidente', $userId)
+            ->groupEnd()
             ->orderBy('val.fecha_entrega', 'ASC')
             ->get()
             ->getResultArray();
+    }
+
+    public function obtenerDocumentosParaValidar($numeroControl)
+    {
+        $builder = $this->db->table('reposs.pre_requisito');
+
+        $builder->select([
+            'res.idresidente',
+            'res.numero_control',
+            'res.principal_name',
+            'res.nombre AS requisito',
+            'res.apellido1',
+            'res.apellido2',
+            'doc.iddocumento',
+            'doc.archivo',
+            'ta.idtipo',
+            'ta.nombre AS tipo_archivo_nombre',
+            'val.idvalidacion',
+            'val.estado',
+            'val.observaciones',
+            'val.fecha_entrega',
+            'val.fecha_actualizacion'
+        ]);
+
+        // Joins con las demás tablas
+        $builder->join('reposs.residente res', 'pre_requisito.idresidente = res.idresidente', 'left');
+        $builder->join('reposs.documento doc', 'pre_requisito.iddocumento = doc.iddocumento', 'left');
+        $builder->join('reposs.tipo_archivo ta', 'doc.idtipo = ta.idtipo', 'left');
+        $builder->join('reposs.validacion val', 'val.iddocumento = doc.iddocumento', 'left');
+        $builder->where('res.numero_control', $numeroControl);
+
+        // Ejecutar la consulta y retornar los resultados
+        return $builder->get()->getResultArray();
     }
 }

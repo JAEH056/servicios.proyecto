@@ -21,43 +21,45 @@
                         <button class="btn btn-teal btn-icon mr-2">
                             <i data-feather="bookmark"></i>
                         </button>
-                        <a class="btn btn-blue btn-icon mr-2" href="<?=esc(base_url('usuario/drpss/nuevo'))?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nuevo Residente">
+                        <button class="btn btn-blue btn-icon mr-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nuevo Proyecto">
                             <i class="fa-solid fa-user-plus"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple">
                         <thead>
                             <tr>
-                                <th>Numero de Control</th>
-                                <th>Nombre</th>
-                                <th>Apellidos</th>
-                                <th>Carrera</th>
+                                <th>Nonmbre del Proyecto</th>
+                                <th>Nombre de la empresa</th>
+                                <th>Asesor Interno</th>
+                                <th>Periodo</th>
+                                <th>Tipo Proyecto</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Numero de Control</th>
-                                <th>Nombre</th>
-                                <th>Apellidos</th>
-                                <th>Carrera</th>
+                                <th>Nombre del Proyecto</th>
+                                <th>Nombre de la empresa</th>
+                                <th>Asesor Interno</th>
+                                <th>Periodo</th>
+                                <th>Tipo Proyecto</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            <?php foreach ($listaResidentes as $row): ?>
+                            <?php foreach ($listaProyectos as $row): ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar me-2"><img class="avatar-img img-fluid" src="<?= base_url('resources/assets/img/illustrations/profiles/profile-1.png') ?>" /></div>
-                                            <?= esc($row['numero_control']) ?>
+                                            <?= esc($row['nombre_proyecto']) ?>
                                         </div>
                                     </td>
-                                    <td><?= esc($row['nombre']) ?></td>
-                                    <td><?= esc($row['apellido1']) ?> <?= esc($row['apellido2']) ?></td>
-                                    <td><?= esc($row['nombre_programa_educativo']) ?></td>
+                                    <td><?= esc($row['nombre_empresa']) ?></td>
+                                    <td><?= esc($row['grado_academico'] . ' ' . $row['nombre'] . ' ' . $row['apellido1']. ' ' . $row['apellido2']) ?></td>
+                                    <td><?= esc($row['fecha_inicio'] . ' - ' . $row['fecha_fin']) ?></td>
+                                    <td><?= esc($row['banco_proyecto']) ?></td>
                                     <td>
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar" href="<?= base_url('usuario/drpss/editar/' . $row['numero_control']) ?>">
                                             <i class="fa-solid fa-pen-to-square"></i></a>

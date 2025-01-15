@@ -4,24 +4,23 @@ namespace App\Models\Reposs;
 
 use CodeIgniter\Model;
 
-class AsesorExternoModel extends Model
+class AsesorInternoModel extends Model
 {
     protected $DBGroup          = "residentes"; // database group
-    protected $table            = 'asesor_externo';
-    protected $primaryKey       = 'idasesor_externo';
+    protected $table            = 'asesor_interno';
+    protected $primaryKey       = 'idasesor_interno';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'idasesor_externo',
+        'idpuesto',
+        'principal_name',
         'puesto',
-        'grado',
+        'grado_academico',
         'nombre',
         'apellido1',
         'apellido2',
-        'correo',
-        'telefono'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -39,32 +38,43 @@ class AsesorExternoModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'puesto' => [
-            'rules' => 'required|max_length[255]|min_length[8]',
+        'idpuesto' => [
+            'rules' => 'required',
             'errors' => [
-                'required' => 'El puesto del asesor es un campo obligatorio.',
-                'max_length' => 'El puesto asesor no puede tener más de 255 caracteres.',
-                'min_length' => 'El puesto asesor debe tener al menos 8 caracteres.',
+                'required' => 'El puesto del asesor es un campo obligatorio.'
             ],
         ],
-        'grado' => [
+        'principal_name' => [
+            'rules' => 'valid_email',
+            'errors' => [
+                'email' => 'El correo electrónico no es válido.',
+            ],
+        ],
+        'puesto' => [
             'rules' => 'required|max_length[255]',
             'errors' => [
-                'required' => 'El grado academico del asesor es un campo obligatorio.',
-                'max_length' => 'El grado del asesor no puede tener más de 255 caracteres.',
+                'required' => 'El puesto del asesor es un campo requerido.',
+                'max_length' => 'El puesto del asesor no puede tener más de 255 caracteres.',
+            ],
+        ],
+        'grado_academico' => [
+            'rules' => 'required|max_length[255]',
+            'errors' => [
+                'required' => 'El grado academico del asesor es un campo requerido.',
+                'max_length' => 'El grado academico del asesor no puede tener más de 255 caracteres.',
             ],
         ],
         'nombre' => [
             'rules' => 'required|max_length[255]',
             'errors' => [
-                'required' => 'El nombre del asesor es un campo obligatorio.',
+                'required' => 'El nombre del asesor es un campo requerido.',
                 'max_length' => 'El nombre del asesor no puede tener más de 255 caracteres.',
             ],
         ],
         'apellido1' => [
             'rules' => 'required|max_length[255]',
             'errors' => [
-                'required' => 'El primer apellido del asesor es un campo obligatorio.',
+                'required' => 'El primer apellido del asesor es un campo requerido.',
                 'max_length' => 'El primer apellido del asesor no puede tener más de 255 caracteres.',
             ],
         ],
@@ -74,12 +84,7 @@ class AsesorExternoModel extends Model
                 'max_length' => 'El segundo apellido del asesor no puede tener más de 255 caracteres.',
             ],
         ],
-        'correo' => [
-            'rules' => 'valid_email',
-            'errors' => [
-                'email' => 'El correo electrónico no es válido.',
-            ],
-        ],
+
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
@@ -97,64 +102,47 @@ class AsesorExternoModel extends Model
     protected $afterDelete    = [];
 
     /**
-     *  Actualiza el ID Asesor Externo usando como parametros
-     *  de referencia el ID de Residente e ID de la empresa.
+     *  Actualiza el ID Asesor Interno usando como parametros
+     *  de referencia el ID de Residente e ID del proyecto.
      */
-    public function updateAsesorExternoByIdResidente($data, $userId, $idEmpresa)
+    public function updateAsesorInternoByIdResidente($data, $userId, $idProyecto)
     {
         $this->transStart();
-        // Step 1: Insertar el nuevo asesor externo 
-        if (!$this->insert($data)) {
+        // Step 1: Insertar el nuevo asesor interno 
+        if ($this->insert($data) == false) {
             // Si el insert falla, rollback y regresa un false
             $this->transRollback();
             return [
                 'success' => false,
-                'message' => 'Fallo al insertar el asesor externo.'
+                'message' => 'Fallo al insertar el asesor Interno.'
             ];
         }
         // Obtener el ID generado del asesor externo 
-        $idAsesorExterno = $this->insertID();
-        // Paso 2: Actualizar el idasesor_externo en la tabla empresa
-        $subQuery = $this->db->table('reposs.proyecto')
-            ->select('proyecto.idempresa')
-            ->groupStart()
-            ->where('proyecto.idresidente', $userId)
-            ->where('proyecto.idempresa', $idEmpresa)
-            ->groupEnd();
-        //Se actualiza el id del asesor
-        $builder = $this->db->table('reposs.empresa');
-        $builder->set('idasesor_externo', $idAsesorExterno)
-            ->whereIn('empresa.idempresa', $subQuery); // Usar subconsulta directamente
-        if (!$builder->update()) {
+        $idAsesorInterno = $this->insertID();
+        // Paso 2: Actualizar el idasesor_interno en la tabla proyecto
+        $builder = $this->db->table('reposs.proyecto');
+        $builder->set('proyecto.idasesor_interno', $idAsesorInterno)
+                ->where('proyecto.idproyecto', $idProyecto)
+                ->where('proyecto.idresidente', $userId);
+        if ($builder->update() == false) {
             $this->transRollback();
             return [
                 'success' => false,
-                'message' => 'Fallo al actualizar la empresa con el nuevo asesor externo.'
+                'message' => 'Fallo al actualizar el proyecto con el nuevo asesor interno.'
             ];
         }
         $this->transComplete();
         if ($this->transStatus() === false) {
-            // Transaction failed
+            // Transaccion fallida
             return [
                 'success' => false,
                 'message' => 'Transaccion fallida durante la actualizacion de datos.'
             ];
         }
-        // Transaction successful
+        // Transaccion exitosa
         return [
             'success' => true,
-            'message' => 'Asesor Externo actualizado correctamente.'
+            'message' => 'Asesor Interno actualizado correctamente.'
         ];
-    }
-
-    public function asesorExternoByUserId($userId)
-    {
-        $this->db->table('reposs.empresa emp');
-        $this->select('py.idresidente,py.nombre_proyecto, emp.nombre_empresa, ae.*')
-            ->join('reposs.proyecto py', 'emp.idempresa = py.idempresa', 'left')
-            ->join('reposs.asesor_externo ae', 'emp.idasesor_externo = ae.idasesor_externo', 'left')
-            ->where('py.idresidente', $userId)
-            ->get()
-            ->getResult();
     }
 }

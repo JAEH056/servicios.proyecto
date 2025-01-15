@@ -65,16 +65,20 @@ class DatosAsesor extends ResourceController
             'apellido1',
             'apellido2',
             'correo',
-            'telefono'
+            'telefono',
+            'idempresa',
         ]);
+        $idEmpresa = $post['idempresa'];
         //Si no se cumplen las reglas se regresan los datos al formulario y la lista de errores
-        if (!$this->asesorExterno->getValidationRules($post)) {
+        $rules = $this->asesorExterno->getValidationRules();
+        if (!$this->validateData($post, $rules)) {
             return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', $this->validator->listErrors());
         }
-        if ($this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId) == false) {
-            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar el asesor.');
+        $estado = $this->asesorExterno->updateAsesorExternoByIdResidente($post, $this->userId, $idEmpresa);
+        if ($estado['success'] == false) {
+            return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('error', 'Error al agregar el asesor: ' . $estado['message']);
         }
-        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', 'Asesor agregado con exito.');
+        return redirect()->to(base_url('usuario/residentes/empresa'))->withInput()->with('mensaje', $estado['message']);
     }
 
     /**

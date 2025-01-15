@@ -47,4 +47,12 @@ class ProgramaEducativoModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getProgramaEducativo()
+    {
+        $builder = $this->db->table('programa_educativo')
+            ->select('*')
+            ->join('reposs.modalidad mod', 'programa_educativo.idmodalidad = mod.idmodalidad');
+        return $builder->get()->getResultArray();
+    }
 }
