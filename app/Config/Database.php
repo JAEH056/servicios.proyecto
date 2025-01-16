@@ -55,8 +55,8 @@ class Database extends Config
     public array $residentes = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'root',
-        'password'     => '1234',
+        'username'     => 'residencias',
+        'password'     => 'Ac03Dez717EAa',
         'database'     => 'reposs',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
@@ -80,8 +80,8 @@ class Database extends Config
     public array $compartida = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'root',
-        'password'     => '1234',
+        'username'     => 'residencias',
+        'password'     => 'Ac03Dez717EAa',
         'database'     => 'db_compartida',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
@@ -107,8 +107,8 @@ class Database extends Config
     public array $laboratorios = [
         'DSN'          => '',
         'hostname'     => 'localhost',
-        'username'     => 'root',
-        'password'     => '1234',
+        'username'     => 'residencias',
+        'password'     => 'Ac03Dez717EAa',
         'database'     => 'laboratorios',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',
