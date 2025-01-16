@@ -23,7 +23,7 @@ class PdfController extends Controller
         ];
 
         // Render the view to a string
-        $html = view('Reposs/Formatos/pdf_template', $data);
+        $html = view('Reposs/Formatos/pfd_figma', $data);
 
         // Initialize DOMPDF
         
@@ -34,7 +34,7 @@ class PdfController extends Controller
         $dompdf->loadHtml($html);
 
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->setPaper('letter', 'portrait');
 
         // Render the PDF
         $dompdf->render();

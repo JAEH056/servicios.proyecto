@@ -46,7 +46,7 @@ class EmpresaModel extends Model
     protected $createdField  = 'fecha_creacion';
 
     // Validation
-    protected $validationRules      = [
+    protected $validationRules = [
         'nombre_empresa' => [
             'rules' => 'required|max_length[255]|min_length[4]',
             'errors' => [
@@ -56,10 +56,9 @@ class EmpresaModel extends Model
             ],
         ],
         'mision' => [
-            'rules' => 'max_length[255]|min_length[8]',
+            'rules' => 'max_length[255]',
             'errors' => [
                 'max_length' => 'La misión no puede tener más de 255 caracteres.',
-                'min_length' => 'La misión debe tener al menos 8 caracteres.',
             ],
         ],
         'puesto_titular' => [
@@ -174,5 +173,20 @@ class EmpresaModel extends Model
                     ->where('py.idresidente', $userId)
                     ->get()
                     ->getRowArray();
+    }
+
+    /**
+     *  Obtiene la lista de empresas y el asesor externo (en caso de tener uno)
+     */
+    public function getEmpresasListByUserId($userId)
+    {
+        return $this->select('empresa.*, rm.nombre AS Ramo, sc.nombre AS Sector, aext.*')
+                      ->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
+                      ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
+                      ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
+                      ->join('reposs.asesor_externo aext', 'empresa.idasesor_externo = aext.idasesor_externo', 'left')
+                      ->where('py.idresidente', $userId)
+                      ->get()
+                      ->getResultArray();
     }
 }

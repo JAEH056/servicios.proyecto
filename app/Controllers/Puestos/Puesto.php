@@ -32,7 +32,6 @@ class Puesto extends BaseController
             return redirect()->to('/oauth/login');
         }
 
-
         $user = session()->get('name');
         $token = session()->get('access_token');
         $datoUsuario = $this->modelo_user->findByCorreo($user['userPrincipalName']);
@@ -53,12 +52,8 @@ class Puesto extends BaseController
                 ];
             }
         }
-        
-            $template = 'Labs/layouts/principal_laboratorista';
-        
-        
-        
 
+        $template = 'Labs/layouts/principal_laboratorista';
 
         $data = [
             'user' => $user,
@@ -67,7 +62,6 @@ class Puesto extends BaseController
             'puesto' => $puestoEmpleado,
             'niveleducativo' => $nivel,
             'grados' => $gradousuario,
-            //  'template' => 'Labs/layouts/principal_laboratorista'
             'template' => $template
         ];
 
@@ -101,7 +95,6 @@ class Puesto extends BaseController
             }
         }
 
-
         $data = [
             'user' => $user,
             'token' => $token,
@@ -124,10 +117,6 @@ class Puesto extends BaseController
         if (!session()->has('name')) {
             return redirect()->to('/oauth/login');
         }
-
-        $userId = session()->get('idusuario');
-        $user = session()->get('name');
-        $token = session()->get('access_token');
 
         $nivel = $this->modelo_nivel->obtenerNivel();
         $rules = $this->model_grado_academico->reglasValidacion();

@@ -8,19 +8,12 @@
             <span>Editar semestre</span>
         </div>
         <div class="card-body">
-            <?php if (session()->get('success')): ?>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        alert('<?= esc(session()->get('success')) ?>');
-                        window.location.href = '/usuario/semestre/mostrar';
-                    });
-                </script>
-            <?php endif; ?>
             <!-- Component Preview-->
             <div class="sbp-preview">
                 <div class="sbp-preview-content">
-                    <?= form_open('/usuario/semestre/actualizar/' .esc($semestre['id']), ['id' => 'fomr-semestre']) ?>
+                    <?= form_open('/usuario/actualizar/semestre/' .esc($semestre['id']), ['id' => 'form-semestre']) ?>
                     <?= csrf_field() ?>
+                       <?php $errors = session('errors'); ?>
 
                     <div class="mb-3">
                         <?= form_label('Nombre del semestre', 'nombre', ['class' => 'form-label']) ?>
@@ -33,8 +26,11 @@
                             'value' => set_value('nombre', $semestre['nombre'] ?? null),
 
                         ]) ?>
+                         <?php if (isset($errors['nombre'])): ?>
+                            <span class="text-danger"><?= $errors['nombre'] ?></span>
+                        <?php endif; ?>
                     </div>
-                    <span class="text-danger"><?= isset($validation) ? $validation->getError('nombre') : '' ?></span>
+                   
 
                     <div class="mb-3">
                         <?= form_label('Fecha de inicio', 'inicio', ['class' => 'form-label']) ?>
@@ -45,7 +41,9 @@
                             'type' => 'date',
                             'value' => set_value('inicio', $semestre['inicio'] ?? null),
                         ]) ?>
-                        <span class="text-danger"><?= isset($validation) ? $validation->getError('inicio') : '' ?></span>
+                         <?php if (isset($errors['inicio'])): ?>
+                            <span class="text-danger"><?= $errors['inicio'] ?></span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">
@@ -57,7 +55,9 @@
                             'type' => 'date',
                             'value' => set_value('fin', $semestre['fin'] ?? null),
                         ]) ?>
-                        <span class="text-danger"><?= isset($validation) ? $validation->getError('fin') : '' ?></span>
+                         <?php if (isset($errors['fin'])): ?>
+                            <span class="text-danger"><?= $errors['fin'] ?></span>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Selector estado -->
@@ -69,7 +69,9 @@
                             set_value('estado', $semestre['estado'] ?? null),
                             ['id' => 'estado', 'class' => 'form-control form-control-solid']
                         ) ?>
-                        <span class="text-danger"><?= isset($validation) ? $validation->getError('estado') : '' ?></span>
+                         <?php if (isset($errors['estado'])): ?>
+                            <span class="text-danger"><?= $errors['estado'] ?></span>
+                        <?php endif; ?>
                     </div>
                                     
                     <!-- Botones Guardar y Cancelar -->

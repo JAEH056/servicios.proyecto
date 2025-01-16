@@ -20,7 +20,7 @@ class OAuthController extends Controller
     protected $residenteModel;
     protected $modelo_organigrama;
     protected $modelo_puesto_empleado;
-    
+
 
     public function __construct()
     {
@@ -59,7 +59,6 @@ class OAuthController extends Controller
     // Step 2: Handle the callback from Microsoft
     public function callback()
     {
-        $rbac = service('rbac');
         // Validate the state parameter to prevent CSRF
         if (empty($this->request->getGet('state')) || ($this->request->getGet('state') !== session()->get('oauth2state'))) {
             session()->remove('oauth2state');
@@ -86,62 +85,34 @@ class OAuthController extends Controller
             session()->set('logged_in', TRUE);
             session()->set('access_token', $accessToken);
             session()->set('name', $userData);
-            // Redirect the user to a secured page (e.g., dashboard)
-            // Redirige al usuario a una pagina segura (e.g., dashboard)
         } catch (\Exception $e) {
             //exit('Error fetching the access token: ' . $e->getMessage());
             log_message('error', 'Error fetching the access token: ' . $e->getMessage());
-            return redirect()->to(base_url('/error'))->with('message', 'There was an error with the authentication process.');
+            return redirect()->to(base_url('/erroraut'))->with('message', 'There was an error with the authentication process.');
         }
-        /// INICIO DE BLOQUE DE DATOS DE USUARIO
-        // Se extrae el nombre del usuario y correo
-        $userPrincipalName = $userData['userPrincipalName'];
-        $givenName = $userData['givenName'];
-        $surname = $userData['surname'];
-        $apellidos = $this->splitSurname($surname); // Separar apellidos
-        $nombreDeUsuario = $this->separarPrincipalname($userPrincipalName);
-        //se obtiene el puesto que tiene el usuario en su cuenta de microsoft
-        $jobTitle = $userData['jobTitle'];
-
-        // Se crea un arreglo con la informacion del usuario
-        $data = [
-            'principal_name' => $userPrincipalName,
-            'nombre' => $givenName,
-            'apellido1' => $apellidos['apellido1'],  // Primer apellido
-            'apellido2' => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : '', // Segundo apellido
-        ];
-
-        // Extrae el dominio del correo
-        $emailParts = explode('@', $data['principal_name']);
-        if (count($emailParts) < 2) {
-            exit('Formato de correo invalido.');
-        }
-        // Se modifica el correo a minusculas (para evitar problemas con mayusculas)
-        $domain = strtolower($emailParts[1]);
         // Arreglo con los Dominos permitidos
         $organizationDomain = [
             'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel, 'roleId' => 2, 'actualizarDatos' => '/usuario/residentes/datos'],
-            'huatusco.tecnm.mx' => ['model' => $this->userModel, 'roleId' => 3, 'actualizarDatos' => '/dashboard']
+            'huatusco.tecnm.mx'      => ['model' => $this->userModel, 'roleId' => 3, 'actualizarDatos' => '/dashboard'],
         ];
-        // Verificar si el dominio es permitido
-        if (!array_key_exists($domain, $organizationDomain)) {
-            return redirect()->to('/error')->with('message', 'Dominio no valido');
-        }
-
+        $emailParts = explode('@', $userData['userPrincipalName']); /// Extrae el dominio del correo
+        $domain = strtolower($emailParts[1]);
         // Se define en una sola variable el modelo que se utilizara dependiendo del dominio (estudiante o Usuario).
         $tipoUsuario = $organizationDomain[$domain];
-
         // Si no existe el registro en la tabla correspondiente (definido por el dominio), se crea un nuevo registro.
         if ($tipoUsuario['model']->esPrimerIngreso($userData['userPrincipalName']) == true) {
-            $this->assignNewUserRole($data, $tipoUsuario);
-        } else {
-            $this->assignExistingUserRole($rbac, $data['principal_name']);
-        } // El registro ya existe verificar roles y permisos
-        /// FIN DE BLOQUE DE DATOS DE USUARIO
-        // se obtiene el id del usario con su correo 
-        $userId = $this->getUserIdByEmail($userPrincipalName);
-        //se inserta el usuario con su puesto 
-        $this->asignarPuesto($userId, $jobTitle);
+            $this->guardarDatosDelUsuario($userData, $tipoUsuario);
+        }
+        // Si el usuario ya existe se le asignana el id de usuario a la sesion
+        $userId = $this->getUserIdByEmail($userData['userPrincipalName']);
+        // Actualizar la informacion del usuario (si es necesario)
+        $actualiza = $tipoUsuario['model']->actualizarNombreUsuario($userData, $userId);
+        if ($actualiza['success'] == false) {
+            session()->setFlashdata('mensaje', $actualiza['mensaje']);
+        }
+        session()->set('idusuario', $userId);
+        // Redirect the user to a secured page (e.g., dashboard)
+        // Redirige al usuario para guardar los datos (e.g., dashboard)
         return redirect()->to(base_url('/dashboard'));
     }
 
@@ -177,12 +148,39 @@ class OAuthController extends Controller
         return redirect()->to($logoutUrl);
     }
 
+    private function guardarDatosDelUsuario(array $datosUsuario, array $tipoUsuario)
+    {
+        // DATOS SANITIZADOS PARA ALMACENAR EN LA BASE DE DATOS
+        $apellido = $datosUsuario['surname'];
+        $apellidos = $this->splitSurname($apellido); /// Separar apellidos
+
+        // ARREGLO CON LA INFORMACION DEL USUARIO
+        $data = [
+            'principal_name' => $datosUsuario['userPrincipalName'], /// Correo del usuario
+            'nombre'         => $datosUsuario['givenName'],         /// Nombre completo
+            'apellido1'      => $apellidos['apellido1'],            /// Primer apellido
+            'apellido2'      => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : '', // Segundo apellido
+        ];
+
+        $idUsuario = $tipoUsuario['model']->insert($data);
+        if ($tipoUsuario['roleId'] == 3) {
+            // Se le asigna un puesto al usuario
+            $respuesta = $this->asignarPuesto($idUsuario, $datosUsuario['jobtitle']);
+            if ($respuesta['success'] == false) {
+                return redirect()->to(base_url('/dashboard'))->with('error', 'Error al asignar el puesto: ' . $respuesta['mensaje']);
+            }
+        }
+        session()->set('idusuario', $idUsuario);
+        // Se asignan roles al usuario
+        $this->asignarRolAlUsuario($idUsuario, $tipoUsuario);
+    }
+
     // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
-    private function assignExistingUserRole($rbac, string $correo)
+    private function RolesdeUsuario(array $userData, array $tipoUsuario)
     {
         // Obtener el ID del usuario basado en el correo
-        $idUsuario = $this->getUserIdByEmail($correo);
-        if (!$idUsuario) {
+        $idUsuario = $this->getUserIdByEmail($tipoUsuario['principal_name']);
+        if (!$idUsuario || $idUsuario == 0) {
             session()->setFlashdata('error', 'No se encontró el usuario con el correo proporcionado.');
             return redirect()->to('/error');
         }
@@ -192,13 +190,13 @@ class OAuthController extends Controller
         if (!$userRoles) {
             try {
                 // Obtener el ID del rol de 'Usuario'
-                $roleId = $rbac->Roles->titleID('Usuario');
+                $roleId = $this->rbac->Roles->titleID('Usuario');
                 // Asignar rol por defecto
-                $rbac->Users->assign($roleId, $idUsuario);
+                $this->rbac->Users->assign($roleId, $idUsuario);
                 // Establecer el ID de usuario en la sesión
                 session()->set('idusuario', $idUsuario);
                 // Mensaje de éxito
-                session()->setFlashdata('notification', 'Rol asignado con éxito al usuario: ' . $correo);
+                session()->setFlashdata('notification', 'Rol asignado con éxito al usuario: ' . $tipoUsuario['principal_name']);
             } catch (\Exception $e) {
                 session()->setFlashdata('error', 'Hubo un error al asignar el rol al usuario.');
                 log_message('error', 'Error al asignar rol: ' . $e->getMessage());
@@ -208,24 +206,22 @@ class OAuthController extends Controller
         // Si el usuario ya tiene roles asignados
         session()->set('idusuario', $idUsuario);
         session()->setFlashdata('info', 'El correo ya está registrado y tiene roles asignados.');
-        return redirect()->to('/error');
+        return true;
     }
 
     // Metodo para asignar roles a nuevos usuarios
-    private function assignNewUserRole(array $data, $usuario)
+    private function asignarRolAlUsuario(int $userId, array $tipoUsuario)
     {
-        if (!$idUsuario = $usuario['model']->insert($data)) {
-            return redirect()->to('/error')->with('message', 'Error al insertar los datos del usuario.');
-        }
-        $this->rbac->Users->assign($usuario['roleId'], $idUsuario);
-        session()->set('idusuario', $idUsuario);
+        // Se le asigna el rol al usuario
+        $this->rbac->Users->assign($tipoUsuario['roleId'], $userId);
+
         // Set flash data message with inserted data
-        $redirect = $usuario['actualizarDatos'];
-        return redirect()->to(base_url($redirect))->with('notification', 'Usuario agregado!, Primera vez ' . $data['nombre'] . ' ' . $data['apellido1'] . ' ? (' . $data['principal_name'] . ')');
+        $redirect = (string)$tipoUsuario['actualizarDatos'];
+        return redirect()->to(base_url($redirect))->with('notification', 'Usuario agregado!');
     }
 
     // Funcion para separar apellidos con varias palabras
-    public function splitSurname($fullSurname)
+    public function splitSurname(string $fullSurname): array
     {
         // Usa explode() para romper la cadena en piezas separadas por espacios.
         $parts = explode(" ", $fullSurname);
@@ -248,6 +244,7 @@ class OAuthController extends Controller
             ];
         }
     }
+
     // Funcion para separar numero de control(estudiante) o nombre de usuario('docente')
     public function separarPrincipalname($userName)
     {
@@ -290,59 +287,42 @@ class OAuthController extends Controller
         if (isset($residente)) {
             return (int) $residente['idusuario'];
         }
-        return null;
+        return 0;
     }
-    public function asignarPuesto($userId, $jobTitle)
-    {
 
+    // Se asigna el puesto del usuario dependiendo del parametro del perfil (jobtitle)
+    private function asignarPuesto(int $userId, string $jobTitle)
+    {
         // Si no se ha asignado un título de trabajo, realizar búsqueda con un valor vacío
         if (empty($jobTitle) || $jobTitle === null) {
-            $organigrama = $this->modelo_organigrama->buscarCargoNull();
-        } else {
-            // Buscar por el cargo específico
-            $organigrama = $this->modelo_organigrama->buscarCargo($jobTitle);
+            return ['success' => false, 'mensaje' => 'No cuenta con un puesto de trabajo'];
         }
-
+        // Buscar por el cargo específico
+        $cargo = $this->modelo_organigrama->buscarCargoEmpleado($jobTitle);
         // Si no se encuentra el organigrama correspondiente
-        if (!$organigrama) {
-            return redirect()->to('/error')->with('error', 'Cargo no encontrado en el organigrama.');
+        if (!$cargo) {
+            return ['success' => false, 'mensaje' => 'Puesto no encontrado en el organigrama'];
         }
-
-        // Verificar si el idusuario está presente
-        if (empty($userId)) {
-            return redirect()->to('/error')->with('error', 'Usuario no encontrado.');
-        }
-
-        // Verificar si el puesto ya está asignado al usuario
-        $puestoExistente = $this->modelo_puesto_empleado->puestoAsignadoPorUsuario($userId);
-
-        if ($puestoExistente) {
-            // Si ya existe un puesto activo, redirigir con un mensaje informando que el puesto ya está asignado
-            //  return redirect()->to('/usuario/puesto')->with('error', 'El usuario ya tiene un puesto asignado.');
-            return redirect()->to(base_url('/error'))->with('error', 'El usuario ya tiene un puesto asignado.');
-        }
-
         // Datos para asignar el puesto
         $data = [
             'idusuario' => $userId,
-            'idorganigrama' => $organigrama['idorganigrama'],
-            'fecha_inicio' => date('Y-m-d H:i:s'),
+            'idorganigrama' => $cargo['idorganigrama'],
+            'fecha_inicio' => date('Y-m-d'),
             'fecha_fin' => null, // Fecha de fin puede ser NULL si el puesto está activo
         ];
-
         try {
-            // Intentar insertar los datos en la base de datos
-            $resultado = $this->modelo_puesto_empleado->AsignarPuesto($data);
-
+            // Insertar los datos en la base de datos
+            $resultadoPuesto = $this->modelo_puesto_empleado->save($data);
+            // Se le asigna el rol al usuario usando el modelo de organigrama
+            $resultadoRol = $this->rbac->Users->assign($cargo['idorganigrama'], $userId);
             // Verificar si la inserción fue exitosa
-            if ($resultado) {
-                return redirect()->to('/error')->with('success', 'Puesto asignado correctamente.');
-            } else {
-                return redirect()->to('/error')->with('error', 'Error al asignar el puesto.');
+            if (!$resultadoPuesto && !$resultadoRol) {
+                return ['success' => false, 'mensaje' => 'Error al asignar el puesto'];
             }
+            return redirect()->to(base_url('/dashboard'))->with('success', 'Puesto asignado correctamente');
         } catch (\Exception $e) {
             // En caso de error, mostrar el mensaje de la excepción
-            return redirect()->to('/error')->with('error', 'Error al asignar el puesto: ' . $e->getMessage());
+            return ['success' => false, 'mensaje' => 'Error al asignar el puesto: ' . $e->getMessage()];
         }
     }
 }

@@ -1,3 +1,9 @@
+<?php
+
+/**
+ * @var CodeIgniter\View\View $this
+ */
+?>
 <?= $this->extend('Reposs/MenusDRPSS/inicioDRPSS') ?>
 <?= $this->section('contenido') ?>
 <main>
@@ -15,9 +21,9 @@
                         <button class="btn btn-teal btn-icon mr-2">
                             <i data-feather="bookmark"></i>
                         </button>
-                        <button class="btn btn-blue btn-icon">
-                            <i data-feather="share"></i>
-                        </button>
+                        <a class="btn btn-blue btn-icon mr-2" href="<?=esc(base_url('usuario/drpss/nuevo'))?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nuevo Residente">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -28,8 +34,6 @@
                                 <th>Nombre</th>
                                 <th>Apellidos</th>
                                 <th>Carrera</th>
-                                <th>Proyecto</th>
-                                <th>Empresa</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -39,8 +43,6 @@
                                 <th>Nombre</th>
                                 <th>Apellidos</th>
                                 <th>Carrera</th>
-                                <th>Proyecto</th>
-                                <th>Empresa</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
@@ -56,14 +58,12 @@
                                     <td><?= esc($row['nombre']) ?></td>
                                     <td><?= esc($row['apellido1']) ?> <?= esc($row['apellido2']) ?></td>
                                     <td><?= esc($row['nombre_programa_educativo']) ?></td>
-                                    <td><?= esc($row['nombre_proyecto']) ?></td>
-                                    <td><?= esc($row['nombre_empresa']) ?></td>
                                     <td>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar">
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar" href="<?= base_url('usuario/drpss/editar/' . $row['numero_control']) ?>">
                                             <i class="fa-solid fa-pen-to-square"></i></a>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Documentos">
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Documentos" href="<?= base_url('usuario/drpss/documentos/' . $row['numero_control']) ?>">
                                             <i class="fa-regular fa-file"></i></a>
-                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Perfil">
+                                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Perfil" href="<?= base_url('usuario/drpss/perfil/' . $row['numero_control']) ?>">
                                             <i class="fa-solid fa-user"></i></a>
                                     </td>
                                 </tr>

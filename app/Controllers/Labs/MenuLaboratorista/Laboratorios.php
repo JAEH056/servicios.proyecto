@@ -12,6 +12,7 @@ class Laboratorios extends BaseController
 
     protected $model_laboratorio;
     protected $model_carrera;
+    protected $helpers = ['form'];
 
 
     public function __construct()
@@ -43,20 +44,28 @@ class Laboratorios extends BaseController
             'laboratorios' => $laboratorios,
         ];
 
-        //  print_r($data);
         return view('Labs/layouts/laboratorio', $data);
     }
 
 
     public function nuevo()
     {
-        helper('form');
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token');
+
         $carrera = $this->model_carrera->obtenerCarrera();
 
         $data = [
+            'user' => $user,
+            'token' => $token,
+            'idusuario' => $userId,
             'carrera' => $carrera,
-            'validation' => null,
-            'success' => null,
+
         ];
 
         return view('Labs/layouts/agregar_laboratorio', $data);
@@ -65,27 +74,24 @@ class Laboratorios extends BaseController
 
     public function crear()
     {
-        helper('form');
-        $rules = $this->model_laboratorio->reglasValidacion();
-
-        $carrera = $this->model_carrera->obtenerCarrera();
 
         $data = [
             'id_carrera' => $this->request->getPost('id_carrera'),
             'nombre' => $this->request->getPost('nombre'),
         ];
 
-        if (!$this->validate($rules)) {
-            return view('Labs/layouts/agregar_laboratorio', [
-                'carrera' => $carrera,
-                'validation' => $this->validator,
-                'success' => null,
-            ]);
+
+        if (!$this->validate($this->model_laboratorio->getValidationRules())) {
+            return redirect()
+                ->to(base_url('usuario/nuevo/laboratorio'))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
         }
 
         $this->model_laboratorio->insertarLaboratorio($data);
-
-        return redirect()->to('/laboratorio/nuevo')->with('success', 'Laboratorio creado con éxito.');
+        return redirect()
+            ->to(base_url('usuario/mostrar/laboratorio'))
+            ->with('creado', 'Creado exitosamente');
     }
 
     public function editar($id)
@@ -97,77 +103,47 @@ class Laboratorios extends BaseController
         $userId = session()->get('idusuario');
         $user = session()->get('name');
         $token = session()->get('access_token');
-        helper('form');
+        $carreras = $this->model_carrera->obtenerCarrera();
+        $laboratorio = $this->model_laboratorio->editarLaboratorio($id);
+        $data = [
+            'user' => $user,
+            'token' => $token,
+            'idusuario' => $userId,
+            'carrera' => $carreras,
+            'laboratorio' => $laboratorio
+        ];
 
-        try {
-
-            $laboratorio = $this->model_laboratorio->editarLaboratorio($id);
-            $carreras = $this->model_carrera->obtenerCarrera();
-
-            return view('Labs/layouts/editar_laboratorio', [
-                'user' => $user,
-                'token' => $token,
-                'idusuario' => $userId,
-                'laboratorio' => $laboratorio,
-                'carrera' => $carreras,
-                'validation' => null
-            ]);
-        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
-            return redirect()->to('/laboratorio')->with('error', $e->getMessage());
-        }
+        return view('Labs/layouts/editar_laboratorio', $data);
     }
 
 
     public function actualizar($id)
     {
-        helper('form');
-
-
-        $rules = $this->model_laboratorio->reglasValidacion();
-
-
+        
         $data = [
             'id_carrera' => $this->request->getPost('id_carrera'),
             'nombre' => $this->request->getPost('nombre'),
         ];
 
-
-        if (!$this->validate($rules)) {
-
-            return view('Labs/layouts/editar_laboratorio', [
-                'laboratorio' => $this->model_laboratorio->editarLaboratorio($id),
-                'carrera' => $this->model_carrera->obtenerCarrera(),
-                'validation' => $this->validator
-            ]);
+        if (!$this->validate($this->model_laboratorio->getValidationRules())) {
+            return redirect()
+                ->to(base_url('usuario/editar/laboratorio/' . esc($id)))
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
         }
-
-        try {
 
             $this->model_laboratorio->actualizarLaboratorio($id, $data);
-
-            return redirect()->to("/laboratorio/editar/$id")->with('success', 'Laboratorio actualizado con éxito.');
-        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
-            return redirect()->to('/laboratorio')->with('error', $e->getMessage());
-        } catch (\RuntimeException $e) {
-            return redirect()->to("/laboratorio/editar/$id")->with('error', $e->getMessage());
-        } catch (\Exception $e) {
-            return redirect()->to('/laboratorio')->with('error', 'Ocurrió un error inesperado.');
-        }
+          return redirect() ->to(base_url('usuario/mostrar/laboratorio'))
+            ->with('actualizado', 'Cambios actualizados');
     }
 
 
     public function eliminar($id)
     {
-        try {
-            $this->model_laboratorio->eliminarLaboratorio($id);
 
-            return redirect()->to('/laboratorio')->with('success', 'Laboratorio eliminado con éxito.');
-        } catch (\CodeIgniter\Exceptions\PageNotFoundException $e) {
-            return redirect()->to('/laboratorio')->with('error', $e->getMessage());
-        } catch (\RuntimeException $e) {
-            return redirect()->to('/laboratorio')->with('error', $e->getMessage());
-        } catch (\Exception $e) {
-            return redirect()->to('/laboratorio')->with('error', 'Ocurrió un error inesperado al intentar eliminar el laboratorio.');
-        }
+        $this->model_laboratorio->eliminarLaboratorio($id);
+
+        return redirect()->to(base_url('usuario/mostrar/laboratorio'))
+        ->with('eliminado', 'Completado correctamente');
     }
 }

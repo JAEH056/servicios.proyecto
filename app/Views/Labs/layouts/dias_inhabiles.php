@@ -1,10 +1,11 @@
 <?= $this->extend('Labs/layouts/principal_laboratorista') ?>
-<?= $this->section('content_dias_inhabiles') ?>
 
 <?= $this->section('include_javascript') ?>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src= "<?=base_url("resources/js/datatables/datatables-simple-demo.js") ?>" ></script>
 <?= $this->endSection() ?>
+
+<?= $this->section('content_dias_inhabiles') ?>
     <!-- Main page content-->
     <div class="container-xl px-4 mt-n5">
         <div class="card mb-4">

@@ -14,6 +14,7 @@ class ValidacionModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'idvalidacion',
         'estado',
         'observaciones',
         'idpuesto',
@@ -27,14 +28,18 @@ class ValidacionModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'fecha_entrega';
     protected $updatedField  = 'fecha_actualizacion';
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
+    protected $validationRules      = [
+        'estado'        => 'required|max_length[255]',
+        'observaciones' => 'max_length[255]',
+        'iddocumento'   => 'required',
+    ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
