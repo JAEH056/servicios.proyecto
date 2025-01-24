@@ -153,28 +153,8 @@ class SolicitudModel extends Model
             
             $this->db->transComplete();
         
+           return true;
            
-            if ($this->db->transStatus() === false) {
-                $error = $this->db->error(); 
-        
-                
-                log_message('error', 'Error al actualizar la solicitud: ' . $error['message']);
-        
-              
-                return [
-                    'success' => false,
-                    'message' => 'No se pudo actualizar la solicitud. Error: ' . $error['message'],
-                    'csrf' => csrf_hash(),  
-                ];
-            }
-        
-            
-            return [
-                'success' => true,
-                'message' => 'Solicitud actualizada correctamente.',
-                'csrf' => csrf_hash(),
-            ];
-        
         
     }
 }

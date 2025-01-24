@@ -120,7 +120,7 @@ class CrearHorario extends BaseController
     {
         $idLaboratorio = session()->get('idLaboratorio');
 
-        // Obtener los periodos
+        // Obtener los semestre para cada laboratorio
         $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
 
         // Verificar si no hay periodos
@@ -178,7 +178,7 @@ class CrearHorario extends BaseController
                     'title' => $datossolicitud['titulo'],
                     'start' => $datossolicitud['fecha_hora_entrada'],
                     'end' => $datossolicitud['fecha_hora_salida'],
-                    'raw'   => $raw,
+                    'raw' => $raw,
 
                 ];
             }
@@ -216,8 +216,8 @@ class CrearHorario extends BaseController
         $laboratorista = $this->model_laboratorios_asignados_al_laboratorista->obtenerEncargadoDeLaboratorio($userId);
         $idAsignarLaboratorio = $laboratorista[0]['id_asignar_laboratorio'];
         $data_solicitud=[
-            'hora_fecha_entrada'=> $this->request->getPost('datepicker-start-inputVarias'),
-            'hora_fecha_salida'=> $this->request->getPost('datepicker-end-inputVarias'),
+            'hora_fecha_entrada'=> $this->request->getPost('hora_fecha_entrada'),
+            'hora_fecha_salida'=> $this->request->getPost('hora_fecha_salida'),
         ];
         $data_solicitud_varias=[
             'id_tipo_uso'=>$this->request->getPost('id_tipo_uso'),
@@ -226,7 +226,7 @@ class CrearHorario extends BaseController
         ];
         $data_autorizacion=[
             'id_asignar_laboratorio' => $idAsignarLaboratorio,
-            'estado'=>$this->request->getPost('estado'),
+            'estado'=>$this->request->getPost('autorizacion'),
             'observacion'=>$this->request->getPost('observaciones_varias'),
         ];
 
@@ -266,22 +266,12 @@ class CrearHorario extends BaseController
                 ],
             ],
         ];
-
-        // $reglasAutorizacion=[
-        //     'observaciones_varias' => [
-        //         'rules'  => 'required|max_length[255]|min_length[10]',
-        //         'errors' => [
-        //             'required'   => 'La observacion es obligatoria.',
-        //             'max_length' => 'El nombre no puede tener más de 255 caracteres.',
-        //             'min_length' => 'El nombre debe tener al menos 10 caracteres.',
-        //         ],
-        //     ],
-
-        // ];
         if (!$this->validate($reglasSolicitudVarias)) {
             
             return $this->response->setJSON([
+                
                 'success' => false,
+                'datos_solicitud'=>$data_solicitud,
                 'message' => 'Datos inválidos solicitudes_varias.',
                 'errors' => $this->validation->getErrors(),
                 'csrf' => csrf_hash(),

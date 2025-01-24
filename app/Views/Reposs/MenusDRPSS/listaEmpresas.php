@@ -13,13 +13,10 @@
         <div class="container-fluid px-4">
             <div class="card card-header-actions mx-auto">
                 <div class="card-header">
-                    Lista de Proyectos
+                    Lista de Empresas
                     <div>
                         <button class="btn btn-teal btn-icon mr-2">
                             <i data-feather="bookmark"></i>
-                        </button>
-                        <button class="btn btn-blue btn-icon mr-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nuevo Proyecto">
-                            <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -27,36 +24,36 @@
                     <table id="datatablesSimple">
                         <thead>
                             <tr>
-                                <th>Nonmbre del Proyecto</th>
-                                <th>Nombre de la empresa</th>
-                                <th>Asesor Interno</th>
-                                <th>Periodo</th>
-                                <th>Tipo Proyecto</th>
+                                <th>Nonmbre de la empresa</th>
+                                <th>Nombre del asesor</th>
+                                <th>Sector</th>
+                                <th>Ramo</th>
+                                <th>Fecha creacion</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Nombre del Proyecto</th>
-                                <th>Nombre de la empresa</th>
-                                <th>Asesor Interno</th>
-                                <th>Periodo</th>
-                                <th>Tipo Proyecto</th>
+                                <th>Nonmbre de la empresa</th>
+                                <th>Nombre del asesor</th>
+                                <th>Sector</th>
+                                <th>Ramo</th>
+                                <th>Fecha creacion</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            <?php foreach ($listaProyectos as $row): ?>
+                            <?php foreach ($listaEmpresas as $row): ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <?= esc($row['nombre_proyecto']) ?>
+                                            <?= esc($row['nombre_empresa']) ?>
                                         </div>
                                     </td>
-                                    <td><?= esc($row['nombre_empresa']) ?></td>
-                                    <td><?= esc($row['grado_academico'] . ' ' . $row['nombre'] . ' ' . $row['apellido1']. ' ' . $row['apellido2']) ?></td>
-                                    <td><?= esc($row['fecha_inicio'] . ' - ' . $row['fecha_fin']) ?></td>
-                                    <td><?= esc($row['banco_proyecto']) ?></td>
+                                    <td><?= esc($row['grado'] . ' ' . $row['nombre_aext'] . ' ' . $row['apellido1']. ' ' . $row['apellido2']) ?></td>
+                                    <td><?= esc($row['sector']) ?></td>
+                                    <td><?= esc($row['ramo']) ?></td>
+                                    <td><?= esc($row['fecha_creacion']) ?></td>
                                     <td>
                                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Editar" href="<?= base_url('usuario/drpss/editar/' . $row['numero_control']) ?>">
                                             <i class="fa-solid fa-pen-to-square"></i></a>

@@ -51,6 +51,7 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('drpss/residentes',        [Residente::class, 'listaResidentes']);
     $routes->get('drpss/nuevo',             [Residente::class, 'index']);
     $routes->get('drpss/empresa',           [Empresa::class, 'index']);
+    $routes->get('drpss/lista-empresas',    [Empresa::class, 'getListaEmpresas']);
     $routes->get('drpss/asesor',            [AsesorInterno::class, 'index']);
     $routes->get('drpss/home',              [HomeDRPSS::class, 'index']);
     $routes->get('drpss/lista-proyectos',   [Proyecto::class, 'getListaProyectos']);

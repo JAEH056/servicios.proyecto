@@ -536,7 +536,6 @@ class SolicitarLaboratorio extends BaseController
                     'message' => 'Solicitud enviada correctamente.',
                     'csrf' => csrf_hash(),
                 ]);
-
                 break;
         }
     }

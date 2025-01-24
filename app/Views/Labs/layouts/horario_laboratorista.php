@@ -442,7 +442,7 @@
                 date: new Date(),
                 input: {
                     element: '#hora-start-varias',
-                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                    format: 'yyyy-MM-dd HH:mm'  // El formato con la hora y el AM/PM
                 },
                 timePicker: true  // Habilitar el timepicker
             });
@@ -451,7 +451,7 @@
                 date: new Date(),
                 input: {
                     element: '#hora-end-varias',
-                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                    format: 'yyyy-MM-dd HH:mm'  // El formato con la hora y el AM/PM
                 },
                 timePicker: true
             });
@@ -513,7 +513,11 @@
                         // Asignamos los valores de la solicitud a los elementos del modal VARIAS
                         document.getElementById('modal-empleado-varias').value = solicitud.correo;
                         document.getElementById('modal-nombre-proyecto-actividad-otro').value = solicitud.nombre_proyecto;
-                        document.getElementById('modal-descripcion-tareas').value = solicitud.descripcion_tareas || 'No hay descripción';
+                        document.getElementById('modal-descripcion-tareas').value = solicitud.descripcion_tareas;
+                        document.getElementById('modal-estado-varias').value = solicitud.estado;
+                        document.getElementById('modal-observaciones-varias').value = solicitud.observaciones;
+                        document.getElementById('hora-start-varias').value = solicitud.horaEntrada;
+                        document.getElementById('hora-end-varias').value = solicitud.horaSalida;
 
                         // Solo configurar 'tipo_uso' si el modal es de "Solicitudes Varias"
                         if (colorEvento === '#ff6f00' || colorEvento === '#0059ff') {
@@ -541,9 +545,6 @@
                             selectTipoUso.value = tipoSeleccionado ? tipoSeleccionado.id : tipo_uso[0].id;
                         }
 
-                        document.getElementById('modal-estado-varias').value = solicitud.estado;
-                        document.getElementById('modal-observaciones-varias').value = solicitud.observaciones || 'No hay observaciones';
-
                         // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
                         document.getElementById('modal-empleado-practicas').value = solicitud.correo;
                         document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
@@ -551,8 +552,6 @@
                         document.getElementById('modal-carrera').value = solicitud.carrera;
                         document.getElementById('modal-clave').value = solicitud.clave;
                         document.getElementById('modal-grupo').value = solicitud.grupo;
-                        document.getElementById('modal-estado-practicas').value = solicitud.estado;
-                        document.getElementById('modal-observaciones-practicas').value = solicitud.observaciones || 'No hay observaciones';
 
                          // Convertir las fechas de entrada y salida
                         const horaEntrada = new Date(solicitud.hora_fecha_entrada);  // Convertir la hora de entrada
@@ -592,92 +591,101 @@
 
             });
 
-            // Listener para el botón de guardar cambios
             document.getElementById('btnGuardarCambios').addEventListener('click', function (e) {
                 e.preventDefault();
+
+                // Sincroniza las fechas seleccionadas con los campos del formulario
+                document.getElementById('hora-start-varias').value = datepickerEntradaVarias.getDate();
+                document.getElementById('hora-end-varias').value = datepickerSalidaVarias.getDate();
 
                 const form = document.getElementById('formSolicitudVarias');
                 const csrfField = document.querySelector('.txt_csrfname');
                 const formData = new FormData(form);
+
+                const horaEntrada = datepickerEntradaVarias.getDate();
+                const horaSalida = datepickerSalidaVarias.getDate();
+
+                function formatFechaHoraLocal(fecha) {
+                    const year = fecha.getFullYear();
+                    const month = String(fecha.getMonth() + 1).padStart(2, '0');
+                    const day = String(fecha.getDate()).padStart(2, '0');
+                    const hours = String(fecha.getHours()).padStart(2, '0');
+                    const minutes = String(fecha.getMinutes()).padStart(2, '0');
+                    const seconds = String(fecha.getSeconds()).padStart(2, '0');
+                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                }
+
+                const horaEntradaFormatoDB = formatFechaHoraLocal(horaEntrada);
+                const horaSalidaFormatoDB = formatFechaHoraLocal(horaSalida);
+
+                formData.set('hora_fecha_entrada', horaEntradaFormatoDB);
+                formData.set('hora_fecha_salida', horaSalidaFormatoDB);
 
                 if (!csrfField) {
                     console.error("No se encontró el campo CSRF");
                     return;
                 }
 
-                const csrfName = csrfField.name;
-                const csrfHash = csrfField.value;
-                formData.append(csrfName, csrfHash);
+                formData.append(csrfField.name, csrfField.value);
 
                 const idSolicitud = formData.get('idSolicitud');
                 const url = `/usuario/actualizar/solicitud/${idSolicitud}`;
-
-                // Limpiar los errores previos antes de enviar la nueva solicitud
-                clearPreviousErrors();
 
                 fetch(url, {
                     method: 'POST',
                     body: formData,
                 })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Error en la respuesta del servidor.');
-                    }
-                })
-                .then(data => {
-                    // Actualizar el token CSRF si el servidor lo proporciona
-                    if (data.csrf) {
-                        csrfField.value = data.csrf;
-                    }
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.csrf) {
+                            csrfField.value = data.csrf;
+                        }
 
-                    if (data.success) {
-                        alert('Cambios guardados correctamente');
-                        location.reload();
-                    } else {
-                        // Si el servidor devuelve errores, los mostramos en la interfaz
-                        if (data.errors) {
+                        if (data.success) {
+                            alert('Cambios guardados correctamente');
+                            console.log("Intentando cerrar el modal...");
+                            const modalElement = document.getElementById('modalSolicitudesVarias');
+                            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                            modal.hide();
+                            location.reload();
+                        } else if (data.errors) {
                             for (let field in data.errors) {
-                                let fieldErrors = Array.isArray(data.errors[field]) ? data.errors[field] : [data.errors[field]];
-                                displayErrorsInUI(field, fieldErrors);
+                                displayErrorsInUI(field, data.errors[field]);
                             }
                         } else {
-                            alert('Ocurrió un error: ' + data.message);
+                            alert("Ocurrió un error: " + data.message);
                         }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Ocurrió un error al guardar los cambios.');
-                });
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Ocurrió un error al guardar los cambios.");
+                    });
             });
 
-// Función para limpiar los errores previos antes de mostrar nuevos
-function clearPreviousErrors() {
-    const errorElements = document.querySelectorAll('.error-message');
-    errorElements.forEach(element => element.remove());
-}
 
-// Función para mostrar los errores en el formulario
-function displayErrorsInUI(field, errors) {
-    const inputField = document.querySelector(`[name="${field}"]`);
-    if (inputField) {
-        // Crear un contenedor de errores
-        const errorContainer = document.createElement('div');
-        errorContainer.classList.add('error-message');
-        errorContainer.style.color = 'red';
-        errorContainer.style.fontSize = '0.875rem'; // Ajusta el tamaño de fuente si lo necesitas
+            // Función para limpiar los errores previos antes de mostrar nuevos
+            function clearPreviousErrors() {
+                const errorElements = document.querySelectorAll('.error-message');
+                errorElements.forEach(element => element.remove());
+            }
 
-        // Unir los errores en un solo mensaje
-        errorContainer.innerText = errors.join(', ');
+            // Función para mostrar los errores en el formulario
+            function displayErrorsInUI(field, errors) {
+                const inputField = document.querySelector(`[name="${field}"]`);
+                if (inputField) {
+                    // Crear un contenedor de errores
+                    const errorContainer = document.createElement('div');
+                    errorContainer.classList.add('error-message');
+                    errorContainer.style.color = 'red';
+                    errorContainer.style.fontSize = '0.875rem'; // Ajusta el tamaño de fuente si lo necesitas
 
-        // Agregar el contenedor de errores después del campo de entrada
-        inputField.parentNode.appendChild(errorContainer);
-    }
-}
+                    // Unir los errores en un solo mensaje
+                    errorContainer.innerText = errors.join(', ');
 
-
+                    // Agregar el contenedor de errores después del campo de entrada
+                    inputField.parentNode.appendChild(errorContainer);
+                }
+            }
         });
     </script>
 <?= $this->endSection() ?>
@@ -1003,7 +1011,7 @@ function displayErrorsInUI(field, errors) {
 
                     <div class="mb-3">
                         <label for="modal-estado-varias" class="form-label">Estado actual</label>
-                        <input type="text" class="form-control form-control-solid" id="modal-estado-varias" name="9" readonly>
+                        <input type="text" class="form-control form-control-solid" id="modal-estado-varias" name="estado_varias" readonly>
                     </div>
 
                     <!-- Opcional: Campo de estado de la solicitud -->
@@ -1021,7 +1029,7 @@ function displayErrorsInUI(field, errors) {
                         <textarea class="form-control form-control-solid" id="modal-observaciones-varias" name="observaciones_varias" rows="3"></textarea>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="hora-entrada" class="form-label">Hora de Entrada</label>
                         <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
                             <input type="text" id="hora-start-varias" class="form-control" aria-label="Date-Time" name = "datepicker-start-inputVarias">
@@ -1034,6 +1042,24 @@ function displayErrorsInUI(field, errors) {
                         <label for="hora-salida" class="form-label">Hora de Salida</label>
                         <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
                             <input type="text" id="hora-end-varias" class="form-control" aria-label="Date-Time" name = "datepicker-end-inputVarias">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-salida-varias" style="margin-top: -1px;"></div>
+                    </div> -->
+
+                    <div class="mb-3">
+                        <label for="hora-entrada" class="form-label">Hora de Entrada</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-start-varias" class="form-control" aria-label="Date-Time" name = "hora_fecha_entrada">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-entrada-varias" style="margin-top: -1px;"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora-salida" class="form-label">Hora de Salida</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-end-varias" class="form-control" aria-label="Date-Time" name = "hora_fecha_salida">
                             <span class="tui-ico-date"></span>
                         </div>
                         <div id="hora-salida-varias" style="margin-top: -1px;"></div>

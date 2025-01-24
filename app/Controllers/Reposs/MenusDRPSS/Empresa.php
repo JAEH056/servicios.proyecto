@@ -4,13 +4,18 @@ namespace App\Controllers\Reposs\MenusDRPSS;
 
 use App\Controllers\BaseController;
 use App\Controllers\ResponseInterface;
+use App\Models\Reposs\EmpresaModel;
 use App\Models\Reposs\ResidenteModel;
 
 class Empresa extends BaseController
 {
     //Retorna los datos devuelta 'withInput()' al formulario
     protected $helpers = ['form'];
+    protected $empresaModel;
 
+    public function __construct(){
+        $this->empresaModel = new EmpresaModel();
+    }
     public function index()
     {
         // Ensure the user is logged in
@@ -80,5 +85,27 @@ class Empresa extends BaseController
 
         //Si los datos se ingresaron correctamente regresa al formulario con un mensaje
         return redirect()->to(base_url('residentes'))->with('mensaje', 'Se actualizaron los datos');
+    }
+
+    /**
+     *  Lista de empresas creadas y detalles
+     */
+    public function getListaEmpresas()
+    {
+        // Ensure the user is logged in
+        if (!session()->has('name')) {
+            return redirect()->to('/oauth/login');
+        }
+
+        $listaEmpresas = $this->empresaModel->getEmpresasList();
+        $userId = session()->get('idusuario');
+        $user = session()->get('name');
+        $token = session()->get('access_token'); // linea para mandar los datos del Access token a la vista
+        return view('Reposs/MenusDRPSS/listaEmpresas', [
+            'user'      => $user,
+            'token'     => $token,
+            'idusuario' => $userId,
+            'listaEmpresas' => $listaEmpresas,
+        ]);
     }
 }

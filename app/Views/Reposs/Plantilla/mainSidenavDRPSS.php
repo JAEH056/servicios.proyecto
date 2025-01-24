@@ -29,10 +29,10 @@
             <div class="collapse" id="collapseDocs" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?= base_url('usuario/drpss/documentos') ?>">Revision de Documentos</a>
+                    <a class="nav-link" href="<?= base_url('usuario/drpss/home') ?>">Revision de Documentos</a>
                     <a class="nav-link" href="<?= base_url('usuario/drpss/residentes') ?>">Lista de Residentes</a>
                     <a class="nav-link" href="<?= base_url('usuario/drpss/nuevo') ?>">Nuevo Residente</a>
-                    <a class="nav-link" href="<?= base_url('') ?>">Liberaciones</a>
+                    <a class="nav-link" href="<?= base_url('usuario/drpss/home') ?>">Liberaciones</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Pages)-->
@@ -61,7 +61,7 @@
                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
                     <a class="nav-link" href="<?=base_url('usuario/drpss/asesor')?>">Lista de Asesores</a>
-                    <a class="nav-link" href="<?=base_url('')?>">Asesor Interno</a>
+                    <a class="nav-link" href="<?=base_url('usuario/drpss/asesor')?>">Asesor Interno</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Applications)-->
@@ -73,8 +73,8 @@
             <div class="collapse" id="collapseProject" data-bs-parent="#accordionSidenav">
             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
                     <!-- Nested Sidenav Accordion (Pages -> Account)-->
-                    <a class="nav-link" href="<?=base_url('usuario/drpss/empresa')?>">Lista de Empresas</a>
-                    <a class="nav-link" href="<?=base_url('')?>">Banco Empresas</a>
+                    <a class="nav-link" href="<?=base_url('usuario/drpss/lista-empresas')?>">Lista de Empresas</a>
+                    <a class="nav-link" href="<?=base_url('usuario/drpss/lista-empresas')?>">Banco Empresas</a>
                 </nav>
             </div>
             <!-- Sidenav Accordion (Flows)-->
@@ -85,8 +85,8 @@
             </a>
             <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <a class="nav-link" href="multi-tenant-select.html">Lista de Formatos</a>
-                    <a class="nav-link" href="wizard.html">Documentos Disponibles</a>
+                    <a class="nav-link" href="usuario/drpss/lista-formatos">Lista de Formatos</a>
+                    <a class="nav-link" href="usuario/drpss/documentos-drpss">Documentos Disponibles</a>
                 </nav>
             </div>
         </div>

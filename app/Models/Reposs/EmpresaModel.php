@@ -154,39 +154,77 @@ class EmpresaModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getEmpresaByUserId($userId)
+    public function getEmpresaByUserId(int $userId)
     {
         return $this->select('empresa.*, rm.nombre AS Ramo, sc.nombre AS Sector')
-                      ->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
-                      ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
-                      ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
-                      ->where('py.idresidente', $userId)
-                      ->get()
-                      ->getRowArray();
+            ->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
+            ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
+            ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
+            ->where('py.idresidente', $userId)
+            ->get()
+            ->getRowArray();
     }
 
-    public function getAsesorFromEmpresa($userId){
+    public function getAsesorFromEmpresa(int $userId)
+    {
 
         return $this->select('py.idresidente, py.nombre_proyecto, empresa.nombre_empresa, ae.*')
-                    ->join('reposs.proyecto py', 'empresa.idempresa = py.idempresa', 'left')
-                    ->join('reposs.asesor_externo ae', 'empresa.idasesor_externo = ae.idasesor_externo', 'left')
-                    ->where('py.idresidente', $userId)
-                    ->get()
-                    ->getRowArray();
+            ->join('reposs.proyecto py', 'empresa.idempresa = py.idempresa', 'left')
+            ->join('reposs.asesor_externo ae', 'empresa.idasesor_externo = ae.idasesor_externo', 'left')
+            ->where('py.idresidente', $userId)
+            ->get()
+            ->getRowArray();
     }
 
     /**
      *  Obtiene la lista de empresas y el asesor externo (en caso de tener uno)
      */
-    public function getEmpresasListByUserId($userId)
+    public function getEmpresasListByUserId(int $userId)
     {
         return $this->select('empresa.*, rm.nombre AS Ramo, sc.nombre AS Sector, aext.*')
-                      ->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
-                      ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
-                      ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
-                      ->join('reposs.asesor_externo aext', 'empresa.idasesor_externo = aext.idasesor_externo', 'left')
-                      ->where('py.idresidente', $userId)
-                      ->get()
-                      ->getResultArray();
+            ->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
+            ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
+            ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
+            ->join('reposs.asesor_externo aext', 'empresa.idasesor_externo = aext.idasesor_externo', 'left')
+            ->where('py.idresidente', $userId)
+            ->get()
+            ->getResultArray();
+    }
+
+    /**
+     * Obtine la lista de empresas ligadas a un residente
+     */
+    public function getEmpresasList(): array
+    {
+        // Empresas que cuentan con un residente en un proyecto
+        $subQuery = $this->db->table('reposs.proyecto')
+            ->select('proyecto.idempresa')
+            ->get()
+            ->getResultArray();
+        // En caso de no encontrar empresas en el subquery 
+        if (empty($idEmpresas)) {
+            return []; /// retorna un arreglo vacio sin resultados
+        }
+        // Extract the idempresa values into a simple array
+        $idEmpresas = array_column($subQuery, 'idempresa');
+        // Consulta principal
+        $builder = $this->db->table('reposs.empresa');
+        $builder->select([
+            'empresa.nombre_empresa',
+            'rm.nombre AS ramo',
+            'sc.nombre AS sector',
+            'aext.idasesor_externo',
+            'aext.grado',
+            'aext.nombre AS nombre_aext',
+            'aext.apellido1',
+            'aext.apellido2',
+            'fecha_creacion',
+        ]);
+        $builder->join('reposs.ramo rm', 'empresa.idramo = rm.idramo')
+            ->join('reposs.sector sc', 'sc.idsector = empresa.idsector')
+            ->join('reposs.proyecto py', 'py.idempresa = empresa.idempresa')
+            ->join('reposs.asesor_externo aext', 'empresa.idasesor_externo = aext.idasesor_externo', 'left')
+            ->whereIn('empresa.idempresa',  $idEmpresas);
+        return $builder->get()->getResultArray();
     }
 }
