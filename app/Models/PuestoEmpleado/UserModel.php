@@ -28,9 +28,9 @@ class UserModel extends Model
     {
 
         return $this->select('pe.idpuesto, usuario.principal_name, usuario.nombre, usuario.apellido1, usuario.apellido2, og.cargo, ga.programa_educativo, ga.siglas')
-            ->join('db_compartida.puesto_empleado pe', 'usuario.idusuario = pe.idusuario', 'left')
-            ->join('db_compartida.organigrama og', 'pe.idorganigrama = og.idorganigrama', 'left')
-            ->join('db_compartida.grado_academico ga', 'usuario.idusuario = ga.idusuario', 'left')
+            ->join('ompartida.puesto_empleado pe', 'usuario.idusuario = pe.idusuario', 'left')
+            ->join('compartida.organigrama og', 'pe.idorganigrama = og.idorganigrama', 'left')
+            ->join('compartida.grado_academico ga', 'usuario.idusuario = ga.idusuario', 'left')
             ->groupStart()
             ->like('nombre', $nombreCompleto)
             ->orLike('apellido1', $nombreCompleto)

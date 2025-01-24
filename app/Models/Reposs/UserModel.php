@@ -15,6 +15,16 @@ class UserModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = ['idusuario', 'principal_name', 'nombre', 'apellido1', 'apellido2']; // Campos que se pueden insertar
 
+    // Validation
+    protected $validationRules      = [
+        'principal_name'    => 'required',
+        'nombre'            => 'required|max_length[255]',
+        'apellido1'         => 'required|max_length[255]',
+    ];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
+
     // Otros métodos que puedas necesitar, por ejemplo, validaciones.
     public function insertData($data)
     {
@@ -47,8 +57,13 @@ class UserModel extends Model
                 'mensaje' => 'No se encontro el usuario'
             ];
         }
-
         // Separar los apellidos
+        if(empty($nombreCompleto['surname']) === true){
+            return [
+                'success' => false,
+                'mensaje' => 'No es necesario actualizar'
+            ];
+        }
         $apellidos = $this->splitSurname($nombreCompleto['surname']);
 
         // Verificar si los datos coinciden

@@ -58,8 +58,8 @@ class PuestoEmpleadoModel extends Model
     public function buscarDocenteBy(string $nombreDocente)
     {
         return $this->select('us.principal_name, us.nombre, us.apellido1, us.apellido2, og.nombreM, og.cargo')
-            ->join('db_compartida.usuario us', 'puesto_empleado.idusuario = us.idusuario')
-            ->join('db_compartida.organigrama og', 'puesto_empleado.idorganigrama = og.idorganigrama')
+            ->join('compartida.usuario us', 'puesto_empleado.idusuario = us.idusuario')
+            ->join('compartida.organigrama og', 'puesto_empleado.idorganigrama = og.idorganigrama')
             ->where('puesto_empleado.fecha_fin', null)
             ->where('og.cargo', 'Docente')
             ->where('us.nombre', $nombreDocente)

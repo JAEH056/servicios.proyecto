@@ -90,13 +90,13 @@ class OAuthController extends Controller
             log_message('error', 'Error fetching the access token: ' . $e->getMessage());
             return redirect()->to(base_url('/erroraut'))->with('message', 'There was an error with the authentication process.');
         }
+        $emailParts = explode('@', $userData['userPrincipalName'], 2); /// Extrae el dominio del correo
+        $domain = strtolower($emailParts[1]);
         // Arreglo con los Dominos permitidos
         $organizationDomain = [
-            'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel, 'roleId' => 2, 'actualizarDatos' => '/usuario/residentes/datos'],
+            'alum.huatusco.tecnm.mx' => ['model' => $this->residenteModel, 'roleId' => 2, 'actualizarDatos' => '/usuario/residentes/datos', 'numero_control' => $emailParts[0]],
             'huatusco.tecnm.mx'      => ['model' => $this->userModel, 'roleId' => 3, 'actualizarDatos' => '/dashboard'],
         ];
-        $emailParts = explode('@', $userData['userPrincipalName']); /// Extrae el dominio del correo
-        $domain = strtolower($emailParts[1]);
         // Se define en una sola variable el modelo que se utilizara dependiendo del dominio (estudiante o Usuario).
         $tipoUsuario = $organizationDomain[$domain];
         // Si no existe el registro en la tabla correspondiente (definido por el dominio), se crea un nuevo registro.
@@ -151,28 +151,60 @@ class OAuthController extends Controller
     private function guardarDatosDelUsuario(array $datosUsuario, array $tipoUsuario)
     {
         // DATOS SANITIZADOS PARA ALMACENAR EN LA BASE DE DATOS
-        $apellido = $datosUsuario['surname'];
-        $apellidos = $this->splitSurname($apellido); /// Separar apellidos
-
-        // ARREGLO CON LA INFORMACION DEL USUARIO
-        $data = [
-            'principal_name' => $datosUsuario['userPrincipalName'], /// Correo del usuario
-            'nombre'         => $datosUsuario['givenName'],         /// Nombre completo
-            'apellido1'      => $apellidos['apellido1'],            /// Primer apellido
-            'apellido2'      => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : '', // Segundo apellido
-        ];
-
-        $idUsuario = $tipoUsuario['model']->insert($data);
-        if ($tipoUsuario['roleId'] == 3) {
-            // Se le asigna un puesto al usuario
-            $respuesta = $this->asignarPuesto($idUsuario, $datosUsuario['jobtitle']);
-            if ($respuesta['success'] == false) {
-                return redirect()->to(base_url('/dashboard'))->with('error', 'Error al asignar el puesto: ' . $respuesta['mensaje']);
-            }
+        if (empty($datosUsuario['surname']) === true) {
+            $apellidos = null;
+            $apellidos = [
+                'apellido1' => 'na',
+                'apellido2' => null
+            ];
+        } else {
+            // Se separan los apellidos
+            $apellido = $datosUsuario['surname'];
+            $apellidos = $this->splitSurname($apellido); /// Separar apellidos
         }
-        session()->set('idusuario', $idUsuario);
-        // Se asignan roles al usuario
-        $this->asignarRolAlUsuario($idUsuario, $tipoUsuario);
+
+        switch ($tipoUsuario['roleId']) {
+            case 2:
+                // ARREGLO CON LA INFORMACION DEL USUARIO (RESIDENTE)
+                $dataResidente = [
+                    'principal_name' => $datosUsuario['userPrincipalName'], /// Correo del usuario
+                    'numero_control' => $tipoUsuario['numero_control'],     /// Numero de control
+                    'nombre'         => $datosUsuario['givenName'],         /// Nombre completo
+                    'apellido1'      => $apellidos['apellido1'],            /// Primer apellido
+                    'apellido2'      => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : null, // Segundo apellido
+                ];
+                // Insertar datos de usuario estudiante
+                $this->residenteModel->insert($dataResidente);
+                $idUsuario = (int)$this->residenteModel->InsertID();
+                if (empty($idUsuario) === true) {
+                    return redirect()->to(base_url('/error'))->with('error', 'Error al guardar los datos: Estudiante ' . $dataResidente['numero_control'] . ' ' . $dataResidente['nombre'] . ' ' . $dataResidente['apellido1'] . ' ' . $dataResidente['apellido2'] . ' ' . $dataResidente['principal_name'] . ' ' . $tipoUsuario['roleId']);
+                }
+                session()->set('idusuario', $idUsuario);
+                $this->asignarRolAlUsuario($idUsuario, $tipoUsuario);
+                break;
+            case 3:
+                // ARREGLO CON LA INFORMACION DEL USUARIO (EMPLEADO)
+                $dataUsuario = [
+                    'principal_name' => $datosUsuario['userPrincipalName'], /// Correo del usuario
+                    'nombre'         => isset($datosUsuario['givenName']) ? $datosUsuario['givenName'] : 'na',         /// Nombre completo
+                    'apellido1'      => $apellidos['apellido1'],            /// Primer apellido
+                    'apellido2'      => isset($apellidos['apellido2']) ? $apellidos['apellido2'] : null, // Segundo apellido
+                ];
+                // Insertar datos de usuario empleado
+                $this->userModel->insert($dataUsuario);
+                $idUsuario = (int)$this->userModel->InsertID();
+                if (empty($idUsuario) === true) {
+                    return redirect()->to(base_url('/dashboard'))->with('error', 'Error al guardar los datos de usuario: Empleado' . ' ' . $dataUsuario['principal_name'] . ' ' . $dataUsuario['nombre'] . ' ' . $dataUsuario['apellido1']);
+                }
+                // Se le asigna un puesto al usuario
+                $respuesta = $this->asignarPuesto($idUsuario, $datosUsuario['jobTitle']);
+                if ($respuesta['success'] == false) {
+                    return redirect()->to(base_url('/dashboard'))->with('error', 'Error al asignar el puesto: ');
+                }
+                session()->set('idusuario', $idUsuario);
+                $this->asignarRolAlUsuario($idUsuario, $tipoUsuario);
+                break;
+        }
     }
 
     // Método para agregar el rol a la sesion (si no tiene uno se le asigna el rol de usuario)
@@ -291,7 +323,7 @@ class OAuthController extends Controller
     }
 
     // Se asigna el puesto del usuario dependiendo del parametro del perfil (jobtitle)
-    private function asignarPuesto(int $userId, string $jobTitle)
+    private function asignarPuesto(int $userId, string $jobTitle): array
     {
         // Si no se ha asignado un título de trabajo, realizar búsqueda con un valor vacío
         if (empty($jobTitle) || $jobTitle === null) {

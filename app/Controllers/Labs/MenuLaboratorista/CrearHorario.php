@@ -3,6 +3,7 @@
 namespace App\Controllers\Labs\MenuLaboratorista;
 
 use App\Controllers\BaseController;
+use App\Models\Labs\AsignarLaboratorioModel;
 use App\Models\Labs\AsignaturaModel;
 use App\Models\Labs\CarreraModel;
 use App\Models\Labs\DiasInhabilesModel;
@@ -10,7 +11,10 @@ use App\Models\Labs\GrupoModel;
 use App\Models\Labs\HorarioModel;
 use App\Models\Labs\LaboratorioModel;
 use App\Models\Labs\ReticulaModel;
+use App\Models\Labs\SolicitudModel;
+use App\Models\Labs\TipoUsoModel;
 use App\Models\PuestoEmpleado\UserModel;
+
 
 class CrearHorario extends BaseController
 {
@@ -22,7 +26,11 @@ class CrearHorario extends BaseController
     protected $model_asignaturas;
     protected $model_carreras;
     protected $model_usuario;
+    protected $model_solicitud;
+    protected $model_tipo_uso;
+    protected $model_laboratorios_asignados_al_laboratorista;
     protected $helpers = ['form'];
+    protected $validation;
 
 
     public function __construct()
@@ -34,8 +42,11 @@ class CrearHorario extends BaseController
         $this->model_grupo = model(GrupoModel::class);
         $this->model_asignaturas = model(AsignaturaModel::class);
         $this->model_carreras = model(CarreraModel::class);
-        $this->model_usuario= model(UserModel::class);
-      
+        $this->model_usuario = model(UserModel::class);
+        $this->model_solicitud = model(SolicitudModel::class);
+        $this->model_tipo_uso = model(TipoUsoModel::class);
+        $this->model_laboratorios_asignados_al_laboratorista = model(AsignarLaboratorioModel::class);
+        $this->validation = \Config\Services::validation();
     }
 
     public function index($idLaboratorio = null)
@@ -48,7 +59,8 @@ class CrearHorario extends BaseController
         $user = session()->get('name');
         $token = session()->get('access_token');
         //pasar el nombre del usurio a la vista
-        $obtenerdatosusuario=$this->model_usuario->findByCorreo($user['userPrincipalName']);
+        $obtenerdatosusuario = $this->model_usuario->findByCorreo($user['userPrincipalName']);
+        $laboratorista = $this->model_laboratorios_asignados_al_laboratorista->obtenerEncargadoDeLaboratorio($userId);
 
         //obtener id laboratorio uso posterior
         session()->set('idLaboratorio', $idLaboratorio);
@@ -57,6 +69,8 @@ class CrearHorario extends BaseController
 
         $carreras = $this->model_carreras->obtenerCarrera();
         $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
+        $tipos_uso_solicitudes_varias = $this->model_tipo_uso->obtenerTiposUso();
+     //   $laboratorista = $this->model_laboratorios_asignados_al_laboratorista->obtenerEncargadoDeLaboratorio($user['userPrincipalName']);
 
         if (!$idLaboratorio && !empty($laboratorios)) {
             return redirect()->to(base_url("/usuario/horario/" . $laboratorios[0]['id']));
@@ -68,7 +82,7 @@ class CrearHorario extends BaseController
                 'user' => $user,
                 'token' => $token,
                 'idusuario' => $userId,
-                'usuario'=>$obtenerdatosusuario,
+                'usuario' => $obtenerdatosusuario,
             ]);
         }
 
@@ -85,14 +99,18 @@ class CrearHorario extends BaseController
                     'laboratorios' => $laboratorios,
                     'laboratorioSeleccionado' => $idLaboratorio,
                     'carreras' => $carreras,
+                    'tipo_uso' => $tipos_uso_solicitudes_varias,
+
 
                     'user' => $user,
                     'token' => $token,
                     'idusuario' => $userId,
-                     'usuario'=>$obtenerdatosusuario
+                    'usuario' => $obtenerdatosusuario,
+                 
+
                 ];
             }
-              print_r($data);
+           // print_r($data);
         }
 
         return view('Labs/layouts/horario_laboratorista', $data);
@@ -148,11 +166,11 @@ class CrearHorario extends BaseController
                     'empleado' => $datossolicitud['correo'],
                     'grupo' => $datossolicitud['grupo'],
                     'clave_asignatura' => $datossolicitud['clave_asignatura'],
-                    'objetivo'=>$datossolicitud['objetivo'],
-                    'carrera'=>$datossolicitud['carrera'],
-                    'descripcion_tareas'=>$datossolicitud['descripcion_tareas'],
-                    'estado'=>$datossolicitud['estado'],
-                    'tipo_uso'=>$datossolicitud['tipo_uso_varias']
+                    'objetivo' => $datossolicitud['objetivo'],
+                    'carrera' => $datossolicitud['carrera'],
+                    'descripcion_tareas' => $datossolicitud['descripcion_tareas'],
+                    'estado' => $datossolicitud['estado'],
+                    'tipo_uso' => $datossolicitud['tipo_uso_varias']
 
                 ];
                 $solicitudes[] = [
@@ -163,18 +181,125 @@ class CrearHorario extends BaseController
                     'raw'   => $raw,
 
                 ];
-            
+            }
         }
-    }
         $todosLosEventos = array_merge($eventos, $solicitudes);
         return $this->response->setJSON([
             'events' => $todosLosEventos,
 
         ]);
-    }  
-    
-    public function editarSolicitud($idSolicitud){
+    }
+
+    public function editarSolicitud($idSolicitud)
+    {
+        $solicitud = $this->model_solicitud->editar($idSolicitud);
+
+
+        if ($solicitud) {
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'solicitud' => $solicitud
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Solicitud no encontrada'
+            ]);
+        }
+    }
+    public function actualizarSolicitud($idSolicitud)
+    {
+        $userId = session()->get('idusuario');
+       
         
-     
+        $laboratorista = $this->model_laboratorios_asignados_al_laboratorista->obtenerEncargadoDeLaboratorio($userId);
+        $idAsignarLaboratorio = $laboratorista[0]['id_asignar_laboratorio'];
+        $data_solicitud=[
+            'hora_fecha_entrada'=> $this->request->getPost('datepicker-start-inputVarias'),
+            'hora_fecha_salida'=> $this->request->getPost('datepicker-end-inputVarias'),
+        ];
+        $data_solicitud_varias=[
+            'id_tipo_uso'=>$this->request->getPost('id_tipo_uso'),
+            'descripcion_tareas'=>$this->request->getPost('descripcion_tareas'),
+            'nombre_proyecto'=>$this->request->getPost('nombre_proyecto'),
+        ];
+        $data_autorizacion=[
+            'id_asignar_laboratorio' => $idAsignarLaboratorio,
+            'estado'=>$this->request->getPost('estado'),
+            'observacion'=>$this->request->getPost('observaciones_varias'),
+        ];
+
+    
+        //reglas personalizadas de validacion
+        $reglasSolicitudVarias = [
+           // 'id_tipo_uso' => [
+           'id_tipo_uso'=>[
+                'rules'  => 'required',
+                'errors' => [
+                    'required'           => 'El tipo de uso es obligatorio. Por favor seleccione una opción.',
+                    
+                ],
+            ],
+            'descripcion_tareas' => [
+                'rules'  => 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'La descricpcion de tareas es obligatoria.',
+                    'max_length' => 'La descripcion  no puede tener más de 255 caracteres.',
+                    'min_length' => 'El descripcion debe tener al menos 10 caracteres.',
+                ],
+            ],
+            'nombre_proyecto' => [
+                'rules'  => 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'El nombre del proyecto es obligatorio.',
+                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                    'min_length' => 'El nombre debe tener al menos 10 caracteres.',
+                ],
+            ],
+            'observaciones_varias' => [
+                'rules'  => 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'La observacion es obligatoria.',
+                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                    'min_length' => 'El nombre debe tener al menos 10 caracteres.',
+                ],
+            ],
+        ];
+
+        // $reglasAutorizacion=[
+        //     'observaciones_varias' => [
+        //         'rules'  => 'required|max_length[255]|min_length[10]',
+        //         'errors' => [
+        //             'required'   => 'La observacion es obligatoria.',
+        //             'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+        //             'min_length' => 'El nombre debe tener al menos 10 caracteres.',
+        //         ],
+        //     ],
+
+        // ];
+        if (!$this->validate($reglasSolicitudVarias)) {
+            
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Datos inválidos solicitudes_varias.',
+                'errors' => $this->validation->getErrors(),
+                'csrf' => csrf_hash(),
+            ]);
+        }
+        $actualizar_solicitud_varias=$this->model_solicitud->actualizarSolicitud($idSolicitud,$data_solicitud,$data_solicitud_varias,$data_autorizacion);
+    
+        if(!$actualizar_solicitud_varias){
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'No se pudo actualizar los datos.',
+                'csrf' => csrf_hash(),
+            ]);
+        }
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Solicitud actualizada correctamente.',
+            'csrf' => csrf_hash(),
+        ]);
     }
 }

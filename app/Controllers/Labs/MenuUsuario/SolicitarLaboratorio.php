@@ -304,7 +304,7 @@ class SolicitarLaboratorio extends BaseController
         $userId = session()->get('idusuario');
 
         // Obtener el puesto asignado al usuario
-        $puestoempleado = $this->model_puesto_empleado->puestoAsignadoPorUsuario($userId);
+        $puestoempleado = $this->model_puesto_empleado->puestoDelUsuario($userId);
 
         if (!$puestoempleado) {
             return $this->response->setJSON([

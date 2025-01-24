@@ -291,7 +291,7 @@
                     },
                 });
             });
-
+            // ----------------------------------------------------------------------------------------------------------------------------------------------------------
             // Función que maneja el envío del formulario
             function handleFormSubmit(event) {
                 event.preventDefault(); // Previene el envío normal del formulario
@@ -354,122 +354,49 @@
                 .catch(error => console.error('Error en la solicitud:', error));
             }
 
-            // Función para limpiar los errores previos antes de mostrar nuevos
-            function clearPreviousErrors() {
-                const errorElements = document.querySelectorAll('.error-message');
-                errorElements.forEach(element => element.remove());
-            }
+            // // Función para limpiar los errores previos antes de mostrar nuevos
+            // function clearPreviousErrors() {
+            //     const errorElements = document.querySelectorAll('.error-message');
+            //     errorElements.forEach(element => element.remove());
+            // }
 
-            // Función para mostrar los errores en el formulario
-            function displayErrorsInUI(field, errors) {
-                const inputField = document.querySelector(`[name="${field}"]`);
-                if (inputField) {
-                    const errorContainer = document.createElement('div');
-                    errorContainer.classList.add('error-message');
-                    errorContainer.style.color = 'red'; // Estilo de color de error
+            // // Función para mostrar los errores en el formulario
+            // function displayErrorsInUI(field, errors) {
+            //     const inputField = document.querySelector(`[name="${field}"]`);
+            //     if (inputField) {
+            //         const errorContainer = document.createElement('div');
+            //         errorContainer.classList.add('error-message');
+            //         errorContainer.style.color = 'red'; // Estilo de color de error
 
-                    errorContainer.innerText = errors.join(', ');  // Mostrar los errores
-                    inputField.parentNode.appendChild(errorContainer);  // Insertar el contenedor de errores
-                }
-            }
+            //         errorContainer.innerText = errors.join(', ');  // Mostrar los errores
+            //         inputField.parentNode.appendChild(errorContainer);  // Insertar el contenedor de errores
+            //     }
+            // }
 
-            // Función para reiniciar los campos del modal al estado inicial
-            function resetModalFields() {
-                // Ocultar todas las secciones
-                camposPracticas.style.display = 'none';
-                camposVarias.style.display = 'none';
+            // // Función para reiniciar los campos del modal al estado inicial
+            // function resetModalFields() {
+            //     // Ocultar todas las secciones
+            //     camposPracticas.style.display = 'none';
+            //     camposVarias.style.display = 'none';
 
-                // Restablecer selectores y campos
-                tipoSolicitudSelector.value = ''; // Restablece el selector principal
-                const inputsPracticas = camposPracticas.querySelectorAll('input, select, textarea');
-                const inputsVarias = camposVarias.querySelectorAll('input, select, textarea');
+            //     // Restablecer selectores y campos
+            //     tipoSolicitudSelector.value = ''; // Restablece el selector principal
+            //     const inputsPracticas = camposPracticas.querySelectorAll('input, select, textarea');
+            //     const inputsVarias = camposVarias.querySelectorAll('input, select, textarea');
 
-                inputsPracticas.forEach(input => input.value = ''); // Limpia los valores en prácticas
-                inputsVarias.forEach(input => input.value = '');   // Limpia los valores en varias
+            //     inputsPracticas.forEach(input => input.value = ''); // Limpia los valores en prácticas
+            //     inputsVarias.forEach(input => input.value = '');   // Limpia los valores en varias
 
-                // Restablecer errores visuales
-                clearPreviousErrors();
-            }
+            //     // Restablecer errores visuales
+            //     clearPreviousErrors();
+            // }
         
-            // Agregar un listener de evento para el envío del formulario
-            if (form) {
-                form.addEventListener('submit', handleFormSubmit);
-            } else {
-                console.error("No se encontró el formulario con ID 'eventForm'");
-            }
-
-            //Lógica para ver la información del evento creado
-            calendar.on('clickEvent', function(event) {
-                const evento = event.event;
-                const idSolicitud = evento.id;
-
-                console.log("ID de la solciitud seleccionada:", idSolicitud);
-                // Enviar el ID al controlador mediante fetch o AJAX
-                fetch('/tu-controlador', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id: idSolicitud }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Respuesta del servidor:", data);
-                })
-                .catch(error => {
-                    console.error("Error al enviar el ID:", error);
-                });
-
-                //Enviar el ID al controlador mediante fech o AJAX
-
-                // const colorEvento = evento.backgroundColor;
-
-                // Ocultar todos los modales
-                // const modals = ['practicaModal', 'solicitudesModal', 'inhabilModal'];
-                // modals.forEach(modalId => {
-                //     const modalElement = new bootstrap.Modal(document.getElementById(modalId));
-                //     modalElement.hide();
-                // });
-
-                // if (colorEvento === '#13199a') {
-                //     // Mostrar el modal de práctica
-                //     const modal = new bootstrap.Modal(document.getElementById('practicaModal'));
-                //     modal.show();
-
-                    // Actualizar campos del modal de práctica
-                    // console.log('ID de la solicitud:', event.event);
-                    // document.getElementById('empleado').value = evento.raw.empleado || 'Sin asignar';
-                    // document.getElementById('nombre').value = evento.title;
-                    // document.getElementById('objetivo').value = evento.raw.objetivo;
-                    // console.log("Carrera del evento:", evento.raw.carrera);
-                    // document.getElementById('carrera').value = evento.raw.carrera;
-                    // document.getElementById('grupo').value = evento.raw.grupo || '';
-                    // document.getElementById('claveAsignatura').value = evento.raw.clave_asignatura || '';
-                    // document.getElementById('estado').value = evento.raw.estado;
-
-                    // cargarSelectorCarrera(evento.raw.carrera);
-
-                // } else if (colorEvento === '#0059ff') {
-                //     // Mostrar el modal de solicitudes varias
-                //     const modal = new bootstrap.Modal(document.getElementById('solicitudesModal'));
-                //     modal.show();
-
-                    // Actualizar campos del modal de solicitud
-                    // document.getElementById('empleadoVarias').value = evento.raw.empleado || 'Sin asignar';
-                    // document.getElementById('nombreVarias').value = evento.title;
-                    // document.getElementById('descripcionTareas').value = evento.raw.descripcion_tareas;
-                    // document.getElementById('tipoUso').value = evento.raw.tipo_uso;
-                    // document.getElementById('estadoVarias').value = evento.raw.estado;
-
-                // } else if (colorEvento === '#ff6f00') {
-                //     // Mostrar el modal de días inhábiles
-                //     const modal = new bootstrap.Modal(document.getElementById('inhabilModal'));
-                //     modal.show();
-
-                //     // document.getElementById('nombreDiaInhabil').value = evento.title;
-                // }
-            });
-
+            // // Agregar un listener de evento para el envío del formulario
+            // if (form) {
+            //     form.addEventListener('submit', handleFormSubmit);
+            // } else {
+            //     console.error("No se encontró el formulario con ID 'eventForm'");
+            // }
 
             function recargarEventos(calendar) {
                 fetch('/usuario/mostrar/eventos')
@@ -507,6 +434,250 @@
                     })
                     .catch(error => console.error('Error al recargar eventos:', error));
             }
+
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            // Editar y aceptar o rechazar solicitudes
+            //para cargar los timepicker de tui VARIAS
+            var datepickerEntradaVarias = new tui.DatePicker('#hora-entrada-varias', {
+                date: new Date(),
+                input: {
+                    element: '#hora-start-varias',
+                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                },
+                timePicker: true  // Habilitar el timepicker
+            });
+
+            var datepickerSalidaVarias = new tui.DatePicker('#hora-salida-varias', {
+                date: new Date(),
+                input: {
+                    element: '#hora-end-varias',
+                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                },
+                timePicker: true
+            });
+
+            //para cargar los timepicker de tui PRACTICAS
+            var datepickerEntradaPracticas = new tui.DatePicker('#hora-entrada-practicas', {
+                date: new Date(),
+                input: {
+                    element: '#hora-start-practicas',
+                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                },
+                timePicker: true  // Habilitar el timepicker
+            });
+
+            var datepickerSalidaPracticas = new tui.DatePicker('#hora-salida-practicas', {
+                date: new Date(),
+                input: {
+                    element: '#hora-end-practicas',
+                    format: 'yyyy-MM-dd HH:mm A'  // El formato con la hora y el AM/PM
+                },
+                timePicker: true
+            });
+
+
+            // Lógica para ver la información del evento creado
+            calendar.on('clickEvent', function(event) {
+                const evento = event.event;
+                const idSolicitud = evento.id;
+
+                console.log("ID de la solicitud seleccionada:", idSolicitud);
+
+                // Construir la URL con el ID de la solicitud como parámetro de consulta
+                const url = `/usuario/editar/solicitud/${idSolicitud}`;
+
+                // Realizar la solicitud GET con fetch
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Respuesta del servidor:", data);
+                    mostrarModal(data, evento.backgroundColor);  // Pasamos también el color del evento
+                })
+                .catch(error => {
+                    console.error("Error al obtener datos del servidor:", error);
+                });
+
+                function mostrarModal(data, colorEvento) {
+                    if (data && data.solicitud && data.solicitud.length > 0) {
+                        const solicitud = data.solicitud[0]; // Accedemos al primer objeto del array
+
+                        // Asignamos el ID al campo oculto
+                        document.getElementById('idSolicitud-varias').value = solicitud.id_solicitud;
+                        console.log("ID de la solicitud en el modal:", document.getElementById('idSolicitud-varias').value);
+
+                        // Asignamos los valores de la solicitud a los elementos del modal VARIAS
+                        document.getElementById('modal-empleado-varias').value = solicitud.correo;
+                        document.getElementById('modal-nombre-proyecto-actividad-otro').value = solicitud.nombre_proyecto;
+                        document.getElementById('modal-descripcion-tareas').value = solicitud.descripcion_tareas || 'No hay descripción';
+
+                        // Solo configurar 'tipo_uso' si el modal es de "Solicitudes Varias"
+                        if (colorEvento === '#ff6f00' || colorEvento === '#0059ff') {
+                            const tipo_uso = <?php echo json_encode($tipo_uso); ?>;
+                            console.log("Tipo de uso (de PHP):", tipo_uso);
+
+                            const selectTipoUso = document.getElementById('modal-tipo-uso');
+                            selectTipoUso.innerHTML = ''; // Limpiar las opciones anteriores
+
+                            // Agregar las opciones al selector
+                            tipo_uso.forEach(tipo => {
+                                const option = document.createElement('option');
+                                option.value = tipo.id; // Usar el 'id' como valor
+                                option.textContent = tipo.nombre; // Usar el 'nombre' como texto visible
+                                selectTipoUso.appendChild(option);
+                            });
+                           // console.log("Opciones añadidas al select:", selectTipoUso);
+
+                            // Establecer el valor seleccionado (valor de tipo_uso en la solicitud)
+                            const selectedValue = solicitud.tipo_uso; // Esto debe ser el valor del tipo_uso en la solicitud
+                            console.log("Valor de tipo_uso en la solicitud:", selectedValue);
+
+                            // Buscar el 'id' correspondiente al 'nombre' de la solicitud
+                            const tipoSeleccionado = tipo_uso.find(tipo => tipo.nombre.trim() === selectedValue);
+                            selectTipoUso.value = tipoSeleccionado ? tipoSeleccionado.id : tipo_uso[0].id;
+                        }
+
+                        document.getElementById('modal-estado-varias').value = solicitud.estado;
+                        document.getElementById('modal-observaciones-varias').value = solicitud.observaciones || 'No hay observaciones';
+
+                        // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
+                        document.getElementById('modal-empleado-practicas').value = solicitud.correo;
+                        document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
+                        document.getElementById('modal-objetivo').value = solicitud.objetivo;
+                        document.getElementById('modal-carrera').value = solicitud.carrera;
+                        document.getElementById('modal-clave').value = solicitud.clave;
+                        document.getElementById('modal-grupo').value = solicitud.grupo;
+                        document.getElementById('modal-estado-practicas').value = solicitud.estado;
+                        document.getElementById('modal-observaciones-practicas').value = solicitud.observaciones || 'No hay observaciones';
+
+                         // Convertir las fechas de entrada y salida
+                        const horaEntrada = new Date(solicitud.hora_fecha_entrada);  // Convertir la hora de entrada
+                        const horaSalida = new Date(solicitud.hora_fecha_salida);  // Convertir la hora de salida
+
+                        // Establecer las fechas en los datepickers correspondientes
+                        if (!isNaN(horaEntrada) && !isNaN(horaSalida)) {
+                            datepickerEntradaVarias.setDate(horaEntrada); // Establecer la fecha y hora de entrada
+                            datepickerSalidaVarias.setDate(horaSalida);   // Establecer la fecha y hora de salida
+                        } else {
+                            console.error("Fechas inválidas", horaEntrada, horaSalida);
+                        }
+
+                        // Condicional para determinar qué formulario mostrar según el color
+                        let modal;
+                        if (colorEvento === '#ff6f00') {
+                            // Mostrar formulario de Solicitudes Varias
+                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesVarias'));
+                        } else if (colorEvento === '#0059ff') {
+                            // Mostrar formulario de Solicitudes Varias (puedes ajustar este color a un caso específico)
+                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesVarias'));
+                        } else if (colorEvento === '#13199a') {
+                            // Mostrar formulario de Solicitudes Prácticas
+                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesPracticas'));
+                        } else {
+                            // Si el color no corresponde a ninguno de los casos anteriores, puedes mostrar un modal genérico o cerrar
+                            console.log("Evento con color no identificado, no se muestra un formulario específico.");
+                            return; // No mostrar ningún formulario si el color no coincide
+                        }
+
+                        // Mostrar el modal correspondiente
+                        modal.show();
+                    } else {
+                        console.error("No se encontraron datos de la solicitud.");
+                    }
+                }
+
+            });
+
+            // Listener para el botón de guardar cambios
+            document.getElementById('btnGuardarCambios').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const form = document.getElementById('formSolicitudVarias');
+                const csrfField = document.querySelector('.txt_csrfname');
+                const formData = new FormData(form);
+
+                if (!csrfField) {
+                    console.error("No se encontró el campo CSRF");
+                    return;
+                }
+
+                const csrfName = csrfField.name;
+                const csrfHash = csrfField.value;
+                formData.append(csrfName, csrfHash);
+
+                const idSolicitud = formData.get('idSolicitud');
+                const url = `/usuario/actualizar/solicitud/${idSolicitud}`;
+
+                // Limpiar los errores previos antes de enviar la nueva solicitud
+                clearPreviousErrors();
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Error en la respuesta del servidor.');
+                    }
+                })
+                .then(data => {
+                    // Actualizar el token CSRF si el servidor lo proporciona
+                    if (data.csrf) {
+                        csrfField.value = data.csrf;
+                    }
+
+                    if (data.success) {
+                        alert('Cambios guardados correctamente');
+                        location.reload();
+                    } else {
+                        // Si el servidor devuelve errores, los mostramos en la interfaz
+                        if (data.errors) {
+                            for (let field in data.errors) {
+                                let fieldErrors = Array.isArray(data.errors[field]) ? data.errors[field] : [data.errors[field]];
+                                displayErrorsInUI(field, fieldErrors);
+                            }
+                        } else {
+                            alert('Ocurrió un error: ' + data.message);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al guardar los cambios.');
+                });
+            });
+
+// Función para limpiar los errores previos antes de mostrar nuevos
+function clearPreviousErrors() {
+    const errorElements = document.querySelectorAll('.error-message');
+    errorElements.forEach(element => element.remove());
+}
+
+// Función para mostrar los errores en el formulario
+function displayErrorsInUI(field, errors) {
+    const inputField = document.querySelector(`[name="${field}"]`);
+    if (inputField) {
+        // Crear un contenedor de errores
+        const errorContainer = document.createElement('div');
+        errorContainer.classList.add('error-message');
+        errorContainer.style.color = 'red';
+        errorContainer.style.fontSize = '0.875rem'; // Ajusta el tamaño de fuente si lo necesitas
+
+        // Unir los errores en un solo mensaje
+        errorContainer.innerText = errors.join(', ');
+
+        // Agregar el contenedor de errores después del campo de entrada
+        inputField.parentNode.appendChild(errorContainer);
+    }
+}
+
+
         });
     </script>
 <?= $this->endSection() ?>
@@ -634,6 +805,7 @@
                             <input type="hidden" name="id_carrera" id="carrera-id-hidden" value="<?= set_value('carrera_id') ?>">
                         </div>
                         <!-- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+                         <!-- Campos adicionales para "Practicas" -->
                         <div class="mb-3">
                             <?= form_label('Seleccione una asignatura', 'event-selector-asignatura', ['class' => 'form-label']) ?>
                             <?= form_dropdown(
@@ -758,95 +930,7 @@
     </div> 
 </div>
 
-<!-- Modal para mostrar los detalles de la práctica -->
-<div class="modal fade" id="practicaModal" tabindex="-1" role="dialog" aria-labelledby="practicaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="practicaModalLabel">Detalles de la Solicitud</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Empleado</label>
-                        <input type="text" class="form-control form-control-solid" id="empleado" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nombre de la práctica</label>
-                        <input type="text" class="form-control form-control-solid" id="nombre" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Objetivo de la práctica</label>
-                        <input type="text" class="form-control form-control-solid" id="objetivo" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Carrera</label>
-                        <select class="form-control form-control-solid" id="carrera">
-                            <!-- Las opciones se generarán dinámicamente en JavaScript -->
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Grupo</label>
-                        <input type="text" class="form-control form-control-solid" id="grupo" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Clave Asignatura</label>
-                        <input type="text" class="form-control form-control-solid" id="claveAsignatura" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estado de la solicitud</label>
-                        <input type="text" class="form-control form-control-solid" id="estado" disabled>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para mostrar las solicitudes varias -->
-<div class="modal fade" id="solicitudesModal" tabindex="-1" role="dialog" aria-labelledby="solicitudesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="solicitudesModalLabel">Detalles de la Solicitud</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Empleado</label>
-                        <input type="text" class="form-control form-control-solid" id="empleadoVarias" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control form-control-solid" id="nombreVarias" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Descripción de las tareas</label>
-                        <input type="text" class="form-control form-control-solid" id="descripcionTareas" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Tipo de uso</label>
-                        <input type="text" class="form-control form-control-solid" id="tipoUso" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Estado de la solicitud</label>
-                        <input type="text" class="form-control form-control-solid" id="estadoVarias" disabled>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para mostrar los detalles de los días inhábiles -->
+ <!-- Modal para mostrar los detalles de los días inhábiles
 <div class="modal fade" id="inhabilModal" tabindex="-1" role="dialog" aria-labelledby="inhabilModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -865,7 +949,183 @@
             </div>
         </div>
     </div>
+</div> -->
+
+<!-- ---------------------------------------------------------------------------------------------------------------------- -->
+
+<!-- Modal de Bootstrap para Mostrar solicitudes varias -->
+<div class="modal fade" id="modalSolicitudesVarias" tabindex="-1" aria-labelledby="modalSolicitudesVariasLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSolicitudesVariasLabel">Detalles de la Solicitud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+            <?php if (session()->getFlashdata('errors')): ?>
+                    <?php $errors = session()->getFlashdata('errors'); ?>
+                    <div class="alert alert-danger">
+                        <ul>
+                            <?php foreach ($errors as $error): ?>
+                                <li><?= esc($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                
+                <form id="formSolicitudVarias" method="POST" action="usuario/actualizar/solicitud">
+                    <?= csrf_field() ?>
+                            <!-- token oculto  -->
+                    <input type="hidden" class="txt_csrfname" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+                    <input type="hidden" id="idSolicitud-varias" name="idSolicitud">
+                    <div class="mb-3">
+                        <label for="modal-empleado-varias" class="form-label">Empleado</label>
+                        <input type="email" class="form-control form-control-solid" id="modal-empleado-varias" name="empleado_varias" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-nombre-proyecto-actividad-otro" class="form-label">Nombre del proyecto, actividad u otro</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-nombre-proyecto-actividad-otro" name="nombre_proyecto">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="modal-descripcion-tareas" class="form-label">Descripción de Tareas</label>
+                        <textarea class="form-control form-control-solid" id="modal-descripcion-tareas" name="descripcion_tareas" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-tipo-uso" class="form-label">Tipo de Uso</label>
+                        <select class="form-select custom-select form-control form-control-solid" id="modal-tipo-uso" name="id_tipo_uso">
+                            <!-- Las opciones se llenarán dinámicamente con JS -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-estado-varias" class="form-label">Estado actual</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-estado-varias" name="9" readonly>
+                    </div>
+
+                    <!-- Opcional: Campo de estado de la solicitud -->
+                    <div class="mb-3">
+                        <label for="modal-autorizacion-varias" class="form-label">Autorización</label>
+                        <select class="form-select custom-select form-control form-control-solid" id="modal-autorizacion-varias" name="autorizacion">
+                            <option value="" disabled selected>Seleccione una opción de autorización</option>
+                            <option value="1">Aprobado</option>
+                            <option value="2">Rechazado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-observaciones-varias" class="form-label">Observaciones</label>
+                        <textarea class="form-control form-control-solid" id="modal-observaciones-varias" name="observaciones_varias" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora-entrada" class="form-label">Hora de Entrada</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-start-varias" class="form-control" aria-label="Date-Time" name = "datepicker-start-inputVarias">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-entrada-varias" style="margin-top: -1px;"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora-salida" class="form-label">Hora de Salida</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-end-varias" class="form-control" aria-label="Date-Time" name = "datepicker-end-inputVarias">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-salida-varias" style="margin-top: -1px;"></div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- Modal de Bootstrap para Mostrar solicitudes prácticas -->
+<div class="modal fade" id="modalSolicitudesPracticas" tabindex="-1" aria-labelledby="modalSolicitudesPracticasLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSolicitudesPracticasLabel">Detalles de la Solicitud</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formSolicitudPractica">
+
+                    <div class="mb-3">
+                        <label for="modal-empleado-practicas" class="form-label">Empleado</label>
+                        <input type="email" class="form-control form-control-solid" id="modal-empleado-practicas" name="empleado-practicas" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-nombre-practica" class="form-label">Nombre de la práctica</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-nombre-practica" name="nombre_practica" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-objetivo" class="form-label">Objetivo</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-objetivo" name="objetivo" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-carrera" class="form-label">Carrera</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-carrera" name="carrera" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-clave" class="form-label">Clave de la Asignatura</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-clave" name="clave" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-grupo" class="form-label">Grupo</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-grupo" name="grupo" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-estado-practicas" class="form-label">Estado</label>
+                        <input type="text" class="form-control form-control-solid" id="modal-estado-practicas" name="estado_practicas" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-observaciones-practicas" class="form-label">Observaciones</label>
+                        <textarea class="form-control form-control-solid" id="modal-observaciones-practicas" name="observaciones_practicas" rows="3" readonly></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora-entrada-practicas" class="form-label">Hora de Entrada</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-start-practicas" class="form-control" aria-label="Date-Time" name = "datepicker-start-inputPracticas">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-entrada-practicas" style="margin-top: -1px;"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hora-salida-practicas" class="form-label">Hora de Salida</label>
+                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                            <input type="text" id="hora-end-practicas" class="form-control" aria-label="Date-Time" name = "datepicker-end-inputPracticas">
+                            <span class="tui-ico-date"></span>
+                        </div>
+                        <div id="hora-salida-practicas" style="margin-top: -1px;"></div>
+                    </div>
+            
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?= $this->endSection() ?>

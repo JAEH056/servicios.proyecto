@@ -51,7 +51,7 @@ class ProgramaEducativoModel extends Model
     public function getProgramaEducativo()
     {
         $builder = $this->db->table('programa_educativo')
-            ->select('*')
+            ->select('idprograma_educativo, nombre_programa_educativo, mod.idmodalidad, mod.nombre_modalidad')
             ->join('reposs.modalidad mod', 'programa_educativo.idmodalidad = mod.idmodalidad');
         return $builder->get()->getResultArray();
     }

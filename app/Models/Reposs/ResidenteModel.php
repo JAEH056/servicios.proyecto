@@ -34,15 +34,15 @@ class ResidenteModel extends Model
 
     // Validation
     protected $validationRules      = [
+        'principal_name'    => 'required',
         'numero_control'    => 'required',
         'nombre'            => 'required|max_length[255]',
         'apellido1'         => 'required|max_length[255]',
         'apellido2'         => 'max_length[255]',
         'domicilio'         => 'max_length[255]',
         'ciudad'            => 'max_length[255]',
-        'seguro_social'     => 'required',
-        'numero_ss'         => 'required',
-        'celular'           => 'min_length[10]'
+        'seguro_social'     => 'max_length[255]',
+        'numero_ss'         => 'max_length[255]',
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
@@ -87,6 +87,12 @@ class ResidenteModel extends Model
         }
 
         // Separar los apellidos
+        if(empty($nombreCompleto['surname']) === true){
+            return [
+                'success' => false,
+                'mensaje' => 'No es necesario actualizar'
+            ];
+        }
         $apellidos = $this->splitSurname($nombreCompleto['surname']);
 
         // Verificar si los datos coinciden
@@ -126,8 +132,8 @@ class ResidenteModel extends Model
     public function findByCorreo($userId)
     {
         return $this->select('residente.*, pe.idprograma_educativo, pe.nombre_programa_educativo, mo.nombre_modalidad')
-            ->join('reposs.programa_educativo pe', 'residente.idprograma_educativo = pe.idprograma_educativo')
-            ->join('reposs.modalidad mo', 'pe.idmodalidad = mo.idmodalidad')
+            ->join('reposs.programa_educativo pe', 'residente.idprograma_educativo = pe.idprograma_educativo', 'left')
+            ->join('reposs.modalidad mo', 'pe.idmodalidad = mo.idmodalidad', 'left')
             ->where('residente.idresidente', $userId)
             ->first();
     }

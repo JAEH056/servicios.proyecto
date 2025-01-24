@@ -49,7 +49,7 @@
                                     <div class="row gx-3 mb-3">
                                         <!-- Form Group (correo institucional)-->
                                         <div class="mb-3">
-                                            <label class="small mb-1" for="principal_name" >Correo Institucional</label>
+                                            <label class="small mb-1" for="principal_name">Correo Institucional</label>
                                             <input class="form-control" id="principal_name" type="text"
                                                 placeholder="Correo Institucional" name="principal_name"
                                                 value="<?= esc($datosResidente['principal_name']); ?>" readonly />
@@ -59,7 +59,7 @@
                                             <label class="small mb-1" for="numControl">Numero de control</label>
                                             <input class="form-control" id="numControl" type="text"
                                                 placeholder="numero de control" name="numero_control"
-                                                value="<?= esc($datosResidente['numero_control']); ?>" readonly/>
+                                                value="<?= esc($datosResidente['numero_control']); ?>" readonly />
                                         </div>
                                         <!-- Form Group (nombre)-->
                                         <div class="mb-3">
@@ -153,11 +153,11 @@
                                                 <?php if (isset($datosResidente['idprograma_educativo'])): ?>
                                                     <option value="<?= esc($datosResidente['idprograma_educativo']); ?>" selected><?= esc($datosResidente['nombre_programa_educativo']); ?></option>
                                                     <?php foreach ($programa as $pe): ?>
-                                                        <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
+                                                        <option value="<?= esc($pe['idprograma_educativo']) ?>"><?= esc($pe['nombre_programa_educativo'] . ' (' . $pe['nombre_modalidad'] . ')') ?></option>
                                                     <?php endforeach; ?>
                                                 <?php else: ?>
                                                     <?php foreach ($programa as $pe): ?>
-                                                        <option value="<?= $pe['idprograma_educativo'] ?>"><?= $pe['nombre_programa_educativo'] ?></option>
+                                                        <option value="<?= esc($pe['idprograma_educativo']) ?>"><?= esc($pe['nombre_programa_educativo'] . ' (' . $pe['nombre_modalidad'] . ')') ?></option>
                                                     <?php endforeach; ?>
                                                 <?php endif; ?>
                                             </select>

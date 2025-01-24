@@ -65,8 +65,8 @@ class HorarioModel extends Model
         JOIN carrera ON carrera.id = reticula.id_carrera
         JOIN asignatura ON asignatura.id = reticula.id_asignatura
         JOIN grupo ON grupo.id = clase.id_grupo
-        JOIN db_compartida.puesto_empleado on db_compartida.puesto_empleado.idpuesto= solicitud.id_puesto_empleado
-        JOIN db_compartida.usuario on usuario.idusuario= puesto_empleado.idusuario
+        JOIN compartida.puesto_empleado on puesto_empleado.idpuesto= solicitud.id_puesto_empleado
+        JOIN compartida.usuario on usuario.idusuario= puesto_empleado.idusuario
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         WHERE laboratorio.id= $idLaboratorio AND semestre.estado=1
 
@@ -93,8 +93,8 @@ class HorarioModel extends Model
         JOIN solicitud ON solicitud.id_laboratorio = laboratorio.id
         JOIN solicitudes_varias ON solicitudes_varias.id_solicitud = solicitud.id
         JOIN tipo_uso ON tipo_uso.id = solicitudes_varias.id_tipo_uso
-        JOIN db_compartida.puesto_empleado ON puesto_empleado.idpuesto = solicitud.id_puesto_empleado
-        JOIN db_compartida.usuario ON usuario.idusuario =puesto_empleado.idusuario
+        JOIN compartida.puesto_empleado ON puesto_empleado.idpuesto = solicitud.id_puesto_empleado
+        JOIN compartida.usuario ON usuario.idusuario =puesto_empleado.idusuario
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         WHERE laboratorio.id=$idLaboratorio AND semestre.estado=1;
     
@@ -152,8 +152,8 @@ class HorarioModel extends Model
         JOIN carrera ON carrera.id = reticula.id_carrera
         JOIN asignatura ON asignatura.id = reticula.id_asignatura
         JOIN grupo ON grupo.id = clase.id_grupo
-        JOIN db_compartida.puesto_empleado on db_compartida.puesto_empleado.idpuesto= solicitud.id_puesto_empleado
-        JOIN db_compartida.usuario on usuario.idusuario= puesto_empleado.idusuario
+        JOIN compartida.puesto_empleado on compartida.puesto_empleado.idpuesto= solicitud.id_puesto_empleado
+        JOIN compartida.usuario on usuario.idusuario= puesto_empleado.idusuario
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         WHERE laboratorio.id= $idLaboratorio AND semestre.estado=1
 
@@ -180,8 +180,8 @@ class HorarioModel extends Model
         JOIN solicitud ON solicitud.id_laboratorio = laboratorio.id
         JOIN solicitudes_varias ON solicitudes_varias.id_solicitud = solicitud.id
         JOIN tipo_uso ON tipo_uso.id = solicitudes_varias.id_tipo_uso
-        JOIN db_compartida.puesto_empleado ON puesto_empleado.idpuesto = solicitud.id_puesto_empleado
-        JOIN db_compartida.usuario ON usuario.idusuario =puesto_empleado.idusuario
+        JOIN compartida.puesto_empleado ON puesto_empleado.idpuesto = solicitud.id_puesto_empleado
+        JOIN compartida.usuario ON usuario.idusuario =puesto_empleado.idusuario
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         WHERE laboratorio.id=$idLaboratorio AND semestre.estado=1;
     

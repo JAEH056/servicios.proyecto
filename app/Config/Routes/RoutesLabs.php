@@ -15,7 +15,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // SEMESTRE
-$routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
+$routes->group('usuario', ['filter' => 'rbac:laboratorista'], function ($routes) {
     $routes->get('mostrar/semestre', [Semestre::class, 'index']);
     $routes->get('nuevo/semestre', [Semestre::class, 'nuevo']);
     $routes->get('editar/semestre/(:num)', [Semestre::class, 'editar/$1']);
@@ -50,10 +50,12 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
     $routes->get('horario', [CrearHorario::class, 'index']); // Con ID, muestra el horario
     // para mostrar todos los eventos del horario en la vista de horario
     $routes->get('mostrar/eventos',[CrearHorario::class,'eventos']);
-    
 
-
-   
+    //para editar la solicitud 
+    $routes->get('editar/solicitud/(:num)',[CrearHorario::class,'editarSolicitud/$1']);
+    //para actualizar la solicitud 
+    $routes->post('actualizar/solicitud/(:num)',[CrearHorario::class,'actualizarSolicitud/$1']);
+   // $roues->post('actualizar/solicitud/',[CrearHorario::class,'actualizarSolicitud'])
 });
 
 //Usuarios con correo huatusco.tecnm.mx
