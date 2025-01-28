@@ -116,6 +116,7 @@ class Documentos extends ResourceController
             7 => 'carta_presentacion',
             8 => 'carta_aceptacion',
             9 => 'anteproyecto',
+            10 => 'reporte_parcial',
         ];
 
         if (!array_key_exists($id, $filenames)) {

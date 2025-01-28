@@ -43,23 +43,23 @@ class SolicitudesPracticasModel extends Model
 
     public function insertarPracticas($dataSolicitudPractica)
     {
-        // Iniciar la transacción
+       
         $this->db->transStart();
 
-        // Insertar solicitud
+        
         $this->insert($dataSolicitudPractica);
 
-        // Verificar el estado de la transacción
+        
         if ($this->db->transStatus() === false) {
-            // Si la transacción falla, revertir los cambios
+            
             $this->db->transRollback();
-            return false; // Devolver false para indicar que la operación falló
+            return false; 
         }
 
-        // Si todo es exitoso, completar la transacción
+       
         $this->db->transComplete();
 
-        // Si todo fue bien, devolver el ID de la solicitud insertada
+        
         return true;
     }
 }

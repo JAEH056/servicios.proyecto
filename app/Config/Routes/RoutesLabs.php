@@ -3,6 +3,7 @@
 
 use App\Controllers\Labs\MenuLaboratorista\CrearHorario;
 use App\Controllers\Labs\MenuLaboratorista\DiasInhabiles;
+use App\Controllers\Labs\MenuLaboratorista\Horario;
 use App\Controllers\Labs\MenuLaboratorista\Laboratorios;
 use App\Controllers\Labs\MenuLaboratorista\Laboratorista;
 use App\Controllers\Labs\MenuLaboratorista\Reticula;
@@ -38,13 +39,16 @@ $routes->group('usuario', ['filter' => 'rbac:laboratorista'], function ($routes)
     $routes->get('diasinhabiles/eliminar/(:num)', [DiasInhabiles::class, 'eliminar/$1']);
     $routes->post('diasinhabiles/crear', [DiasInhabiles::class, 'crear']);
     $routes->post('diasinhabiles/actualizar/(:num)', [DiasInhabiles::class, 'actualizar/$1']);
+    
+    //Creacion de horarios
+    $routes->get('mostrar/horario',[Horario::class,'index']);
 
      //RETICULA
      $routes->get('reticula', [Reticula::class, 'index']);
      $routes->get('reticula/(:num)', [Reticula::class, 'index']);
 
     //LABORATORISTA
-    $routes->get('laboratorista', [Laboratorista::class, 'index']);
+  //  $routes->get('laboratorista', [Laboratorista::class, 'index']);
     // HORARIO 
     $routes->get('horario/(:num)', [CrearHorario::class, 'index/$1']); // Con ID, muestra el horario
     $routes->get('horario', [CrearHorario::class, 'index']); // Con ID, muestra el horario
@@ -55,7 +59,10 @@ $routes->group('usuario', ['filter' => 'rbac:laboratorista'], function ($routes)
     $routes->get('editar/solicitud/(:num)',[CrearHorario::class,'editarSolicitud/$1']);
     //para actualizar la solicitud 
     $routes->post('actualizar/solicitud/(:num)',[CrearHorario::class,'actualizarSolicitud/$1']);
-   // $roues->post('actualizar/solicitud/',[CrearHorario::class,'actualizarSolicitud'])
+    // para mostrar las carreras
+    $routes->get('materias/carrera' ,[CrearHorario::class,'obtenerMateriasCarrera']);
+    $routes->get('clave/asignatura' ,[CrearHorario::class,'obtenerClaveMateria']);
+  
 });
 
 //Usuarios con correo huatusco.tecnm.mx

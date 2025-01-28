@@ -19,6 +19,7 @@ use App\Controllers\Reposs\MenusResidente\HomeResidente;
 use App\Controllers\Reposs\MenusResidente\DatosProyecto;
 use App\Controllers\Reposs\MenusResidente\DatosResidente;
 use App\Controllers\Reposs\Formatos\PdfController;
+use App\Controllers\Reposs\MenusResidente\Reportes;
 
 /**
  * @var RouteCollection $routes
@@ -30,12 +31,15 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
     $routes->get('residentes/documentos',               [Documentos::class, 'index']);
     $routes->get('residentes/datos',                    [DatosResidente::class, 'index']);
     $routes->get('residentes/proyecto',                 [DatosProyecto::class, 'index']);
+    $routes->get('residentes/reportes',                 [Reportes::class, 'index']);
     $routes->get('residentes/asesor_interno',           [DatosProyecto::class, 'busquedaAsesor']);
     $routes->get('residentes/home',                     [HomeResidente::class, 'index']);
     $routes->get('residentes/empresa',                  [DatosEmpresa::class, 'index']);
     $routes->get('residentes/empresa_asesor_externo',   [DatosEmpresa::class, 'datosAsesorExterno']);
     $routes->get('residentes/solicitud-residencias',    [PdfController::class, 'generar']);
 
+    $routes->post('residentes/reporte/(:num)/(:segment)',   [Reportes::class, 'upload/$1/$2'],  ['filter' => 'regex']);
+    $routes->get('residentes/reporte/(:num)',               [Reportes::class, 'delete/$1']);
     $routes->post('residentes/proyecto-actualizar/(:num)',  [DatosProyecto::class, 'update/$1']);
     $routes->get('residentes/asesor_interno/busqueda',      [DatosProyecto::class, 'buscar']);
     $routes->post('residentes/asesor-interno/(:num)',       [DatosProyecto::class, 'createAsesorInter/$1']);
@@ -71,7 +75,7 @@ $routes->group('usuario', ['filter' => 'rbac:puesto'], function ($routes) {
 });
 
 // Rutas administrador de roles y permisos con acceso solo para roles con permisos de root
-$routes->group('admin', ['filter' => 'rbac:puesto'], function ($routes) {
+$routes->group('admin', ['filter' => 'rbac:root'], function ($routes) {
     $routes->get('/',                            [AdminController::class, 'index']);
     $routes->post('createRole',                  [AdminController::class, 'createRole']);
     $routes->post('deleteRole',                  [AdminController::class, 'deleteRole']);

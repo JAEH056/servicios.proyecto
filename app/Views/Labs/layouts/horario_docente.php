@@ -487,7 +487,7 @@
 <div class="container-xl px-4 mt-n5">
     <div class="card mb-4">
         <nav class="navbar d-flex flex-column align-items-center px-2 gap-2">
-            <div class="d-flex align-items-center justify-content-center gap-2">
+            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
                 <label>Seleccione laboratorio:</label>
                 <select id="seleccionarLaboratorio" class="form-control form-select custom-select form-control-solid w-auto ms-3">
                     <?php foreach ($laboratorios as $datoslab): ?>
@@ -722,7 +722,9 @@
 
                     <!-- Botones de Guardar y Cancelar -->
                     <div class="mt-3 d-flex justify-content-end">
-                        <?= form_submit('submit', 'Guardar Evento', ['class' => 'btn btn-primary me-2']) ?>
+                        <?= form_submit('submit', 'Enviar solicitud', ['class' => 'btn btn-primary me-2']) ?>
+                        <?= form_button('cancel', 'Cancelar', ['type' => 'button','class' => 'btn btn-secondary','data-bs-dismiss' => 'modal',]) ?>
+                        
                     </div>
                 <?= form_close() ?>
             </div>

@@ -25,118 +25,118 @@
                 }
             });
             
-            // Elementos del DOM
-            const carreraSelector = document.getElementById('event-selector-carrera');
-            const carreraIdHidden = document.getElementById('carrera-id-hidden');
-            const asignaturaSelector = document.getElementById('event-selector-asignatura');
-            const asignaturaIdHidden = document.getElementById('asignatura-id-hidden');
-            const claveAsignaturaInput = document.getElementById('event-clave-asignatura');
-            const grupoSelector = document.getElementById('event-selector-grupo');
-            const grupoIdHidden = document.getElementById('grupo-id-hidden');
+            // // Elementos del DOM
+            // const carreraSelector = document.getElementById('event-selector-carrera');
+            // const carreraIdHidden = document.getElementById('carrera-id-hidden');
+            // const asignaturaSelector = document.getElementById('event-selector-asignatura');
+            // const asignaturaIdHidden = document.getElementById('asignatura-id-hidden');
+            // const claveAsignaturaInput = document.getElementById('event-clave-asignatura');
+            // const grupoSelector = document.getElementById('event-selector-grupo');
+            // const grupoIdHidden = document.getElementById('grupo-id-hidden');
 
-            // Función para manejar el cambio en el selector de carrera
-            carreraSelector.addEventListener('change', function() {
-                const carreraId = carreraSelector.value;
-                carreraIdHidden.value = carreraId;
-                // Limpiar el selector de asignaturas y grupos al cambiar de carrera
-                asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
-                grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
-                // Limpia el campo de clave de asignatura
-                claveAsignaturaInput.value = "";
+            // // Función para manejar el cambio en el selector de carrera
+            // carreraSelector.addEventListener('change', function() {
+            //     const carreraId = carreraSelector.value;
+            //     carreraIdHidden.value = carreraId;
+            //     // Limpiar el selector de asignaturas y grupos al cambiar de carrera
+            //     asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
+            //     grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
+            //     // Limpia el campo de clave de asignatura
+            //     claveAsignaturaInput.value = "";
 
-                if (carreraId) {
-                    fetch(`/usuario/pr/horario?carreraId=${carreraId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error en la respuesta del servidor: ' + response.statusText);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
-                            data.asignaturas.forEach(asignatura => {
-                                const option = document.createElement('option');
-                                option.value = asignatura.id;
-                                option.textContent = asignatura.nombre_asignatura;
-                                asignaturaSelector.appendChild(option);
-                            });
+            //     if (carreraId) {
+            //         fetch(`/usuario/pr/horario?carreraId=${carreraId}`)
+            //             .then(response => {
+            //                 if (!response.ok) {
+            //                     throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+            //                 }
+            //                 return response.json();
+            //             })
+            //             .then(data => {
+            //                 asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
+            //                 data.asignaturas.forEach(asignatura => {
+            //                     const option = document.createElement('option');
+            //                     option.value = asignatura.id;
+            //                     option.textContent = asignatura.nombre_asignatura;
+            //                     asignaturaSelector.appendChild(option);
+            //                 });
 
-                            // Llama a la función para cargar los grupos
-                            cargarGrupos(carreraId);
-                        })
-                        .catch(() => {
-                            asignaturaSelector.innerHTML = '<option value="">Error al cargar asignaturas</option>';
-                        });
-                } else {
-                    asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
-                    grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
-                }
-            });
+            //                 // Llama a la función para cargar los grupos
+            //                 cargarGrupos(carreraId);
+            //             })
+            //             .catch(() => {
+            //                 asignaturaSelector.innerHTML = '<option value="">Error al cargar asignaturas</option>';
+            //             });
+            //     } else {
+            //         asignaturaSelector.innerHTML = '<option value="">Seleccione una asignatura</option>';
+            //         grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
+            //     }
+            // });
 
-            // Función para cargar los grupos en función de la carrera seleccionada
-            function cargarGrupos(carreraId) {
-                fetch(`/usuario/pr/horario?carreraId=${carreraId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Error en la respuesta del servidor: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
+            // // Función para cargar los grupos en función de la carrera seleccionada
+            // function cargarGrupos(carreraId) {
+            //     fetch(`/usuario/pr/horario?carreraId=${carreraId}`)
+            //         .then(response => {
+            //             if (!response.ok) {
+            //                 throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+            //             }
+            //             return response.json();
+            //         })
+            //         .then(data => {
+            //             grupoSelector.innerHTML = '<option value="">Seleccione un grupo</option>';
 
-                        if (data.grupos && data.grupos.length > 0) {
-                            data.grupos.forEach(grupo => {
-                                const option = document.createElement('option');
-                                option.value = grupo.id_grupo;
-                                option.textContent = grupo.nombre_grupo;
-                                grupoSelector.appendChild(option);
-                            });
-                        } else {
-                            // Si no hay grupos, mostrar un mensaje en el selector
-                            const option = document.createElement('option');
-                            option.value = "";
-                            option.textContent = "No hay grupos disponibles";
-                            grupoSelector.appendChild(option);
-                        }
-                    })
-                    .catch(() => {
-                        grupoSelector.innerHTML = '<option value="">Error al cargar grupos</option>';
-                    });
-            }
-            // Función para manejar el cambio en el selector de grupo
-            grupoSelector.addEventListener('change', function() {
-                const grupoId = grupoSelector.value;
-                grupoIdHidden.value = grupoId; // Actualizar el valor del campo oculto con el ID del grupo seleccionado
-            });
+            //             if (data.grupos && data.grupos.length > 0) {
+            //                 data.grupos.forEach(grupo => {
+            //                     const option = document.createElement('option');
+            //                     option.value = grupo.id_grupo;
+            //                     option.textContent = grupo.nombre_grupo;
+            //                     grupoSelector.appendChild(option);
+            //                 });
+            //             } else {
+            //                 // Si no hay grupos, mostrar un mensaje en el selector
+            //                 const option = document.createElement('option');
+            //                 option.value = "";
+            //                 option.textContent = "No hay grupos disponibles";
+            //                 grupoSelector.appendChild(option);
+            //             }
+            //         })
+            //         .catch(() => {
+            //             grupoSelector.innerHTML = '<option value="">Error al cargar grupos</option>';
+            //         });
+            // }
+            // // Función para manejar el cambio en el selector de grupo
+            // grupoSelector.addEventListener('change', function() {
+            //     const grupoId = grupoSelector.value;
+            //     grupoIdHidden.value = grupoId; // Actualizar el valor del campo oculto con el ID del grupo seleccionado
+            // });
 
-            // Función para manejar el cambio en el selector de asignatura
-            asignaturaSelector.addEventListener('change', function() {
-                const asignaturaId = asignaturaSelector.value;
-                // Limpia el campo de clave y el campo oculto
-                asignaturaIdHidden.value = asignaturaId;
-                claveAsignaturaInput.value = "";
+            // // Función para manejar el cambio en el selector de asignatura
+            // asignaturaSelector.addEventListener('change', function() {
+            //     const asignaturaId = asignaturaSelector.value;
+            //     // Limpia el campo de clave y el campo oculto
+            //     asignaturaIdHidden.value = asignaturaId;
+            //     claveAsignaturaInput.value = "";
 
-                if (asignaturaId) {
-                    fetch(`/usuario/asignaturaclave/horario?asignaturaId=${asignaturaId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Error en la respuesta del servidor: ' + response.statusText);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.clave && data.clave.length > 0) {
-                                claveAsignaturaInput.value = data.clave[0].claveasignatura || "Clave no disponible";
-                            } else {
-                                claveAsignaturaInput.value = "Clave no disponible";
-                            }
-                        })
-                        .catch(() => {
-                            claveAsignaturaInput.value = "Error al obtener la clave";
-                        });
-                }
-            });
+            //     if (asignaturaId) {
+            //         fetch(`/usuario/asignaturaclave/horario?asignaturaId=${asignaturaId}`)
+            //             .then(response => {
+            //                 if (!response.ok) {
+            //                     throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+            //                 }
+            //                 return response.json();
+            //             })
+            //             .then(data => {
+            //                 if (data.clave && data.clave.length > 0) {
+            //                     claveAsignaturaInput.value = data.clave[0].claveasignatura || "Clave no disponible";
+            //                 } else {
+            //                     claveAsignaturaInput.value = "Clave no disponible";
+            //                 }
+            //             })
+            //             .catch(() => {
+            //                 claveAsignaturaInput.value = "Error al obtener la clave";
+            //             });
+            //     }
+            // });
             // --------------------------------------------------------------------------------------------------------------------------------------------
             //Lógica del horario
             const Calendar = tui.Calendar;
@@ -236,123 +236,123 @@
                 }
             });
 
-            // Lógica del formulario de creación de eventos
-            const tipoSolicitudSelector = document.getElementById('event-selector-solicitud');
-            const camposPracticas = document.getElementById('campos-practicas');
-            const camposVarias = document.getElementById('campos-varias');
-            const form = document.getElementById('eventForm');
+            // // Lógica del formulario de creación de eventos
+            // const tipoSolicitudSelector = document.getElementById('event-selector-solicitud');
+            // const camposPracticas = document.getElementById('campos-practicas');
+            // const camposVarias = document.getElementById('campos-varias');
+            // const form = document.getElementById('eventForm');
 
-            tipoSolicitudSelector.addEventListener('change', function() {
-                const tipoSolicitud = this.value;
-                // Ocultar todos los campos adicionales
-                camposPracticas.style.display = 'none';
-                camposVarias.style.display = 'none';
+            // tipoSolicitudSelector.addEventListener('change', function() {
+            //     const tipoSolicitud = this.value;
+            //     // Ocultar todos los campos adicionales
+            //     camposPracticas.style.display = 'none';
+            //     camposVarias.style.display = 'none';
 
-                // Restablecer los valores de los campos en ambas secciones
-                const inputsPracticas = camposPracticas.querySelectorAll('input, select, textarea');
-                inputsPracticas.forEach(input => input.value = '');
+            //     // Restablecer los valores de los campos en ambas secciones
+            //     const inputsPracticas = camposPracticas.querySelectorAll('input, select, textarea');
+            //     inputsPracticas.forEach(input => input.value = '');
 
-                const inputsVarias = camposVarias.querySelectorAll('input, select, textarea');
-                inputsVarias.forEach(input => input.value = '');
+            //     const inputsVarias = camposVarias.querySelectorAll('input, select, textarea');
+            //     inputsVarias.forEach(input => input.value = '');
 
-                // Mostrar los campos correspondientes al tipo seleccionado
-                if (tipoSolicitud === 'practicas') {
-                    camposPracticas.style.display = 'block';
-                } else if (tipoSolicitud === 'varias') {
-                    camposVarias.style.display = 'block';
-                }
-            });
+            //     // Mostrar los campos correspondientes al tipo seleccionado
+            //     if (tipoSolicitud === 'practicas') {
+            //         camposPracticas.style.display = 'block';
+            //     } else if (tipoSolicitud === 'varias') {
+            //         camposVarias.style.display = 'block';
+            //     }
+            // });
 
             // Mostrar el modal para crear eventos
-            calendar.on('selectDateTime', function(event) {
-                const modal = new bootstrap.Modal(document.getElementById('createEventModal'));
-                resetModalFields();
-                modal.show();
+            // calendar.on('selectDateTime', function(event) {
+            //     const modal = new bootstrap.Modal(document.getElementById('createEventModal'));
+            //     resetModalFields();
+            //     modal.show();
 
-                const startDateTime = event.start;
-                const endDateTime = new Date(event.start.getTime() + 60 * 60 * 1000);
+            //     const startDateTime = event.start;
+            //     const endDateTime = new Date(event.start.getTime() + 60 * 60 * 1000);
 
-                // Inicializar el datepicker con timepicker
-                const datepickerStart = new tui.DatePicker('#datepicker-start-wrapper', {
-                    date: startDateTime,
-                    timePicker: true,
-                    input: {
-                        element: '#datepicker-start-input',
-                        format: 'yyyy-MM-dd HH:mm',
-                    },
-                });
+            //     // Inicializar el datepicker con timepicker
+            //     const datepickerStart = new tui.DatePicker('#datepicker-start-wrapper', {
+            //         date: startDateTime,
+            //         timePicker: true,
+            //         input: {
+            //             element: '#datepicker-start-input',
+            //             format: 'yyyy-MM-dd HH:mm',
+            //         },
+            //     });
 
-                const datepickerEnd = new tui.DatePicker('#datepicker-end-wrapper', {
-                    date: endDateTime,
-                    timePicker: true,
-                    input: {
-                        element: '#datepicker-end-input',
-                        format: 'yyyy-MM-dd HH:mm',
-                    },
-                });
-            });
+            //     const datepickerEnd = new tui.DatePicker('#datepicker-end-wrapper', {
+            //         date: endDateTime,
+            //         timePicker: true,
+            //         input: {
+            //             element: '#datepicker-end-input',
+            //             format: 'yyyy-MM-dd HH:mm',
+            //         },
+            //     });
+            // });
             // ----------------------------------------------------------------------------------------------------------------------------------------------------------
             // Función que maneja el envío del formulario
-            function handleFormSubmit(event) {
-                event.preventDefault(); // Previene el envío normal del formulario
+            // function handleFormSubmit(event) {
+            //     event.preventDefault(); // Previene el envío normal del formulario
 
-                // Obtener el formulario y el campo CSRF
-                const form = document.getElementById('eventForm'); // Asegúrate de que el formulario tenga este ID
-                const csrfField = document.querySelector('.txt_csrfname'); // Asegúrate de que el campo CSRF tenga esta clase
+            //     // Obtener el formulario y el campo CSRF
+            //     const form = document.getElementById('eventForm'); // Asegúrate de que el formulario tenga este ID
+            //     const csrfField = document.querySelector('.txt_csrfname'); // Asegúrate de que el campo CSRF tenga esta clase
 
-                if (!csrfField) {
-                    console.error("No se encontró el campo CSRF");
-                    return;
-                }
+            //     if (!csrfField) {
+            //         console.error("No se encontró el campo CSRF");
+            //         return;
+            //     }
 
-                const csrfName = csrfField.name;  // Nombre del campo CSRF
-                const csrfHash = csrfField.value; // Valor del token CSRF
+            //     const csrfName = csrfField.name;  // Nombre del campo CSRF
+            //     const csrfHash = csrfField.value; // Valor del token CSRF
 
-                const formData = new FormData(form); // Asegúrate de que 'form' esté correctamente referenciado
-                formData.append(csrfName, csrfHash); // Agregar CSRF al FormData
+            //     const formData = new FormData(form); // Asegúrate de que 'form' esté correctamente referenciado
+            //     formData.append(csrfName, csrfHash); // Agregar CSRF al FormData
 
-                // Limpiar los errores previos antes de mostrar nuevos errores
-                clearPreviousErrors();
+            //     // Limpiar los errores previos antes de mostrar nuevos errores
+            //     clearPreviousErrors();
 
-                // Realizar la solicitud al servidor
-                fetch('/usuario/solicitud', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Respuesta del servidor:", data); // Verifica qué se está recibiendo
+            //     // Realizar la solicitud al servidor
+            //     fetch('/usuario/solicitud', {
+            //         method: 'POST',
+            //         body: formData,
+            //     })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         console.log("Respuesta del servidor:", data); // Verifica qué se está recibiendo
 
-                    if (data.csrf) {
-                        csrfField.value = data.csrf;  // Actualizar el CSRF token en el formulario
-                    }
+            //         if (data.csrf) {
+            //             csrfField.value = data.csrf;  // Actualizar el CSRF token en el formulario
+            //         }
 
-                    // Si hay errores de validación, mostrarlos
-                    if (data.errors) {
-                        let errorMessages = '';
-                        for (let field in data.errors) {
-                            let fieldErrors = Array.isArray(data.errors[field]) ? data.errors[field] : [data.errors[field]];
-                            errorMessages += `${field}: ${fieldErrors.join(', ')}\n`;
-                            displayErrorsInUI(field, fieldErrors);
-                        }
-                    }else{
-                        // Mostrar el alert y cerrar el modal
-                        alert('Solicitud enviada correctamente.');
+            //         // Si hay errores de validación, mostrarlos
+            //         if (data.errors) {
+            //             let errorMessages = '';
+            //             for (let field in data.errors) {
+            //                 let fieldErrors = Array.isArray(data.errors[field]) ? data.errors[field] : [data.errors[field]];
+            //                 errorMessages += `${field}: ${fieldErrors.join(', ')}\n`;
+            //                 displayErrorsInUI(field, fieldErrors);
+            //             }
+            //         }else{
+            //             // Mostrar el alert y cerrar el modal
+            //             alert('Solicitud enviada correctamente.');
 
-                        // Cerrar el modal después de hacer clic en OK en el alert
-                        const modalElement = document.getElementById('createEventModal');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                            // window.location.reload(); // Recarga completa de la página
-                        }
-                        // Reiniciar el formulario
-                        resetModalFields();
-                        recargarEventos(calendar);
-                    }
-                })
-                .catch(error => console.error('Error en la solicitud:', error));
-            }
+            //             // Cerrar el modal después de hacer clic en OK en el alert
+            //             const modalElement = document.getElementById('createEventModal');
+            //             const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            //             if (modalInstance) {
+            //                 modalInstance.hide();
+            //                 // window.location.reload(); // Recarga completa de la página
+            //             }
+            //             // Reiniciar el formulario
+            //             resetModalFields();
+            //             recargarEventos(calendar);
+            //         }
+            //     })
+            //     .catch(error => console.error('Error en la solicitud:', error));
+            // }
 
             // // Función para limpiar los errores previos antes de mostrar nuevos
             // function clearPreviousErrors() {
@@ -435,6 +435,56 @@
                     .catch(error => console.error('Error al recargar eventos:', error));
             }
 
+           // Actualizar el campo oculto con el ID de la carrera seleccionada
+// document.getElementById('modal-carrera').addEventListener('change', function () {
+//     const hiddenCarreraId = document.getElementById('carrera-id');
+//     hiddenCarreraId.value = this.value; // Actualiza el campo oculto
+//     console.log("ID de la carrera seleccionado:", hiddenCarreraId.value);
+
+//     // Llamar a la función para obtener las asignaturas de la carrera seleccionada
+//     obtenerAsignatura(this.value);
+// });
+
+// // Obtener asignaturas al cargar el modal (en caso de que ya haya una carrera seleccionada)
+// const carreraIdInicial = document.getElementById('modal-carrera').value;
+// if (carreraIdInicial) {
+//     document.getElementById('carrera-id').value = carreraIdInicial;
+//     obtenerAsignatura(carreraIdInicial);
+// }
+
+// Función para obtener asignaturas de una carrera usando el ID
+// function obtenerAsignatura(carreraId) {
+//     fetch(`/usuario/materias/carrera?carreraId=${carreraId}`)
+//         .then(response => response.json())
+//         .then(data => {
+//             const selectAsignatura = document.getElementById('modal-asignatura');
+//             selectAsignatura.innerHTML = ''; // Limpiar opciones anteriores
+
+//             if (data && data.length > 0) {
+//                 // Agregar asignaturas al selector
+//                 data.forEach(asignatura => {
+//                     const option = document.createElement('option');
+//                     option.value = asignatura.id;
+//                     option.textContent = asignatura.nombre_asignatura;
+//                     selectAsignatura.appendChild(option);
+//                 });
+//                 console.log("Asignaturas cargadas:", data);
+//             } else {
+//                 // Si no hay asignaturas, mostrar un mensaje
+//                 const option = document.createElement('option');
+//                 option.value = '';
+//                 option.textContent = 'No hay asignaturas disponibles';
+//                 selectAsignatura.appendChild(option);
+//             }
+//         })
+//         .catch(error => {
+//             console.error("Error al cargar asignaturas:", error);
+//         });
+// }
+
+
+
+
             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             // Editar y aceptar o rechazar solicitudes
             //para cargar los timepicker de tui VARIAS
@@ -475,7 +525,6 @@
                 timePicker: true
             });
 
-
             // Lógica para ver la información del evento creado
             calendar.on('clickEvent', function(event) {
                 const evento = event.event;
@@ -506,90 +555,207 @@
                     if (data && data.solicitud && data.solicitud.length > 0) {
                         const solicitud = data.solicitud[0]; // Accedemos al primer objeto del array
 
-                        // Asignamos el ID al campo oculto
-                        document.getElementById('idSolicitud-varias').value = solicitud.id_solicitud;
-                        console.log("ID de la solicitud en el modal:", document.getElementById('idSolicitud-varias').value);
-
-                        // Asignamos los valores de la solicitud a los elementos del modal VARIAS
-                        document.getElementById('modal-empleado-varias').value = solicitud.correo;
-                        document.getElementById('modal-nombre-proyecto-actividad-otro').value = solicitud.nombre_proyecto;
-                        document.getElementById('modal-descripcion-tareas').value = solicitud.descripcion_tareas;
-                        document.getElementById('modal-estado-varias').value = solicitud.estado;
-                        document.getElementById('modal-observaciones-varias').value = solicitud.observaciones;
-                        document.getElementById('hora-start-varias').value = solicitud.horaEntrada;
-                        document.getElementById('hora-end-varias').value = solicitud.horaSalida;
-
-                        // Solo configurar 'tipo_uso' si el modal es de "Solicitudes Varias"
-                        if (colorEvento === '#ff6f00' || colorEvento === '#0059ff') {
-                            const tipo_uso = <?php echo json_encode($tipo_uso); ?>;
-                            console.log("Tipo de uso (de PHP):", tipo_uso);
-
-                            const selectTipoUso = document.getElementById('modal-tipo-uso');
-                            selectTipoUso.innerHTML = ''; // Limpiar las opciones anteriores
-
-                            // Agregar las opciones al selector
-                            tipo_uso.forEach(tipo => {
-                                const option = document.createElement('option');
-                                option.value = tipo.id; // Usar el 'id' como valor
-                                option.textContent = tipo.nombre; // Usar el 'nombre' como texto visible
-                                selectTipoUso.appendChild(option);
-                            });
-                           // console.log("Opciones añadidas al select:", selectTipoUso);
-
-                            // Establecer el valor seleccionado (valor de tipo_uso en la solicitud)
-                            const selectedValue = solicitud.tipo_uso; // Esto debe ser el valor del tipo_uso en la solicitud
-                            console.log("Valor de tipo_uso en la solicitud:", selectedValue);
-
-                            // Buscar el 'id' correspondiente al 'nombre' de la solicitud
-                            const tipoSeleccionado = tipo_uso.find(tipo => tipo.nombre.trim() === selectedValue);
-                            selectTipoUso.value = tipoSeleccionado ? tipoSeleccionado.id : tipo_uso[0].id;
-                        }
-
-                        // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
-                        document.getElementById('modal-empleado-practicas').value = solicitud.correo;
-                        document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
-                        document.getElementById('modal-objetivo').value = solicitud.objetivo;
-                        document.getElementById('modal-carrera').value = solicitud.carrera;
-                        document.getElementById('modal-clave').value = solicitud.clave;
-                        document.getElementById('modal-grupo').value = solicitud.grupo;
-
-                         // Convertir las fechas de entrada y salida
-                        const horaEntrada = new Date(solicitud.hora_fecha_entrada);  // Convertir la hora de entrada
-                        const horaSalida = new Date(solicitud.hora_fecha_salida);  // Convertir la hora de salida
-
-                        // Establecer las fechas en los datepickers correspondientes
-                        if (!isNaN(horaEntrada) && !isNaN(horaSalida)) {
-                            datepickerEntradaVarias.setDate(horaEntrada); // Establecer la fecha y hora de entrada
-                            datepickerSalidaVarias.setDate(horaSalida);   // Establecer la fecha y hora de salida
-                        } else {
-                            console.error("Fechas inválidas", horaEntrada, horaSalida);
-                        }
-
-                        // Condicional para determinar qué formulario mostrar según el color
-                        let modal;
-                        if (colorEvento === '#ff6f00') {
-                            // Mostrar formulario de Solicitudes Varias
-                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesVarias'));
-                        } else if (colorEvento === '#0059ff') {
-                            // Mostrar formulario de Solicitudes Varias (puedes ajustar este color a un caso específico)
-                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesVarias'));
+                        // Llamamos a la función que muestra el modal adecuado según el color
+                        if (colorEvento === '#0059ff') {
+                            mostrarModalVarias(solicitud);
                         } else if (colorEvento === '#13199a') {
-                            // Mostrar formulario de Solicitudes Prácticas
-                            modal = new bootstrap.Modal(document.getElementById('modalSolicitudesPracticas'));
+                            mostrarModalPracticas(solicitud);
                         } else {
-                            // Si el color no corresponde a ninguno de los casos anteriores, puedes mostrar un modal genérico o cerrar
                             console.log("Evento con color no identificado, no se muestra un formulario específico.");
-                            return; // No mostrar ningún formulario si el color no coincide
+                            return;
                         }
 
-                        // Mostrar el modal correspondiente
-                        modal.show();
                     } else {
                         console.error("No se encontraron datos de la solicitud.");
                     }
                 }
 
+                // Mostrar modal de Solicitudes Varias
+                function mostrarModalVarias(solicitud) {
+                    // Asignamos el ID al campo oculto
+                    document.getElementById('idSolicitud-varias').value = solicitud.id_solicitud;
+                    console.log("ID de la solicitud en el modal varias:", document.getElementById('idSolicitud-varias').value);
+
+                    // Asignamos los valores de la solicitud a los elementos del modal VARIAS
+                    document.getElementById('modal-empleado-varias').value = solicitud.correo;
+                    document.getElementById('modal-nombre-proyecto-actividad-otro').value = solicitud.nombre_proyecto;
+                    document.getElementById('modal-descripcion-tareas').value = solicitud.descripcion_tareas;
+                    document.getElementById('modal-estado-varias').value = solicitud.estado;
+                    document.getElementById('modal-observaciones-varias').value = solicitud.observaciones;
+                    document.getElementById('hora-start-varias').value = solicitud.horaEntrada;
+                    document.getElementById('hora-end-varias').value = solicitud.horaSalida;
+
+                    // Configurar el tipo de uso
+                    const tipo_uso = <?php echo json_encode($tipo_uso); ?>;
+                    const selectTipoUso = document.getElementById('modal-tipo-uso');
+                    selectTipoUso.innerHTML = ''; // Limpiar las opciones anteriores
+
+                    tipo_uso.forEach(tipo => {
+                        const option = document.createElement('option');
+                        option.value = tipo.id;
+                        option.textContent = tipo.nombre;
+                        selectTipoUso.appendChild(option);
+                    });
+
+                    // Establecer el valor seleccionado
+                    const selectedValue = solicitud.tipo_uso;
+                    const tipoSeleccionado = tipo_uso.find(tipo => tipo.nombre.trim() === selectedValue);
+                    selectTipoUso.value = tipoSeleccionado ? tipoSeleccionado.id : tipo_uso[0].id;
+
+                    // Convertir las fechas
+                    const horaEntrada = new Date(solicitud.hora_fecha_entrada);
+                    const horaSalida = new Date(solicitud.hora_fecha_salida);
+
+                    if (!isNaN(horaEntrada) && !isNaN(horaSalida)) {
+                        datepickerEntradaVarias.setDate(horaEntrada);
+                        datepickerSalidaVarias.setDate(horaSalida);
+                    } else {
+                        console.error("Fechas inválidas", horaEntrada, horaSalida);
+                    }
+
+                    // Mostrar el modal correspondiente
+                    const modal = new bootstrap.Modal(document.getElementById('modalSolicitudesVarias'));
+                    modal.show();
+                }
+
+                // Mostrar modal de Solicitudes Prácticas
+// Mostrar modal de Solicitudes Prácticas
+function mostrarModalPracticas(solicitud) {
+    // Asignamos el ID al campo oculto
+    document.getElementById('idSolicitud-practicas').value = solicitud.id_solicitud;
+    console.log("ID de la solicitud en el modal de practicas:", document.getElementById('idSolicitud-practicas').value);
+
+    // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
+    document.getElementById('modal-empleado-practicas').value = solicitud.correo;
+    document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
+    document.getElementById('modal-objetivo').value = solicitud.objetivo;
+    document.getElementById('modal-clave').value = solicitud.clave;  // Aquí asignamos la clave directamente
+    document.getElementById('modal-grupo').value = solicitud.grupo;
+
+    // Cargar las carreras y asignaturas
+    const carreras = <?php echo json_encode($carreras); ?>;
+    const selectCarrera = document.getElementById('modal-carrera');
+    selectCarrera.innerHTML = ''; // Limpiar las opciones anteriores
+
+    // Agregar opciones al selector de carrera
+    carreras.forEach(carrera => {
+        const option = document.createElement('option');
+        option.value = carrera.id;
+        option.textContent = carrera.nombre_carrera;
+        selectCarrera.appendChild(option);
+    });
+
+    const selectedValue = solicitud.carrera;
+    const carreraSeleccionada = carreras.find(carrera => carrera.nombre_carrera.trim() === selectedValue);
+    selectCarrera.value = carreraSeleccionada ? carreraSeleccionada.id : carreras[0].id;
+
+    // Cargar asignaturas y grupos según la carrera seleccionada
+    const obtenerAsignaturaYGrupos = (carreraId) => {
+        fetch(`/usuario/materias/carrera?carreraId=${carreraId}`)
+            .then(response => response.json())
+            .then(data => {
+                const selectAsignatura = document.getElementById('modal-asignatura');
+                const selectGrupo = document.getElementById('modal-grupo'); // Selector de grupos
+                selectAsignatura.innerHTML = ''; // Limpiar las opciones anteriores
+                selectGrupo.innerHTML = ''; // Limpiar las opciones de grupos
+
+                // Agregar opciones al selector de asignaturas
+                if (data && Array.isArray(data.asignaturas) && data.asignaturas.length > 0) {
+                    data.asignaturas.forEach(asignatura => {
+                        const option = document.createElement('option');
+                        option.value = asignatura.id;
+                        option.textContent = asignatura.nombre_asignatura;
+                        selectAsignatura.appendChild(option);
+                    });
+
+                    // Establecer la asignatura preseleccionada (si existe en la solicitud)
+                    const selectedAsignaturaValue = solicitud.id_asignatura; // Asegúrate de que 'asignatura' sea el id
+                    const asignaturaSeleccionada = data.asignaturas.find(asignatura => asignatura.id === selectedAsignaturaValue);
+
+                    console.log("Asignatura encontrada en la lista:", asignaturaSeleccionada);
+
+                    // Si la asignatura se encuentra, la seleccionamos
+                    selectAsignatura.value = asignaturaSeleccionada ? asignaturaSeleccionada.id : data.asignaturas[0].id;
+
+                    // Obtener la clave de la asignatura seleccionada
+                    obtenerInfoAsignatura(selectAsignatura.value);
+                } else {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No hay asignaturas disponibles';
+                    selectAsignatura.appendChild(option);
+                }
+
+                // Agregar opciones al selector de grupos
+                if (data && Array.isArray(data.grupos) && data.grupos.length > 0) {
+                    data.grupos.forEach(grupo => {
+                        const option = document.createElement('option');
+                        option.value = grupo.id;
+                        option.textContent = grupo.nombre_grupo;
+                        selectGrupo.appendChild(option);
+                    });
+
+                    // Establecer el grupo preseleccionado (si existe en la solicitud)
+                    const selectedGrupoValue = solicitud.id_grupo; // Asegúrate de que 'grupo' sea el id
+                    const grupoSeleccionado = data.grupos.find(grupo => grupo.id_grupo === selectedGrupoValue);
+
+                    console.log("Grupo encontrado en la lista:", grupoSeleccionado);
+
+                    // Si el grupo se encuentra, lo seleccionamos
+                    selectGrupo.value = grupoSeleccionado ? grupoSeleccionado.id : data.grupos[0].id;
+                } else {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No hay grupos disponibles';
+                    selectGrupo.appendChild(option);
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar asignaturas y grupos:", error);
             });
+    };
+
+    obtenerAsignaturaYGrupos(selectCarrera.value);
+
+    // Evento de cambio de carrera
+    selectCarrera.addEventListener('change', function() {
+        obtenerAsignaturaYGrupos(selectCarrera.value); // Volver a cargar asignaturas y grupos basados en la nueva carrera
+    });
+
+    // Evento de cambio de asignatura
+    const selectAsignatura = document.getElementById('modal-asignatura');
+    selectAsignatura.addEventListener('change', function() {
+        obtenerInfoAsignatura(selectAsignatura.value);
+    });
+
+    // Función para obtener más información sobre la asignatura seleccionada
+    const obtenerInfoAsignatura = (asignaturaId) => {
+        fetch(`/usuario/clave/asignatura?asignaturaId=${asignaturaId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && Array.isArray(data.clave) && data.clave.length > 0) {
+                    const claveAsignatura = data.clave[0].claveasignatura; 
+                    console.log("Clave de la asignatura:", claveAsignatura);
+                    document.getElementById('modal-clave').value = claveAsignatura;
+                } else {
+                    console.log("No se encontró la clave de la asignatura o está vacía.");
+                }
+            })
+            .catch(error => {
+                console.error("Error al obtener la información de la asignatura:", error);
+            });
+    };
+
+    // Mostrar el modal correspondiente
+    const modal = new bootstrap.Modal(document.getElementById('modalSolicitudesPracticas'));
+    modal.show();
+}
+
+
+
+
+            });
+
 
             document.getElementById('btnGuardarCambios').addEventListener('click', function (e) {
                 e.preventDefault();
@@ -694,7 +860,7 @@
 <div class="container-xl px-4 mt-n5">
     <div class="card mb-4">
         <nav class="navbar d-flex flex-column align-items-center px-2 gap-2">
-            <div class="d-flex align-items-center justify-content-center gap-2">
+            <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
                 <label>Seleccione laboratorio:</label>
                 <select id="seleccionarLaboratorio" class="form-control form-select custom-select form-control-solid w-auto ms-3">
                     <?php foreach ($laboratorios as $datoslab): ?>
@@ -938,8 +1104,10 @@
     </div> 
 </div>
 
- <!-- Modal para mostrar los detalles de los días inhábiles
-<div class="modal fade" id="inhabilModal" tabindex="-1" role="dialog" aria-labelledby="inhabilModalLabel" aria-hidden="true">
+<!-- ---------------------------------------------------------------------------------------------------------------------- -->
+
+<!-- Modal para mostrar los detalles de los días inhábiles -->
+<div class="modal fade" id="modalDiaInhabil" tabindex="-1" role="dialog" aria-labelledby="inhabilModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -949,7 +1117,7 @@
             <div class="modal-body">
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
-                <input type="text" class="form-control form-control-solid" id="nombreDiaInhabil" disabled>
+                <input type="text" class="form-control form-control-solid" id="nombre_dia_inhabil" name="nombre_dia_inhabil" disabled>
             </div>
             </div>
             <div class="modal-footer">
@@ -957,13 +1125,13 @@
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- ---------------------------------------------------------------------------------------------------------------------- -->
 
 <!-- Modal de Bootstrap para Mostrar solicitudes varias -->
 <div class="modal fade" id="modalSolicitudesVarias" tabindex="-1" aria-labelledby="modalSolicitudesVariasLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalSolicitudesVariasLabel">Detalles de la Solicitud</h5>
@@ -1029,24 +1197,6 @@
                         <textarea class="form-control form-control-solid" id="modal-observaciones-varias" name="observaciones_varias" rows="3"></textarea>
                     </div>
 
-                    <!-- <div class="mb-3">
-                        <label for="hora-entrada" class="form-label">Hora de Entrada</label>
-                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-                            <input type="text" id="hora-start-varias" class="form-control" aria-label="Date-Time" name = "datepicker-start-inputVarias">
-                            <span class="tui-ico-date"></span>
-                        </div>
-                        <div id="hora-entrada-varias" style="margin-top: -1px;"></div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="hora-salida" class="form-label">Hora de Salida</label>
-                        <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-                            <input type="text" id="hora-end-varias" class="form-control" aria-label="Date-Time" name = "datepicker-end-inputVarias">
-                            <span class="tui-ico-date"></span>
-                        </div>
-                        <div id="hora-salida-varias" style="margin-top: -1px;"></div>
-                    </div> -->
-
                     <div class="mb-3">
                         <label for="hora-entrada" class="form-label">Hora de Entrada</label>
                         <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
@@ -1068,8 +1218,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
@@ -1077,14 +1227,18 @@
 
 <!-- Modal de Bootstrap para Mostrar solicitudes prácticas -->
 <div class="modal fade" id="modalSolicitudesPracticas" tabindex="-1" aria-labelledby="modalSolicitudesPracticasLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalSolicitudesPracticasLabel">Detalles de la Solicitud</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formSolicitudPractica">
+                <form id="formSolicitudPractica" method="POST" action="usuario/actualizar/solicitud">
+                <?= csrf_field() ?>
+                            <!-- token oculto  -->
+                    <input type="hidden" class="txt_csrfname" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" />
+                    <input type="hidden" id="idSolicitud-practicas" name="idSolicitud">
 
                     <div class="mb-3">
                         <label for="modal-empleado-practicas" class="form-label">Empleado</label>
@@ -1103,7 +1257,20 @@
 
                     <div class="mb-3">
                         <label for="modal-carrera" class="form-label">Carrera</label>
-                        <input type="text" class="form-control form-control-solid" id="modal-carrera" name="carrera" readonly>
+                        <select class="form-select custom-select form-control form-control-solid" id="modal-carrera" name="carrera">
+
+                        </select>
+                        <!-- Campo oculto para almacenar el ID -->
+                        <input type="hidden" id="carrera-id" name="carrera_id" value="">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal-asignatura" class="form-label">Asignatura</label>
+                        <select class="form-select custom-select form-control form-control-solid" id="modal-asignatura" name="asignatura">
+
+                        </select>
+                        <!-- Campo oculto para almacenar el ID -->
+                        <input type="hidden" id="asignatura-id" name="asignatura_id" value="">
                     </div>
 
                     <div class="mb-3">
@@ -1113,7 +1280,9 @@
 
                     <div class="mb-3">
                         <label for="modal-grupo" class="form-label">Grupo</label>
-                        <input type="text" class="form-control form-control-solid" id="modal-grupo" name="grupo" readonly>
+                        <select class="form-select custom-select form-control form-control-solid" id="modal-grupo" name="grupo">
+
+                        </select>
                     </div>
 
                     <div class="mb-3">
@@ -1147,8 +1316,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnGuardarCambios">Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>

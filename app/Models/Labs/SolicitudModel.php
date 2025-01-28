@@ -58,9 +58,13 @@ class SolicitudModel extends Model
             tipo_uso.id As id_tipo_uso,
             tipo_uso.nombre AS tipo_uso,
             '' AS objetivo,
+            '' AS id_carrera,
             '' AS carrera,
             '' AS clave,
+            '' AS id_grupo,
             '' AS grupo,
+            '' AS id_clase,
+            '' AS id_asignatura,
             usuario.principal_name AS correo,
             autorizacion.estado AS estado,
             autorizacion.observacion As observaciones
@@ -85,12 +89,16 @@ class SolicitudModel extends Model
             laboratorio.nombre AS nombre_laboratorio,
             solicitudes_practicas.nombre_practica  As nombre_practica,
             '' AS descripcion_tareas,
-             '' As id_tipo_uso,
-            ''AS tipo_uso,
+            '' As id_tipo_uso,
+            '' AS tipo_uso,
             solicitudes_practicas.objetivo AS objetivo,
+            carrera.id AS id_carrera,
             carrera.nombre AS carrera,
             asignatura.clave AS clave,
+            grupo.id AS id_grupo,
             grupo.nombre AS grupo,
+            clase.id AS id_clase,
+            asignatura.id  As id_asignatura,
             usuario.principal_name AS correo,
             autorizacion.estado AS estado,
             autorizacion.observacion As observaciones
@@ -110,8 +118,6 @@ class SolicitudModel extends Model
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         where solicitud.id=$idSolicitud
         EOL;
-        // $query = $this->db->query($sql);
-        // return $query->getResultArray();
         $query = $this->db->query($sql);
         $solicitud = $query->getResultArray();
 
@@ -131,30 +137,53 @@ class SolicitudModel extends Model
         return $solicitud;
     }
 
-    public function actualizarSolicitud($idSolicitud, $datasolicitud,$data_solicitud_varias,$data_autorizacion)
+    public function actualizarSolicitud($idSolicitud, $datasolicitud,$data_autorizacion,$data_solicitud_varias=null,$data_solicitud_practica=null,$data_clase=null):bool
     {
          
             $this->db->transStart();
         
             // Actualizar la tabla 'solicitud'
-            $builder = $this->db->table('solicitud');
+            $builder=$this->db->table('solicitud');
             $builder->where('id', $idSolicitud);
             $builder->update($datasolicitud);
         
-           
+           if($data_solicitud_varias !==null){
             $this->db->table('solicitudes_varias')
                 ->where('id_solicitud', $idSolicitud)
                 ->update($data_solicitud_varias);
-        
-            $this->db->table('autorizacion')
-                ->where('id_solicitud', $idSolicitud)
-                ->update($data_autorizacion);
-        
-            
-            $this->db->transComplete();
-        
-           return true;
-           
-        
+           }
+
+            if($data_solicitud_practica!==null){ 
+            $this->db->table('solicitud_practica')
+            ->where('id_solicitud',$idSolicitud)
+            ->update($data_solicitud_practica);
+            }
+
+            $query = $this->db->table('solicitud_practica')
+            ->select('id_clase')
+            ->where('id_solicitud', $idSolicitud)
+            ->get();
+
+            if($query !==false ){
+            if ($query->getNumRows() > 0) {
+                $id_clase = $query->getRow()->id_clase;
+                if ($id_clase && $data_clase !== null) {
+                    $this->db->table('clase')
+                        ->where('id', $id_clase)
+                        ->update($data_clase);
+                }
+            }
+        }
+     
+    if($data_autorizacion !== null) {
+        $this->db->table('autorizacion')
+            ->where('id_solicitud', $idSolicitud)
+            ->update($data_autorizacion);
+    }
+
+    $this->db->transComplete();
+    return true;
+
+   
     }
 }

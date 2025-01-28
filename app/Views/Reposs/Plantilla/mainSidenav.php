@@ -32,7 +32,7 @@
                     <a class="nav-link" href="<?= base_url('usuario/residentes/documentos') ?>">Subir documentos</a>
                 </nav>
             </div>
-            <!-- Sidenav Accordion (Pages)-->
+            <!-- Sidenav Accordion (Residente)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePersonal" aria-expanded="false" aria-controls="collapsePages">
                 <div class="nav-link-icon"><i data-feather="user"></i></div>
                 Informacion Personal
@@ -44,7 +44,7 @@
                     <a class="nav-link" href="<?= base_url('/usuario/residentes/datos') ?>">Mis Datos</a>
                 </nav>
             </div>
-            <!-- Sidenav Accordion (Pages)-->
+            <!-- Sidenav Accordion (Empresa)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseEmpress" aria-expanded="false" aria-controls="collapsePages">
                 <div class="nav-link-icon"><i data-feather="briefcase"></i></div>
                 Empresa
@@ -57,7 +57,7 @@
                     <a class="nav-link" href="<?=base_url('usuario/residentes/empresa_asesor_externo')?>">Asesor Externo</a>
                 </nav>
             </div>
-            <!-- Sidenav Accordion (Applications)-->
+            <!-- Sidenav Accordion (Proyectos)-->
             <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseProject" aria-expanded="false" aria-controls="collapseApps">
                 <div class="nav-link-icon"><i data-feather="grid"></i></div>
                 Proyecto
@@ -70,9 +70,22 @@
                     <a class="nav-link" href="<?=base_url('usuario/residentes/asesor_interno')?>">Asesor Interno</a>
                 </nav>
             </div>
-            <!-- Sidenav Accordion (Flows)-->
-            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
+            <!-- Sidenav Accordion (Proyectos)-->
+            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseReport" aria-expanded="false" aria-controls="collapseApps">
                 <div class="nav-link-icon"><i data-feather="file-text"></i></div>
+                Reportes
+                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseReport" data-bs-parent="#accordionSidenav">
+            <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+                    <!-- Nested Sidenav Accordion (Pages -> Account)-->
+                    <a class="nav-link" href="<?=base_url('usuario/residentes/reportes')?>">Reporte Parcial</a>
+                    <a class="nav-link" href="<?=base_url('usuario/residentes/reportes')?>">Reporte Final</a>
+                </nav>
+            </div>
+            <!-- Sidenav Accordion (Formatos)-->
+            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
+                <div class="nav-link-icon"><i data-feather="folder"></i></div>
                 Formatos y Requisitos
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>

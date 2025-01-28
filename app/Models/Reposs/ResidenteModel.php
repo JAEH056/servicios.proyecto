@@ -129,7 +129,7 @@ class ResidenteModel extends Model
     {
         return $this->where('principal_name', $correo)->first();
     }
-    public function findByCorreo($userId)
+    public function findByCorreo(int $userId): array|object|null
     {
         return $this->select('residente.*, pe.idprograma_educativo, pe.nombre_programa_educativo, mo.nombre_modalidad')
             ->join('reposs.programa_educativo pe', 'residente.idprograma_educativo = pe.idprograma_educativo', 'left')
@@ -149,7 +149,7 @@ class ResidenteModel extends Model
             ->get()
             ->getResultArray();
     }
-    public function residentesInfoListByNumeroControl($numeroControl)
+    public function residentesInfoListByNumeroControl(string $numeroControl)
     {
         $builder = $this->table('reposs.residente');
         $builder->select([

@@ -34,9 +34,13 @@ class DocumentoModel extends Model
     protected $cleanValidationRules = true;
 
     // Obtener el archivo actual
-    public function getCurrentDocument()
+    public function obtenerReporte(string $nombreTipo)
     {
-        return $this->first();  // Devuelve el primer (y único) documento
+        $doc = $this->table('documento');
+        $doc->select('documento.iddocumento, documento.archivo, ta.nombre')
+            ->join('tipo_archivo ta', 'ta.idtipo = documento.idtipo')
+            ->where('ta.nombre', $nombreTipo);
+        return $doc->first();  // Devuelve el primer (y único) documento
     }
 
     /**
@@ -45,7 +49,7 @@ class DocumentoModel extends Model
      *  @param string $nombre
      *  @return array
      */
-    public function getDocumentByTipo(string $nombre, int $idResidente)
+    public function getDocumentByTipo(string $nombre, int $idResidente): array|null
     {
         $this->table('documento');
         return $this->select('documento.iddocumento, documento.archivo, ta.nombre')

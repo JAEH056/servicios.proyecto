@@ -23,7 +23,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -35,7 +35,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function show($id = null)
+    public function show($id = null): void
     {
         //
     }
@@ -45,7 +45,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function new()
+    public function new(): void
     {
         //
     }
@@ -88,7 +88,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function edit($id = null)
+    public function edit($id = null): void
     {
         //
     }
@@ -100,7 +100,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function update($id = null)
+    public function update($id = null): void
     {
         //
     }
@@ -112,7 +112,7 @@ class DatosAsesor extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function delete($id = null)
+    public function delete($id = null): void
     {
         //
     }

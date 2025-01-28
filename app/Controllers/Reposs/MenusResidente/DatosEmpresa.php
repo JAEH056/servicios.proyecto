@@ -78,7 +78,7 @@ class DatosEmpresa extends ResourceController
      *
      * @return ResponseInterface
      */
-    public function datosAsesorExterno()
+    public function datosAsesorExterno(): string
     {
         // Ensure the user is logged in
         if (!session()->has('name')) {

@@ -15,6 +15,20 @@ class HorarioModel extends Model
     protected $allowedFields = ['id_semestre', 'id_laboratorio'];
 
 
+    protected function obterHorarios():array{
+        $builder= $this->db->table('horario')
+        ->select('semestre.nombre,
+                  laboratorio.nombre AS nombre_laboratorio,
+                  carrera.nombre AS nombre_carrera')
+        ->join('semestre','semestre.id = horario.id_semestre')
+        ->join('laboratorio','laboratorio.id = horario.id_laboratorio')
+        ->join('carrera','carrera.id = laboratorio.id_carrera');
+        $query= $builder->get();
+        return  $query->getResultArray();
+        
+    }
+
+
 
     public function obtenerHorariosPorLaboratorio($idLaboratorio): array
     {

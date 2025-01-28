@@ -68,6 +68,8 @@ class CrearHorario extends BaseController
         $periodos = $this->model_horario->obtenerHorariosPorLaboratorio($idLaboratorio);
 
         $carreras = $this->model_carreras->obtenerCarrera();
+      
+
         $laboratorios = $this->model_laboratorio->obtenerLaboratorios();
         $tipos_uso_solicitudes_varias = $this->model_tipo_uso->obtenerTiposUso();
      //   $laboratorista = $this->model_laboratorios_asignados_al_laboratorista->obtenerEncargadoDeLaboratorio($user['userPrincipalName']);
@@ -85,32 +87,33 @@ class CrearHorario extends BaseController
                 'usuario' => $obtenerdatosusuario,
             ]);
         }
+        
 
         $data = [];
         if (!empty($periodos)) {
             foreach ($periodos as $datosperiodo) {
                 $data = [
                     'periodoJson' => json_encode([
-
-
                         'inicio' => $datosperiodo['inicio'],
                         'fin' => $datosperiodo['fin'],
+                        
                     ]),
+                   
                     'laboratorios' => $laboratorios,
                     'laboratorioSeleccionado' => $idLaboratorio,
-                    'carreras' => $carreras,
+                   
                     'tipo_uso' => $tipos_uso_solicitudes_varias,
-
-
                     'user' => $user,
                     'token' => $token,
                     'idusuario' => $userId,
                     'usuario' => $obtenerdatosusuario,
-                 
+                    'carreras'=>$carreras
+                  
 
                 ];
             }
-           // print_r($data);
+            
+             //print_r($data);
         }
 
         return view('Labs/layouts/horario_laboratorista', $data);
@@ -208,6 +211,79 @@ class CrearHorario extends BaseController
             ]);
         }
     }
+
+    public function obtenerMateriascarrera(){
+        $carreraId = $this->request->getGet('carreraId');
+        
+     
+        if (!$carreraId) {
+            return $this->response->setJSON(['error' => 'Parámetro carreraId no proporcionado'])->setStatusCode(400);
+        }
+      
+        if (empty($carreraId)) {
+            return $this->response->setJSON(['error' => 'ID de carrera no proporcionado'])->setStatusCode(400);
+        }
+
+        $asignaturas = [];
+        $gruposcreados = [];
+       
+        $materias = $this->model_reticula->obtenerReticula($carreraId);
+        if ($materias) {
+          
+            $asignaturas = array_map(function ($materia) {
+                return [
+                    'id' => $materia['id'],
+                    'nombre_asignatura' => $materia['nombre_asignatura']
+                ];
+            }, $materias);
+        }
+        $grupos = $this->model_grupo->obtenerGruposPorCarrera($carreraId);
+        if ($grupos) {
+            $gruposcreados = array_map(function ($grupo) {
+                return [
+                    'id' => $grupo['id_grupo'],
+                    'nombre' => $grupo['nombre_grupo']
+                ];
+            }, $grupos);
+        }
+        return $this->response->setJSON([
+            'asignaturas' => $asignaturas,
+            'grupos' => $grupos,
+            'mensaje' => [
+                'asignaturas' => empty($asignaturas) ? 'No se encontraron asignaturas' : 'Asignaturas encontradas',
+                'grupos' => empty($gruposcreados) ? 'No se encontraron grupos' : 'Grupos encontrados'
+            ]
+        ]);
+    }
+
+    public function obtenerClaveMateria(){
+        $asignaturaId = $this->request->getGet('asignaturaId');
+       
+        if (!$asignaturaId) {
+            return $this->response->setJSON(['error' => 'Parámetro id asignatura no proporcionado'])->setStatusCode(400);
+        }
+
+        if (empty($asignaturaId)) {
+            return $this->response->setJSON(['error' => 'ID de asignatura no proporcionado'])->setStatusCode(400);
+        }
+
+        $claveasignatura = $this->model_asignaturas->obtenerClaveMateria($asignaturaId);
+
+        if ($claveasignatura) {
+           
+            $asignaturaclave = array_map(function ($clave) {
+                return [
+                    'claveasignatura' => $clave['clave_asignatura'],
+                ];
+            }, $claveasignatura);
+
+            return $this->response->setJSON(['clave' => $asignaturaclave]);
+        } else {
+
+            return $this->response->setJSON(['error' => 'No se encontro la clave de la asignatura'], 404);
+        }
+
+    }
     public function actualizarSolicitud($idSolicitud)
     {
         $userId = session()->get('idusuario');
@@ -224,20 +300,31 @@ class CrearHorario extends BaseController
             'descripcion_tareas'=>$this->request->getPost('descripcion_tareas'),
             'nombre_proyecto'=>$this->request->getPost('nombre_proyecto'),
         ];
+
+        $data_solicitud_practica=[
+            'nombre_practica'=> $this->request->getPost(''),
+            'objetivo'=>$this->request->getPost(''),
+
+
+        ];
+        $data_clase=[
+            'id_carrera'=>$this->request->getPost('carrera-id'),
+            'id_asignatura'=>$this->request->getPost(''),
+            'id_grupo'=>$this->request->getPost(''),
+
+        ];
+
         $data_autorizacion=[
             'id_asignar_laboratorio' => $idAsignarLaboratorio,
             'estado'=>$this->request->getPost('autorizacion'),
             'observacion'=>$this->request->getPost('observaciones_varias'),
         ];
-
-    
-        //reglas personalizadas de validacion
+      
         $reglasSolicitudVarias = [
-           // 'id_tipo_uso' => [
            'id_tipo_uso'=>[
                 'rules'  => 'required',
                 'errors' => [
-                    'required'           => 'El tipo de uso es obligatorio. Por favor seleccione una opción.',
+                    'required'  => 'El tipo de uso es obligatorio. Por favor seleccione una opción.',
                     
                 ],
             ],
@@ -266,20 +353,70 @@ class CrearHorario extends BaseController
                 ],
             ],
         ];
-        if (!$this->validate($reglasSolicitudVarias)) {
+        $reglasSolicitudPractica=[
+            'nombre_practica'=> [
+                'rules'=> 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'El nombre de la practica es obligatorio.',
+                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                    'min_length' => 'El nombre debe tener al menos 10 caracteres.',
+                ],
+            ],
+        
+            'objetivo'=>[
+                'rules'=> 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'El objetivo es obligatorio.',
+                    'max_length' => 'El objetivo no puede tener más de 255 caracteres.',
+                    'min_length' => 'El objetivo debe tener al menos 10 caracteres.',
+                ],
+            ],
+            'id_carrera' => [
+                'rules'    => 'required',
+                'errors'=> [
+                'required' => 'La carrera es obligatoria.',
+                ],
+            ],
+            'id_asignatura' => [
+                'rules'    => 'required',
+                'errors' => [
+                'required','La asignatura es obligatoria.',
+                ],
+            ],
+
+            'id_grupo' => [
+                'rules'=> 'required',
+                'errors' =>[ 
+                'required'=>'El grupo es obligatorio.',
+                ],
+            ],
+
+            'observaciones_practicas' => [
+                'rules'  => 'required|max_length[255]|min_length[10]',
+                'errors' => [
+                    'required'   => 'La observacion es obligatoria.',
+                    'max_length' => 'El nombre no puede tener más de 255 caracteres.',
+                    'min_length' => 'El nombre debe tener al menos 10 caracteres.',
+                ],
+            ],
+    ];
+     $reglasSolicitudes= array_merge($reglasSolicitudVarias);
+
+        if (!$this->validate($reglasSolicitudes)) {
             
             return $this->response->setJSON([
                 
                 'success' => false,
-                'datos_solicitud'=>$data_solicitud,
-                'message' => 'Datos inválidos solicitudes_varias.',
+                'message' => 'Datos inválidos para la solicitud.',
                 'errors' => $this->validation->getErrors(),
                 'csrf' => csrf_hash(),
             ]);
         }
-        $actualizar_solicitud_varias=$this->model_solicitud->actualizarSolicitud($idSolicitud,$data_solicitud,$data_solicitud_varias,$data_autorizacion);
+        
+        
+        $actualizar_solicitud=$this->model_solicitud->actualizarSolicitud($idSolicitud,$data_solicitud,$data_solicitud_varias,$data_solicitud_practica,$data_clase,$data_autorizacion);
     
-        if(!$actualizar_solicitud_varias){
+        if(!$actualizar_solicitud){
             return $this->response->setJSON([
                 'success' => false,
                 'message' => 'No se pudo actualizar los datos.',

@@ -42,7 +42,7 @@ class DiasInhabiles extends BaseController
 
         ];
 
-        print_r($data);
+       // print_r($data);
         return view('Labs/layouts/dias_inhabiles', $data);
     }
 

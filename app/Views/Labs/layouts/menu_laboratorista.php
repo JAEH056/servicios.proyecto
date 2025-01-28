@@ -16,7 +16,7 @@
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar-xmark"></i></div>
                 Días inhábiles
             </a>
-            <a class="nav-link" href="/usuario/laboratorista">
+            <a class="nav-link" href="/usuario/mostrar/horario">
                 <div class="nav-link-icon"><i class="fa-regular fa-clipboard fa-lg"></i></div>
                 Gestión de horarios
             </a>
