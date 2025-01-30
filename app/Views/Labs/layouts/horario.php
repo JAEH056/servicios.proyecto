@@ -21,7 +21,6 @@
                         <tr>
                             <th>Semestre</th>
                             <th>Laboratorio</th>
-                            <th>Ver</th>
                             <th>Editar</th>
                             <th>Eliminar</th>
                         </tr>

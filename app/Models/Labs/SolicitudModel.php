@@ -45,13 +45,15 @@ class SolicitudModel extends Model
         return $insert; //this->getInsertID();
     }
 
-    public function editar($idSolicitud = null): array
+    public function obtenerSolicitud($idSolicitud = null): array
     {
         $sql = <<<EOL
         SELECT 
+        
             solicitud.id As id_solicitud,
             solicitud.hora_fecha_entrada AS hora_fecha_entrada,
             solicitud.hora_fecha_salida AS hora_fecha_salida,
+            solicitud.fecha_envio AS fecha_solicitud,
             laboratorio.nombre AS nombre_laboratorio,
             solicitudes_varias.nombre_proyecto AS nombre_proyecto,
             solicitudes_varias.descripcion_tareas AS descripcion_tareas,
@@ -65,6 +67,7 @@ class SolicitudModel extends Model
             '' AS grupo,
             '' AS id_clase,
             '' AS id_asignatura,
+            'varias' AS tipo_solicitud,
             usuario.principal_name AS correo,
             autorizacion.estado AS estado,
             autorizacion.observacion As observaciones
@@ -86,6 +89,7 @@ class SolicitudModel extends Model
             solicitud.id AS id_solicitud,
             solicitud.hora_fecha_entrada AS hora_fecha_entrada,
             solicitud.hora_fecha_salida AS hora_fecha_salida,
+            solicitud.fecha_envio AS fecha_solicitud,
             laboratorio.nombre AS nombre_laboratorio,
             solicitudes_practicas.nombre_practica  As nombre_practica,
             '' AS descripcion_tareas,
@@ -99,6 +103,7 @@ class SolicitudModel extends Model
             grupo.nombre AS grupo,
             clase.id AS id_clase,
             asignatura.id  As id_asignatura,
+            'practica'AS tipo_solicitud,
             usuario.principal_name AS correo,
             autorizacion.estado AS estado,
             autorizacion.observacion As observaciones
@@ -117,6 +122,7 @@ class SolicitudModel extends Model
         JOIN compartida.usuario ON usuario.idusuario =puesto_empleado.idusuario
         JOIN autorizacion on autorizacion.id_solicitud = solicitud.id
         where solicitud.id=$idSolicitud
+        
         EOL;
         $query = $this->db->query($sql);
         $solicitud = $query->getResultArray();
@@ -185,5 +191,39 @@ class SolicitudModel extends Model
     return true;
 
    
+    }
+    public function actualizarSolicitudVaria($idSolicitud, $dataSolicitud,$dataSolicitudVaria,$dataAutorizacion=null){
+        $this->db->transStart();
+        $builder=$this->db->table('solicitud');
+        $builder->where('id', $idSolicitud);
+        $builder->update($dataSolicitud);
+
+        $this->db->table('solicitudes_varias')
+                ->where('id_solicitud', $idSolicitud)
+                ->update($dataSolicitudVaria);
+    
+        $this->db->table('autorizacion')
+        ->where('id_solicitud', $idSolicitud)
+        ->update($dataAutorizacion);
+        
+        $this->db->transComplete();
+
+    }
+    public function actualizarSolicitudPractica($idSolicitud,$dataSolicitud,$dataSolicitudPractica,$dataAutorizacion=null){
+        $this->db->transStart();
+        $builder=$this->db->table('solicitud');
+        $builder->where('id', $idSolicitud);
+        $builder->update($dataSolicitud);
+
+        $this->db->table('solicitudes_varias')
+                ->where('id_solicitud', $idSolicitud)
+                ->update($dataSolicitudPractica);
+    
+        $this->db->table('autorizacion')
+        ->where('id_solicitud', $idSolicitud)
+        ->update($dataAutorizacion);
+        
+        $this->db->transComplete();
+
     }
 }

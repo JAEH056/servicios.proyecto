@@ -23,11 +23,10 @@ class PdfController extends Controller
         ];
 
         // Render the view to a string
-        $html = view('Reposs/Formatos/pfd_figma', $data);
+        $html = view('Reposs/Formatos/solicitud_residencias', $data);
 
         // Initialize DOMPDF
-        
-        $this->options->set('defaultFont', 'Arial');
+        //$this->options->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($this->options);
 
         // Load HTML content
@@ -41,5 +40,31 @@ class PdfController extends Controller
 
         // Output the generated PDF to Browser
         $dompdf->stream('document.pdf', ['Attachment' => false]);
+    }
+
+    public function generateSolicitudPDF()
+    {
+        // Cargar la vista con los datos necesarios
+        $html = view('Reposs/Formatos/solicitud_residencias');
+
+        // Configurar DomPDF
+        $options = new Options();
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true);
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+
+        // Establecer el tamaño de papel a carta (8.5 x 11 pulgadas)
+        $dompdf->setPaper('letter', 'portrait');
+
+        // Renderizar el PDF
+        $dompdf->render();
+
+        // Enviar el PDF al navegador
+        return $this->response
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setHeader('Content-Disposition', 'inline; filename="solicitud_residencias.pdf"')
+            ->setBody($dompdf->output());
     }
 }

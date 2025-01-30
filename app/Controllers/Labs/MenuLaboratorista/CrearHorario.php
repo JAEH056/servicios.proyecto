@@ -428,5 +428,5 @@ class CrearHorario extends BaseController
             'message' => 'Solicitud actualizada correctamente.',
             'csrf' => csrf_hash(),
         ]);
-    }
+    }///gvdegw
 }

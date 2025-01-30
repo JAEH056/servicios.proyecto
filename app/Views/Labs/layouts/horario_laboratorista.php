@@ -619,141 +619,140 @@
                 }
 
                 // Mostrar modal de Solicitudes Prácticas
-// Mostrar modal de Solicitudes Prácticas
-function mostrarModalPracticas(solicitud) {
-    // Asignamos el ID al campo oculto
-    document.getElementById('idSolicitud-practicas').value = solicitud.id_solicitud;
-    console.log("ID de la solicitud en el modal de practicas:", document.getElementById('idSolicitud-practicas').value);
+                function mostrarModalPracticas(solicitud) {
+                    // Asignamos el ID al campo oculto
+                    document.getElementById('idSolicitud-practicas').value = solicitud.id_solicitud;
+                    console.log("ID de la solicitud en el modal de practicas:", document.getElementById('idSolicitud-practicas').value);
 
-    // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
-    document.getElementById('modal-empleado-practicas').value = solicitud.correo;
-    document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
-    document.getElementById('modal-objetivo').value = solicitud.objetivo;
-    document.getElementById('modal-clave').value = solicitud.clave;  // Aquí asignamos la clave directamente
-    document.getElementById('modal-grupo').value = solicitud.grupo;
+                    // Asignamos los valores de la solicitud a los elementos del modal PRACTICAS
+                    document.getElementById('modal-empleado-practicas').value = solicitud.correo;
+                    document.getElementById('modal-nombre-practica').value = solicitud.nombre_proyecto;
+                    document.getElementById('modal-objetivo').value = solicitud.objetivo;
+                    document.getElementById('modal-clave').value = solicitud.clave;  // Aquí asignamos la clave directamente
+                    document.getElementById('modal-grupo').value = solicitud.grupo;
 
-    // Cargar las carreras y asignaturas
-    const carreras = <?php echo json_encode($carreras); ?>;
-    const selectCarrera = document.getElementById('modal-carrera');
-    selectCarrera.innerHTML = ''; // Limpiar las opciones anteriores
+                    // Cargar las carreras y asignaturas
+                    const carreras = <?php echo json_encode($carreras); ?>;
+                    const selectCarrera = document.getElementById('modal-carrera');
+                    selectCarrera.innerHTML = ''; // Limpiar las opciones anteriores
 
-    // Agregar opciones al selector de carrera
-    carreras.forEach(carrera => {
-        const option = document.createElement('option');
-        option.value = carrera.id;
-        option.textContent = carrera.nombre_carrera;
-        selectCarrera.appendChild(option);
-    });
-
-    const selectedValue = solicitud.carrera;
-    const carreraSeleccionada = carreras.find(carrera => carrera.nombre_carrera.trim() === selectedValue);
-    selectCarrera.value = carreraSeleccionada ? carreraSeleccionada.id : carreras[0].id;
-
-    // Cargar asignaturas y grupos según la carrera seleccionada
-    const obtenerAsignaturaYGrupos = (carreraId) => {
-        fetch(`/usuario/materias/carrera?carreraId=${carreraId}`)
-            .then(response => response.json())
-            .then(data => {
-                const selectAsignatura = document.getElementById('modal-asignatura');
-                const selectGrupo = document.getElementById('modal-grupo'); // Selector de grupos
-                selectAsignatura.innerHTML = ''; // Limpiar las opciones anteriores
-                selectGrupo.innerHTML = ''; // Limpiar las opciones de grupos
-
-                // Agregar opciones al selector de asignaturas
-                if (data && Array.isArray(data.asignaturas) && data.asignaturas.length > 0) {
-                    data.asignaturas.forEach(asignatura => {
+                    // Agregar opciones al selector de carrera
+                    carreras.forEach(carrera => {
                         const option = document.createElement('option');
-                        option.value = asignatura.id;
-                        option.textContent = asignatura.nombre_asignatura;
-                        selectAsignatura.appendChild(option);
+                        option.value = carrera.id;
+                        option.textContent = carrera.nombre_carrera;
+                        selectCarrera.appendChild(option);
                     });
 
-                    // Establecer la asignatura preseleccionada (si existe en la solicitud)
-                    const selectedAsignaturaValue = solicitud.id_asignatura; // Asegúrate de que 'asignatura' sea el id
-                    const asignaturaSeleccionada = data.asignaturas.find(asignatura => asignatura.id === selectedAsignaturaValue);
+                    const selectedValue = solicitud.carrera;
+                    const carreraSeleccionada = carreras.find(carrera => carrera.nombre_carrera.trim() === selectedValue);
+                    selectCarrera.value = carreraSeleccionada ? carreraSeleccionada.id : carreras[0].id;
 
-                    console.log("Asignatura encontrada en la lista:", asignaturaSeleccionada);
+                    // Cargar asignaturas y grupos según la carrera seleccionada
+                    const obtenerAsignaturaYGrupos = (carreraId) => {
+                        fetch(`/usuario/materias/carrera?carreraId=${carreraId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const selectAsignatura = document.getElementById('modal-asignatura');
+                                const selectGrupo = document.getElementById('modal-grupo'); // Selector de grupos
+                                selectAsignatura.innerHTML = ''; // Limpiar las opciones anteriores
+                                selectGrupo.innerHTML = ''; // Limpiar las opciones de grupos
 
-                    // Si la asignatura se encuentra, la seleccionamos
-                    selectAsignatura.value = asignaturaSeleccionada ? asignaturaSeleccionada.id : data.asignaturas[0].id;
+                                // Agregar opciones al selector de asignaturas
+                                if (data && Array.isArray(data.asignaturas) && data.asignaturas.length > 0) {
+                                    data.asignaturas.forEach(asignatura => {
+                                        const option = document.createElement('option');
+                                        option.value = asignatura.id;
+                                        option.textContent = asignatura.nombre_asignatura;
+                                        selectAsignatura.appendChild(option);
+                                    });
 
-                    // Obtener la clave de la asignatura seleccionada
-                    obtenerInfoAsignatura(selectAsignatura.value);
-                } else {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'No hay asignaturas disponibles';
-                    selectAsignatura.appendChild(option);
-                }
+                                    // Establecer la asignatura preseleccionada (si existe en la solicitud)
+                                    const selectedAsignaturaValue = solicitud.id_asignatura; // Asegúrate de que 'asignatura' sea el id
+                                    const asignaturaSeleccionada = data.asignaturas.find(asignatura => asignatura.id === selectedAsignaturaValue);
 
-                // Agregar opciones al selector de grupos
-                if (data && Array.isArray(data.grupos) && data.grupos.length > 0) {
-                    data.grupos.forEach(grupo => {
-                        const option = document.createElement('option');
-                        option.value = grupo.id;
-                        option.textContent = grupo.nombre_grupo;
-                        selectGrupo.appendChild(option);
+                                    console.log("Asignatura encontrada en la lista:", asignaturaSeleccionada);
+
+                                    // Si la asignatura se encuentra, la seleccionamos
+                                    selectAsignatura.value = asignaturaSeleccionada ? asignaturaSeleccionada.id : data.asignaturas[0].id;
+
+                                    // Obtener la clave de la asignatura seleccionada
+                                    obtenerInfoAsignatura(selectAsignatura.value);
+                                } else {
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No hay asignaturas disponibles';
+                                    selectAsignatura.appendChild(option);
+                                }
+
+                                // Agregar opciones al selector de grupos
+                                if (data && Array.isArray(data.grupos) && data.grupos.length > 0) {
+                                    data.grupos.forEach(grupo => {
+                                        const option = document.createElement('option');
+                                        option.value = grupo.id_grupo;
+                                        option.textContent = grupo.nombre_grupo;
+                                        selectGrupo.appendChild(option);
+                                    });
+
+                                    console.log("Grupo recibido en la solicitud:", solicitud.id_grupo);
+                                    console.log("Grupos disponibles:", data.grupos);
+
+
+                                    // Establecer el grupo preseleccionado (si existe en la solicitud)
+                                    const selectedGrupoValue = solicitud.id_grupo; // Asegúrate de que 'grupo' sea el id
+                                    const grupoSeleccionado = data.grupos.find(grupo => grupo.id_grupo === selectedGrupoValue);
+
+                                    console.log("Grupo encontrado en la lista:", grupoSeleccionado);
+
+                                    // Si el grupo se encuentra, lo seleccionamos
+                                    selectGrupo.value = grupoSeleccionado ? grupoSeleccionado.id_grupo : data.grupos[0].id;
+                                } else {
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'No hay grupos disponibles';
+                                    selectGrupo.appendChild(option);
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error al cargar asignaturas y grupos:", error);
+                            });
+                    };
+
+                    obtenerAsignaturaYGrupos(selectCarrera.value);
+
+                    // Evento de cambio de carrera
+                    selectCarrera.addEventListener('change', function() {
+                        obtenerAsignaturaYGrupos(selectCarrera.value); // Volver a cargar asignaturas y grupos basados en la nueva carrera
                     });
 
-                    // Establecer el grupo preseleccionado (si existe en la solicitud)
-                    const selectedGrupoValue = solicitud.id_grupo; // Asegúrate de que 'grupo' sea el id
-                    const grupoSeleccionado = data.grupos.find(grupo => grupo.id_grupo === selectedGrupoValue);
+                    // Evento de cambio de asignatura
+                    const selectAsignatura = document.getElementById('modal-asignatura');
+                    selectAsignatura.addEventListener('change', function() {
+                        obtenerInfoAsignatura(selectAsignatura.value);
+                    });
 
-                    console.log("Grupo encontrado en la lista:", grupoSeleccionado);
+                    // Función para obtener más información sobre la asignatura seleccionada
+                    const obtenerInfoAsignatura = (asignaturaId) => {
+                        fetch(`/usuario/clave/asignatura?asignaturaId=${asignaturaId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data && Array.isArray(data.clave) && data.clave.length > 0) {
+                                    const claveAsignatura = data.clave[0].claveasignatura; 
+                                    console.log("Clave de la asignatura:", claveAsignatura);
+                                    document.getElementById('modal-clave').value = claveAsignatura;
+                                } else {
+                                    console.log("No se encontró la clave de la asignatura o está vacía.");
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error al obtener la información de la asignatura:", error);
+                            });
+                    };
 
-                    // Si el grupo se encuentra, lo seleccionamos
-                    selectGrupo.value = grupoSeleccionado ? grupoSeleccionado.id : data.grupos[0].id;
-                } else {
-                    const option = document.createElement('option');
-                    option.value = '';
-                    option.textContent = 'No hay grupos disponibles';
-                    selectGrupo.appendChild(option);
+                    // Mostrar el modal correspondiente
+                    const modal = new bootstrap.Modal(document.getElementById('modalSolicitudesPracticas'));
+                    modal.show();
                 }
-            })
-            .catch(error => {
-                console.error("Error al cargar asignaturas y grupos:", error);
-            });
-    };
-
-    obtenerAsignaturaYGrupos(selectCarrera.value);
-
-    // Evento de cambio de carrera
-    selectCarrera.addEventListener('change', function() {
-        obtenerAsignaturaYGrupos(selectCarrera.value); // Volver a cargar asignaturas y grupos basados en la nueva carrera
-    });
-
-    // Evento de cambio de asignatura
-    const selectAsignatura = document.getElementById('modal-asignatura');
-    selectAsignatura.addEventListener('change', function() {
-        obtenerInfoAsignatura(selectAsignatura.value);
-    });
-
-    // Función para obtener más información sobre la asignatura seleccionada
-    const obtenerInfoAsignatura = (asignaturaId) => {
-        fetch(`/usuario/clave/asignatura?asignaturaId=${asignaturaId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && Array.isArray(data.clave) && data.clave.length > 0) {
-                    const claveAsignatura = data.clave[0].claveasignatura; 
-                    console.log("Clave de la asignatura:", claveAsignatura);
-                    document.getElementById('modal-clave').value = claveAsignatura;
-                } else {
-                    console.log("No se encontró la clave de la asignatura o está vacía.");
-                }
-            })
-            .catch(error => {
-                console.error("Error al obtener la información de la asignatura:", error);
-            });
-    };
-
-    // Mostrar el modal correspondiente
-    const modal = new bootstrap.Modal(document.getElementById('modalSolicitudesPracticas'));
-    modal.show();
-}
-
-
-
-
             });
 
 
@@ -808,7 +807,7 @@ function mostrarModalPracticas(solicitud) {
                         }
 
                         if (data.success) {
-                            alert('Cambios guardados correctamente');
+                            alert('Cambios actualizados correctamente');
                             console.log("Intentando cerrar el modal...");
                             const modalElement = document.getElementById('modalSolicitudesVarias');
                             const modal = bootstrap.Modal.getOrCreateInstance(modalElement);

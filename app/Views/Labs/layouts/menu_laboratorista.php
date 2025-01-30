@@ -20,7 +20,7 @@
                 <div class="nav-link-icon"><i class="fa-regular fa-clipboard fa-lg"></i></div>
                 Gestión de horarios
             </a>
-            <a class="nav-link" href="<?= base_url('/usuario/horario') ?>">
+            <a class="nav-link" href="<?= base_url('/usuario/horario/laboratorio') ?>">
                 <div class="nav-link-icon"><i class="fa-regular fa-calendar"></i></div>
                 Solicitar horarios
             </a>
@@ -42,10 +42,10 @@
     </div>
     
     <!-- Sidenav Footer -->
-    <div class="sidenav-footer">
+    <!-- <div class="sidenav-footer">
         <div class="sidenav-footer-content">
             <div class="sidenav-footer-subtitle">Logged in as:</div>
             <div class="sidenav-footer-title">Valerie Luna</div>
         </div>
-    </div>
+    </div> -->
 </nav>

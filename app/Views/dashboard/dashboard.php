@@ -88,7 +88,7 @@
                                     <img class="img-fluid mb-5" width="200px" height="200px" src="<?= base_url("resources/assets/img/logo_ITSH.png") ?>" />
                                     <h4>Gestión de laboratorios (Laboratoristas)</h4>
                                     <p class="d-inline-flex gap-1">
-                                        <a href="<?= base_url('usuario/horario') ?>" class="btn btn-primary">Ingresar</a>
+                                        <a href="<?= base_url('usuario/horario/laboratorio/') ?>" class="btn btn-primary">Ingresar</a>
                                     </p>
                                 </div>
                             </div>

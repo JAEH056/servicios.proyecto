@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Clases\Solicitud;
 use App\Controllers\Labs\MenuLaboratorista\CrearHorario;
 use App\Controllers\Labs\MenuLaboratorista\DiasInhabiles;
 use App\Controllers\Labs\MenuLaboratorista\Horario;
@@ -8,6 +8,7 @@ use App\Controllers\Labs\MenuLaboratorista\Laboratorios;
 use App\Controllers\Labs\MenuLaboratorista\Laboratorista;
 use App\Controllers\Labs\MenuLaboratorista\Reticula;
 use App\Controllers\Labs\MenuLaboratorista\Semestre;
+use App\Controllers\Labs\MenuLaboratorista\Solicitudes;
 use App\Controllers\Labs\MenuUsuario\SolicitarLaboratorio;
 use CodeIgniter\Router\RouteCollection;
 
@@ -16,7 +17,11 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // SEMESTRE
+
+$routes->get('capibara/solicitud', [App\Controllers\Labs\Capibara::class, 'datosSolicitud'], ['filter' => 'rbac:laboratorista']);
+
 $routes->group('usuario', ['filter' => 'rbac:laboratorista'], function ($routes) {
+  
     $routes->get('mostrar/semestre', [Semestre::class, 'index']);
     $routes->get('nuevo/semestre', [Semestre::class, 'nuevo']);
     $routes->get('editar/semestre/(:num)', [Semestre::class, 'editar/$1']);
@@ -53,15 +58,24 @@ $routes->group('usuario', ['filter' => 'rbac:laboratorista'], function ($routes)
     $routes->get('horario/(:num)', [CrearHorario::class, 'index/$1']); // Con ID, muestra el horario
     $routes->get('horario', [CrearHorario::class, 'index']); // Con ID, muestra el horario
     // para mostrar todos los eventos del horario en la vista de horario
-    $routes->get('mostrar/eventos',[CrearHorario::class,'eventos']);
+   // $routes->get('mostrar/eventos',[CrearHorario::class,'eventos']);
 
     //para editar la solicitud 
-    $routes->get('editar/solicitud/(:num)',[CrearHorario::class,'editarSolicitud/$1']);
+    $routes->get('editar/solicitud/(:num)',[Solicitudes::class,'editarSolicitud/$1']);
     //para actualizar la solicitud 
-    $routes->post('actualizar/solicitud/(:num)',[CrearHorario::class,'actualizarSolicitud/$1']);
+    //$routes->post('actualizar/solicitud/(:num)',[CrearHorario::class,'actualizarSolicitud/$1']);
+    $routes->get('actualizar/solicitud/varia/(:num)',[Solicitudes::class,'actualizarSolicitudVarias']);
+
     // para mostrar las carreras
     $routes->get('materias/carrera' ,[CrearHorario::class,'obtenerMateriasCarrera']);
     $routes->get('clave/asignatura' ,[CrearHorario::class,'obtenerClaveMateria']);
+    
+
+
+    // obteniendo que tipo de solicitud es
+    $routes->get('horario/laboratorio/(:num)',[Solicitudes::class,'index/$1']);
+    $routes->get('horario/laboratorio',[Solicitudes::class,'index']);
+    $routes->get('mostrar/eventos',[Solicitudes::class,'eventos']);
   
 });
 

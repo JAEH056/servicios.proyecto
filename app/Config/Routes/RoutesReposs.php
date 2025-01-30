@@ -36,7 +36,7 @@ $routes->group('usuario', ['filter' => 'rbac:default'], function ($routes) {
     $routes->get('residentes/home',                     [HomeResidente::class, 'index']);
     $routes->get('residentes/empresa',                  [DatosEmpresa::class, 'index']);
     $routes->get('residentes/empresa_asesor_externo',   [DatosEmpresa::class, 'datosAsesorExterno']);
-    $routes->get('residentes/solicitud-residencias',    [PdfController::class, 'generar']);
+    $routes->get('residentes/solicitud-residencias',    [PdfController::class, 'generateSolicitudPDF']);
 
     $routes->post('residentes/reporte/(:num)/(:segment)',   [Reportes::class, 'upload/$1/$2'],  ['filter' => 'regex']);
     $routes->get('residentes/reporte/(:num)',               [Reportes::class, 'delete/$1']);
